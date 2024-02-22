@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "629853660357",
+    "project_id": "dealer-77fe8",
+    "storage_bucket": "dealer-77fe8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:629853660357:android:97ab043cb63a9c7aebbcac",
+        "android_client_info": {
+          "package_name": "com.dealer"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLlmz9yDrITLv3vYtd9aZUa1FGl2PCt18"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
