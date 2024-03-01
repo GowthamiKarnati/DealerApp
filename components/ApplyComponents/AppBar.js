@@ -21,7 +21,7 @@ const AppBar = ({ customerData }) => {
 const styles = StyleSheet.create({
     container: {
       flexDirection: 'row', 
-      height: 60,
+      height: 70,
       backgroundColor: '#12b981',
       padding: 16,
       alignItems: 'center', 

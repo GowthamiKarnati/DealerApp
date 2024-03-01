@@ -16,8 +16,10 @@ const AppBar = () => {
     navigation.navigate('Customer');
   };
   useEffect(() => {
-    if (customerKYCData) {
-      setCustomerName(customerKYCData['Customer Name']);
+    if (customerKYCData && customerKYCData['Customer Name']) {
+      const name = customerKYCData['Customer Name'];
+      const formattedName = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+      setCustomerName(formattedName);
     }
   }, [customerKYCData]);
   return (

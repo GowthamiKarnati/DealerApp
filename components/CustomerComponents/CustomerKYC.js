@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import axios from 'axios';
-import { setCustomerKYCData } from '../../redux/slices/authSlice';
+import { setCustomerKYCData, selectCustomerKYCData } from '../../redux/slices/authSlice';
 import { useDispatch } from 'react-redux'; 
 import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux'; // Import useSelector hook
@@ -11,34 +11,36 @@ const CustomerKYC = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const customerData = useSelector(selectCustomerData);
+  const customerKYCData = useSelector(selectCustomerKYCData);
+  //console.log("CustomerKYCDATA",customerKYCData);
   const [kycStatus, setKycStatus] = useState('');
   const customerPhoneNumber = customerData?.['mobile number'] || 'N/A';
-  const imageUrl = 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg';
+  const [imageUrl, setImageUrl] = useState('https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg');
   useEffect(() => {
     const fetchData = async () => {
       try {
-        
         const modifiedMobileNumber = customerPhoneNumber.length > 10 ? customerPhoneNumber.slice(-10) : customerPhoneNumber;
-        console.log(modifiedMobileNumber)
-        //const response = await axios.get(`https://backendforpnf.vercel.app/loanapplication?criteria=sheet_38562544.column_203=942035807`);
-       const response =await axios.get(`https://backendforpnf.vercel.app/customerKyc?criteria=sheet_42284627.column_1100.column_87%20LIKE%20%22%25${encodeURIComponent(modifiedMobileNumber)}%22`);
+        const response = await axios.get(`https://backendforpnf.vercel.app/customerKyc?criteria=sheet_42284627.column_1100.column_87%20LIKE%20%22%25${encodeURIComponent(modifiedMobileNumber)}%22`);
         const apiData = response.data.data[0] || {};
-        console.log("api, data", apiData)
         const kycStatusFromData = apiData?.['KYC Status'];
-        //console.log(kycStatusFromData)
         if (kycStatusFromData === 'Active') {
           setKycStatus('Completed');
         } else {
           setKycStatus('Incomplete');
         }
+        const photoArray = JSON.parse(apiData?.['Photo'] || '[]');
+        const firstImage = photoArray.length > 0 ? photoArray[0] : {};
+        const imageUri = firstImage.fullpath || '';
+        setImageUrl(imageUri); 
         dispatch(setCustomerKYCData(apiData));
-      }catch(err){
-        console.log("Error in Fetching", err)
+      } catch (err) {
+        console.log("Error in Fetching api Data", err)
       }
     };
-
+  
     fetchData();
-  }, []);
+  }, [customerKYCData]); // Add customerKYCData as a dependency
+  
   const handleCardPress = () => { 
     navigation.navigate('CustomerProfile'); 
   };
@@ -48,15 +50,30 @@ const CustomerKYC = () => {
       <View style={styles.cardContainer}>
       <View style={styles.leftContainer}>
         <View style={styles.imageContainer}>
-          {imageUrl ? (
-            <Image
-              source={{ uri: imageUrl }}
-              style={styles.userImage}
-              onError={(e) => console.log('Image load error', e.nativeEvent.error)}
-            />
-          ) : (
-            <Text>No Image</Text>
-          )}
+        {customerKYCData?.Photo && customerKYCData.Photo.length > 0 && JSON.parse(customerKYCData.Photo)[0] && JSON.parse(customerKYCData.Photo)[0].fullpath ? (
+          <Image 
+            source={{ 
+              uri: JSON.parse(customerKYCData.Photo)[0].fullpath ,
+              headers: {
+                Accept: '*/*',
+              },
+            }} 
+            style={styles.userImage} 
+            resizeMode={'cover'}
+          />
+        ) : (
+          <Image 
+            source={{ 
+              uri: 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg' ,
+              headers: {
+                Accept: '*/*',
+              },
+            }} 
+            style={styles.userImage}
+            resizeMode={'cover'}
+          />
+        )}
+
         </View>
         <View style={styles.infoContainer}>
           <Text style={styles.cardName}>Customer KYC</Text>
@@ -89,11 +106,14 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     marginRight: 10,
+    
   },
   userImage: {
     width: 50,
     height: 50,
     borderRadius: 25,
+    color:'black'
+
   },
   cardName: {
     color: 'black',

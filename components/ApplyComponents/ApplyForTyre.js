@@ -51,48 +51,50 @@ const ApplyForTyre = ({ customerData, loanType }) => {
       setIsSubmitting(true);
       const currentDate = new Date().toISOString().split('T')[0];
 
-      const name = customerData?.name || null;
-      const pan = customerData?.pan || null;
+      const FullName = customerData?.name || null;
+      const PanNumber = customerData?.pan || null;
       const mobilenumber = customerData?.['mobile number'] || null;
-      const alternatemobile = customerData?.['alternate mobile number'] || null;
-      const numberoftrucks = customerData?.Trucks !== undefined ? customerData.Trucks : null;
+      const AlternateMobileNumber = customerData?.['alternate mobile number'] || null;
+      const Nooftrucks = customerData?.Trucks !== undefined ? customerData.Trucks : null;
       const source = customerData?.DEALER || null;
-
+      const sourcerefid = customerData?.["DEALER reference_id"];
+      console.log(sourcerefid)
       const response = await axios.post(`https://backendforpnf.vercel.app/create`, {
         numberOfTires: loanType === 'tyre' ? numberOfTires : null,
         selectedBrand: loanType === 'tyre' ? selectedBrand : null,
         loanAmount,
-        name,
-        pan,
+        FullName,
+        PanNumber,
         mobilenumber,
-        alternatemobile,
-        martialstatus: customerDetails ? customerDetails["Marital Status"] || null : null,
-        numofchildren: customerDetails ? customerDetails["Number of Children"] || null : null,
-        housetype: customerDetails ? customerDetails["House Owned or Rented"] || null : null,
-        monthlyemioutflow:customerDetails ? customerDetails["Monthly EMI Outflow"] || null : null,
+        AlternateMobileNumber,
+        martialStatus: customerDetails ? customerDetails["Marital Status"] || null : null,
+        numchildren: customerDetails ? customerDetails["Number of Children"] || null : null,
+        houseType: customerDetails ? customerDetails["House Owned or Rented"] || null : null,
+        monthlyEMIOutflow:customerDetails ? customerDetails["Monthly EMI Outflow"] || null : null,
         numberOfYearsInBusiness:customerDetails ? customerDetails["Number of years in business"] || null : null,
         Totaldriversalary:customerDetails ? customerDetails["Driver Salary"] || null : null,
-        trucknumber: truckNumber,
-        numberoftrucks,
+        truckNumber: truckNumber,
+        Nooftrucks,
         date: currentDate,
         source,
-        insurancetype: loanType === 'tyre' ? 'Tyre Loan' : 'Insurance Loan',
+        sourcerefid,
+        loanType: loanType === 'tyre' ? 'Tyre Loan' : 'Insurance Loan',
       });
 
       console.log('Server response:', response.data);
       //navigation.navigate('Customer', { customerData });
       
-      navigation.navigate('Review',{ customerData } )
-      // Toast.show({
-      //   type: 'success',
-      //   position: 'bottom',
-      //   text1: 'Tyre Application Submitted!!!',
-      //   text2: 'You successfully applied for Tyre Loan, We will reach you shortly!',
-      //   visibilityTime: 3000,
-      //   autoHide: true,
-      //   topOffset: 30,
-      //   bottomOffset: 40,
-      // });
+      navigation.navigate('Customer' )
+      Toast.show({
+        type: 'success',
+        position: 'bottom',
+        text1: 'Application Submitted!!!',
+        text2: 'You successfully applied for Loan, We will reach you shortly!',
+        visibilityTime: 3000,
+        autoHide: true,
+        topOffset: 30,
+        bottomOffset: 40,
+      });
     } catch (error) {
       console.error('Error submitting application:', error);
     } finally {
@@ -132,10 +134,11 @@ const ApplyForTyre = ({ customerData, loanType }) => {
                   onValueChange={(itemValue) => setSelectedBrand(itemValue)}
                   style={styles.picker}
                 >
-                  <Picker.Item label="Select the brand" value="" />
-                  <Picker.Item label="Bridgestone" value="Bridgestone" />
-                  <Picker.Item label="Goodyear" value="Goodyear" />
-                  <Picker.Item label="Continental" value="Continental" />
+                  
+                  <Picker.Item label="CEAT" value="CEAT" />
+                  <Picker.Item label="MRF" value="MRF" />
+                  <Picker.Item label="Apollo" value="Apollo" />
+                  <Picker.Item label="others" value="others" />
                 </Picker>
               </View>
             </View>
@@ -165,7 +168,7 @@ const ApplyForTyre = ({ customerData, loanType }) => {
                 style={styles.picker}
               >
                 <Picker.Item label="Select truck number" value="" />
-                {vehicleData && vehicleData.map((vehicle: any) => (
+                {vehicleData && vehicleData.map((vehicle) => (
                   <Picker.Item key={vehicle["record_id"]} label={vehicle["Vehicle No."]} value={vehicle["Vehicle No."]} />
                 ))}
               </Picker>

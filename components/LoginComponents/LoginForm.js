@@ -261,7 +261,7 @@ const LoginForm = () => {
   const [otp, setOtp] = useState('');
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const isValidMobileNumber = (mobileNumber:any) => {
+  const isValidMobileNumber = (mobileNumber) => {
   const strippedNumber = mobileNumber.replace(/\s/g, '');
   const mobileNumberRegex = /^(\+\d{1,2})?(\d{10})$/;
   return mobileNumberRegex.test(strippedNumber);

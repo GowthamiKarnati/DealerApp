@@ -5,15 +5,16 @@ import Details from '../components/CustomerComponents/Details';
 import { useRoute } from '@react-navigation/native';
 import EmiComponent from '../components/CustomerComponents/EmiComponent';
 import CustomerKYC from '../components/CustomerComponents/CustomerKYC';
-
+import ActiveApplications from '../components/CustomerComponents/ActiveApplications';
 const CustomerScreen = () => {
   const route = useRoute();
-  const { customerData } = route.params || {};
+  //const { customerData } = route.params || {};
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView stickyHeaderIndices={[0]}>
       <AppBar   />
       <Details   />
+      <ActiveApplications />
       <CustomerKYC />
       <EmiComponent />
       </ScrollView>

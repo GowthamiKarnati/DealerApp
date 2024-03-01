@@ -105,6 +105,7 @@ import CustomerScreen from './screens/CustomerScreen';
 import { ActivityIndicator, View } from 'react-native';
 import ReviewScreen from './screens/ReviewScreen';
 import CustomerProfileScreen from './screens/CustomerProfileScreen';
+import UpdateScreen from './screens/UpdateScreen';
 const Stack = createStackNavigator();
 
 function App() {
@@ -161,6 +162,7 @@ function App() {
         <Stack.Screen name="Customer" component={CustomerScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Review" component={ReviewScreen} options={{ headerShown: false }} />
         <Stack.Screen name="CustomerProfile" component={CustomerProfileScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Update" component={UpdateScreen} options={{ headerShown: false }} />
       </Stack.Navigator>
       <Toast />
     </NavigationContainer>

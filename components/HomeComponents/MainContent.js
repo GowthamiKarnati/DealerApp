@@ -22,12 +22,18 @@ const MainContent = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const modifiedMobileNumber = userMobileNumber.length > 10 ? userMobileNumber.slice(-10) : userMobileNumber;
-        const response = await axios.get(`https://backendforpnf.vercel.app/customers?criteria=sheet_95100183.column_242.column_238%20LIKE%20%22%25${modifiedMobileNumber}%22`);
-        setData(response.data.data || []);
-        setLoading(false);
+        let modifiedMobileNumber = '';
+        if (userMobileNumber) {
+          modifiedMobileNumber = userMobileNumber.length > 10 ? userMobileNumber.slice(-10) : userMobileNumber;
+          const response = await axios.get(`https://backendforpnf.vercel.app/customers?criteria=sheet_95100183.column_242.column_238%20LIKE%20%22%25${modifiedMobileNumber}%22`);
+          setData(response.data.data || []);
+          setLoading(false);
+        } else {
+          console.log("Mobile number not available in Redux.");
+          setLoading(false);
+        }
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error('Error fetching data Customer Data :', error);
         setData([]);
         setLoading(false);
       }
@@ -111,7 +117,7 @@ const MainContent = () => {
     
           // Navigate to the 'Customer' screen with customerData as route params
           if (navigation) {
-            navigation.navigate('Customer', { customerData }); // Pass customerData as route params
+            navigation.navigate('Home'); // Pass customerData as route params
           } else {
             console.warn('Navigation is not available in the background handler.');
           }
