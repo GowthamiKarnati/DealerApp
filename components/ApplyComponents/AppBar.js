@@ -1,8 +1,12 @@
 import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import React from 'react'
+import React, { useTransition } from 'react'
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
+
+
 const AppBar = ({ customerData }) => {
+  const {t} =useTranslation();
     const navigation = useNavigation();
     const handleSubmit=()=>{
       navigation.navigate('Customer', { customerData })
@@ -13,7 +17,7 @@ const AppBar = ({ customerData }) => {
             <TouchableOpacity onPress={handleSubmit}>
               <Icon name="arrow-left" size={23} color="white" />
             </TouchableOpacity>
-            <Text style={styles.appBarTitle}>Back</Text>
+            <Text style={styles.appBarTitle}>{t('back')}</Text>
           </View>
         </SafeAreaView>
       );

@@ -5,8 +5,9 @@ import CustomerProfile from '../components/CustomerProfileComponents/CustomerPro
 const LoginScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView stickyHeaderIndices={[0]}>
+      
        <AppBar />
+       <ScrollView >
        <CustomerProfile /> 
       </ScrollView>
     </SafeAreaView>

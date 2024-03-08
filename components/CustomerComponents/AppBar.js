@@ -141,7 +141,9 @@ import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import { useSelector } from 'react-redux'; // Import useSelector hook
 import { selectCustomerData } from '../../redux/slices/authSlice';
+import { useTranslation } from 'react-i18next';
 const AppBar = () => {
+  const {t} = useTranslation();
   const customerData = useSelector(selectCustomerData);
   const customerPhoneNumber = customerData?.['mobile number'] || 'N/A';
   const [showPdfModal, setShowPdfModal] = useState(false);
@@ -169,31 +171,9 @@ const AppBar = () => {
           <Icon name="arrow-left" size={23} color="white" />
         </TouchableOpacity>
         <View style={styles.titleContainer}>
-          <Text style={styles.appBarTitle}>Customer Details</Text>
+          <Text style={styles.appBarTitle}>{t('customerdetails')}</Text>
         </View>
-        
-          {/* <TouchableOpacity onPress={handlePdfClick}>
-            <Icon name="file-pdf" size={23} color="white" style={styles.pdfIcon} />
-          </TouchableOpacity> */}
       </View>
-
-      {showPdfModal && (
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalText}>
-              {pdfDataAvailable ? 'Click the link to download the PDF:' : 'You have not applied for a loan yet.'}
-            </Text>
-            {pdfDataAvailable && (
-              <TouchableOpacity onPress={handlePdfDownload}>
-                <Text style={styles.pdfLink}>{pdfUrl}</Text>
-              </TouchableOpacity>
-            )}
-            <TouchableOpacity onPress={handleCloseModal}>
-              <Text style={styles.closeButton}>Close</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      )}
     </SafeAreaView>
   )
 }
@@ -205,7 +185,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#12b981',
     padding: 16,
     alignItems: 'center',
-    marginBottom: 40
+    
   },
   appBarTitle: {
     fontSize: 23,

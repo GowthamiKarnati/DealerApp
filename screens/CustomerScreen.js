@@ -11,8 +11,9 @@ const CustomerScreen = () => {
   //const { customerData } = route.params || {};
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView stickyHeaderIndices={[0]}>
+      
       <AppBar   />
+      <ScrollView >
       <Details   />
       <ActiveApplications />
       <CustomerKYC />

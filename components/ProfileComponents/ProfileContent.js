@@ -3,8 +3,11 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { selectMobileNumber } from '../../redux/slices/authSlice';
+import { useTranslation } from 'react-i18next';
+
 
 const ProfileContent = () => {
+  const {t} = useTranslation();
   const userMobileNumber = useSelector(selectMobileNumber);
   const [dealerData, setDealerData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -16,7 +19,7 @@ const ProfileContent = () => {
         const modifiedMobileNumber = userMobileNumber.length > 10 ? userMobileNumber.slice(-10) : userMobileNumber;
         const response = await axios.get(`https://backendforpnf.vercel.app/dealers?criteria=sheet_44481612.column_238%20LIKE%20%22%25${modifiedMobileNumber}%22`);
         const dealer = response.data.data[0];
-        console.log(dealer)
+        //console.log(dealer)
         setDealerData(dealer);
         setLoading(false);
       } catch (error) {
@@ -39,37 +42,37 @@ const ProfileContent = () => {
 
   return (
     <View>
-      <Text style={styles.title}> User Profile </Text>
+      <Text style={styles.title}> {t('userprofile')} </Text>
       <View style={styles.card}>
       <View style={styles.infoContainer}>
-        <Text style={styles.label}>Dealer</Text>
+        <Text style={styles.label}>{t('dealer')}</Text>
         <Text style={styles.value}>{dealerData?.dealer || ''}</Text>
       </View>
       <View style={styles.infoContainer}>
-        <Text style={styles.label}>Name</Text>
+        <Text style={styles.label}>{t('name')}</Text>
         <Text style={styles.value}>{dealerData?.name || '-'}</Text>
       </View>
       <View style={styles.infoContainer}>
-        <Text style={styles.label}>Phone</Text>
+        <Text style={styles.label}>{t('phone')}</Text>
         <Text style={styles.value}>{dealerData?.phone || '-'}</Text>
       </View>
       <View style={styles.infoContainer}>
-        <Text style={styles.label}>User</Text>
+        <Text style={styles.label}>{t('user')}</Text>
         <Text style={styles.value}>{dealerData?.user || '-'}</Text>
       </View>
       <View style={styles.infoContainer}>
-        <Text style={styles.label}>Email</Text>
+        <Text style={styles.label}>{t('email')}</Text>
         <Text style={styles.value}>{dealerData?.email || '-'}</Text>
       </View>
       <View style={styles.infoContainer}>
-        <Text style={styles.label}>Irate</Text>
+        <Text style={styles.label}>{t('irate')}</Text>
         <Text style={styles.value}>{dealerData?.irate || '-'}</Text>
       </View>
       
     </View>
     <View style={styles.bottom}>
         <Text style={styles.bottomText}>
-          Need help? Contact our support team at support@example.com
+          {t('footer')}
         </Text>
       </View>
     </View>

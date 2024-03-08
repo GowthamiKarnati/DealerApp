@@ -173,6 +173,9 @@ const MainContent = () => {
           data={filteredData}
           keyExtractor={(item, index) => index.toString()}
           renderItem={renderCard}
+          showsVerticalScrollIndicator={true} 
+          contentContainerStyle={{ paddingBottom: 20 }}
+          scrollIndicatorInsets={{ right: 10 }} 
         />
       )}
     </View>
@@ -181,8 +184,9 @@ const MainContent = () => {
 
 const styles = StyleSheet.create({
   container: {
-    marginHorizontal: 10,
     flex: 1,
+    marginTop:20,
+    marginHorizontal: 10,
   },
   cardContainer: {
     backgroundColor: 'white',

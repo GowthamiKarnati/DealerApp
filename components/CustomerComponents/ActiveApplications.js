@@ -3,9 +3,10 @@ import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity } from 'rea
 import axios from 'axios';
 import { selectCustomerData } from '../../redux/slices/authSlice';
 import { useSelector } from 'react-redux';
-
+import { useTranslation } from 'react-i18next';
 
 const ActiveApplications = () => {
+  const {t} = useTranslation();
   const customerData = useSelector(selectCustomerData);
   //console.log(customerData);
   //console.log("alternate mobilenumber",customerData['alternate mobile number']);
@@ -60,23 +61,23 @@ const ActiveApplications = () => {
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={toggleTableVisibility} style={styles.button}>
-        <Text style={styles.buttonText}>Active Loan Applications</Text>
+        <Text style={styles.buttonText}>{t('activeloanapplications')}</Text>
       </TouchableOpacity>
       {isTableVisible && (
       loading ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#3c82f6" />
-          <Text style={styles.loadingText}>Loading...</Text>
+          <Text style={styles.loadingText}>{t('loading')}</Text>
         </View>
       ) : tableData.length > 0 ? (
         <View style={styles.tableContainer}>
           <View style={styles.table}>
             <View style={styles.head}>
-              <Text style={[styles.headText, { flex: flexArr[0] }]}>ID</Text>
+              <Text style={[styles.headText, { flex: flexArr[0] }]}>{t('id')}</Text>
               
-              <Text style={[styles.headText, { flex: flexArr[1] }]}>Amount</Text>
-              <Text style={[styles.headText, { flex: flexArr[2] }]}>Sanctioned Amount</Text>
-              <Text style={[styles.headText, { flex: flexArr[3] }]}>Status</Text>
+              <Text style={[styles.headText, { flex: flexArr[1] }]}>{t('amount')}</Text>
+              <Text style={[styles.headText, { flex: flexArr[2] }]}>{t('sanctinedamount')}</Text>
+              <Text style={[styles.headText, { flex: flexArr[3] }]}>{t('status')}</Text>
             </View>
             {tableData.map((rowData, index) => (
               <View key={index} style={styles.row}>
@@ -90,27 +91,27 @@ const ActiveApplications = () => {
           </View>
         </View>
       ) : (
-        <Text style={styles.noDataText}>No active loan applications</Text>
+        <Text style={styles.noDataText}>{t('noactiveloanapplications')}</Text>
       )
       )}
       <TouchableOpacity onPress={toggleShowAllLoans} style={styles.button}>
-        <Text style={styles.buttonText}>Show All Loans</Text>
+        <Text style={styles.buttonText}>{t('showallloanapplication')}</Text>
       </TouchableOpacity>
       {showAllLoans && (
       loading ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#3c82f6" />
-          <Text style={styles.loadingText}>Loading...</Text>
+          <Text style={styles.loadingText}>{t('loading')}</Text>
         </View>
       ) : allloans.length > 0 ? (
         <View style={styles.tableContainer}>
           <View style={styles.table}>
             <View style={styles.head}>
-              <Text style={[styles.headText, { flex: flexArr[0] }]}>ID</Text>
+            <Text style={[styles.headText, { flex: flexArr[0] }]}>{t('id')}</Text>
               
-              <Text style={[styles.headText, { flex: flexArr[1] }]}>Amount</Text>
-              <Text style={[styles.headText, { flex: flexArr[2] }]}>Sanctioned Amount</Text>
-              <Text style={[styles.headText, { flex: flexArr[3] }]}>Status</Text>
+              <Text style={[styles.headText, { flex: flexArr[1] }]}>{t('amount')}</Text>
+              <Text style={[styles.headText, { flex: flexArr[2] }]}>{t('sanctinedamount')}</Text>
+              <Text style={[styles.headText, { flex: flexArr[3] }]}>{t('status')}</Text>
             </View>
             {allloans.map((rowData, index) => (
               <View key={index} style={styles.row}>
@@ -118,13 +119,13 @@ const ActiveApplications = () => {
                 
                 <Text style={[styles.text, { flex: flexArr[1] }]}>{rowData.amount}</Text>
                 <Text style={[styles.text, { flex: flexArr[2] }]}> {rowData['sanctionedamount'] ? rowData['sanctionedamount'] : "0" }</Text>
-                <Text style={[styles.text, { flex: flexArr[3] }, rowData.status === 'sanctioned' ? styles.greenText : styles.orangeText]}>{rowData.status}</Text>
+                <Text style={[styles.text, { flex: flexArr[3] }, rowData.status === 'expired' ? styles.purpleText : styles.orangeText]}>{rowData.status}</Text>
               </View>
             ))}
           </View>
         </View>
       ) : (
-        <Text style={styles.noDataText}>No loan applications</Text>
+        <Text style={styles.noDataText}>{t('noloanapplications')}</Text>
       )
       )}
     </View>
@@ -209,6 +210,9 @@ const styles = StyleSheet.create({
     color: 'black',
     marginTop: 8,
     marginBottom:10,
+  },
+  purpleText: {
+    color: 'purple',
   },
 });
 

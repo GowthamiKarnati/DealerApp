@@ -7,8 +7,9 @@ const ApplyScreen = ({ route }) => {
     const { customerData, loanType } = route.params;
   return (
     <SafeAreaView style={styles.container}>
-    <ScrollView stickyHeaderIndices={[0]}>
+    
       <AppBar customerData={customerData}/>
+      <ScrollView >
       <ApplyForTyre customerData={customerData} loanType={loanType}/>
     </ScrollView>
     </SafeAreaView>

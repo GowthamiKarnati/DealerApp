@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
     padding: 16,
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
+    
   },
   titleContainer: {
     flex: 1,

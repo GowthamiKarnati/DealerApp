@@ -6,8 +6,12 @@ import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 import { useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
+
+
 
 const ApplyForTyre = ({ customerData, loanType }) => {
+  const {t} = useTranslation();
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const customerPhoneNumber = customerData?.['mobile number'] || 'N/A';
@@ -18,6 +22,13 @@ const ApplyForTyre = ({ customerData, loanType }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [customerDetails, setCustomerDetails] = useState(null);
   const [vehicleData, setVehicleData] = useState(null);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [prevValues, setPrevValues] = useState({
+    numberOfTires: '',
+    selectedBrand: '',
+    loanAmount: '',
+    truckNumber: ''
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -36,18 +47,26 @@ const ApplyForTyre = ({ customerData, loanType }) => {
 
     fetchData();
   }, [customerPhoneNumber]);
+    useEffect(() => {
+      setPrevValues({
+        numberOfTires,
+        selectedBrand,
+        loanAmount,
+        truckNumber
+      });
+    }, [numberOfTires, selectedBrand, loanAmount, truckNumber]);
 
   const handleSubmit = async () => {
     try {
       if ((!loanAmount || !truckNumber) && loanType === 'insurance') {
-        Alert.alert('Please fill in all required fields for Insurance Loan');
+        setErrorMessage(t('pleasefillinsurancefeilds'));
         return;
       } else if ((!numberOfTires || !selectedBrand || !loanAmount || !truckNumber) && loanType === 'tyre') {
-        Alert.alert('Please fill in all required fields for Tire Loan');
+        setErrorMessage(t('pleasefilltyrefeilds'));
         return;
       }
       
-
+      setErrorMessage('');
       setIsSubmitting(true);
       const currentDate = new Date().toISOString().split('T')[0];
 
@@ -88,8 +107,8 @@ const ApplyForTyre = ({ customerData, loanType }) => {
       Toast.show({
         type: 'success',
         position: 'bottom',
-        text1: 'Application Submitted!!!',
-        text2: 'You successfully applied for Loan, We will reach you shortly!',
+        text1:t('submittext1'),
+        text2: t('submittext2'),
         visibilityTime: 3000,
         autoHide: true,
         topOffset: 30,
@@ -99,26 +118,30 @@ const ApplyForTyre = ({ customerData, loanType }) => {
       console.error('Error submitting application:', error);
     } finally {
       setIsSubmitting(false);
-      setNumberOfTires('');
-      setSelectedBrand('');
-      setLoanAmount('');
-      setTruckNumber('');
+      if (error.response) {
+        setNumberOfTires(prevValues.numberOfTires);
+        setSelectedBrand(prevValues.selectedBrand);
+        setLoanAmount(prevValues.loanAmount);
+        setTruckNumber(prevValues.truckNumber);
+      }
     }
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Apply for {loanType === 'tyre' ? 'Tire' : 'Insurance'} Loan</Text>
+      <Text style={styles.title}>
+        {t('title')} {loanType === 'tyre' ? t('tire') : t('insurance')} {t('loan')}
+      </Text>
 
       <View style={styles.formContainer}>
         {loanType === 'tyre' && (
           <>
             <View style={styles.formGroup}>
-              <Text style={styles.label}>Number of Tires Required<Text style={{ color: 'red', marginLeft: 5 }}>*</Text></Text>
+              <Text style={styles.label}>{t('numtire')}<Text style={{ color: 'red', marginLeft: 5 }}>*</Text></Text>
               <TextInput
                 style={styles.input}
                 keyboardType="phone-pad"
-                placeholder="Enter the number of tires"
+                placeholder={t('numtireplace')}
                 placeholderTextColor="black"
                 autoCapitalize="none"
                 value={numberOfTires}
@@ -127,18 +150,19 @@ const ApplyForTyre = ({ customerData, loanType }) => {
             </View>
 
             <View style={styles.formGroup}>
-              <Text style={styles.label}>Brand of Tire<Text style={{ color: 'red', marginLeft: 5 }}>*</Text></Text>
+              <Text style={styles.label}>{t('brandoftire')}<Text style={{ color: 'red', marginLeft: 5 }}>*</Text></Text>
               <View style={styles.pickerContainer}>
                 <Picker
                   selectedValue={selectedBrand}
                   onValueChange={(itemValue) => setSelectedBrand(itemValue)}
-                  style={styles.picker}
+                  style={styles.picker} 
+                  dropdownIconColor='black'
                 >
-                  
-                  <Picker.Item label="CEAT" value="CEAT" />
-                  <Picker.Item label="MRF" value="MRF" />
-                  <Picker.Item label="Apollo" value="Apollo" />
-                  <Picker.Item label="others" value="others" />
+                  <Picker.Item label={t('selectbrand')} value="Select the brand" enabled={false}/>
+                  <Picker.Item label={t('ceat')} value="CEAT" />
+                  <Picker.Item label={t('mrf')} value="MRF" />
+                  <Picker.Item label={t('apollo')} value="Apollo" />
+                  <Picker.Item label={t('others')} value="others" />
                 </Picker>
               </View>
             </View>
@@ -146,11 +170,11 @@ const ApplyForTyre = ({ customerData, loanType }) => {
         )}
 
         <View style={styles.formGroup}>
-          <Text style={styles.label}>Loan Amount<Text style={{ color: 'red', marginLeft: 5 }}>*</Text></Text>
+          <Text style={styles.label}>{t('loanamount')}<Text style={{ color: 'red', marginLeft: 5 }}>*</Text></Text>
           <TextInput
             style={styles.input}
             keyboardType="phone-pad"
-            placeholder="Enter the loan amount"
+            placeholder={t('loanamountplace')}
             placeholderTextColor="black"
             autoCapitalize="none"
             value={loanAmount}
@@ -160,19 +184,23 @@ const ApplyForTyre = ({ customerData, loanType }) => {
 
         
           <View style={styles.formGroup}>
-            <Text style={styles.label}>Truck Number<Text style={{ color: 'red', marginLeft: 5 }}>*</Text></Text>
+            <Text style={styles.label}>{t('trucknum')}<Text style={{ color: 'red', marginLeft: 5 }}>*</Text></Text>
             <View style={styles.pickerContainer}>
               <Picker
                 selectedValue={truckNumber}
                 onValueChange={(itemValue) => setTruckNumber(itemValue)}
                 style={styles.picker}
+                dropdownIconColor='black'
               >
-                <Picker.Item label="Select truck number" value="" />
+                <Picker.Item label={t('trucknumplace')} value="" enabled={false}/>
                 {vehicleData && vehicleData.map((vehicle) => (
                   <Picker.Item key={vehicle["record_id"]} label={vehicle["Vehicle No."]} value={vehicle["Vehicle No."]} />
                 ))}
               </Picker>
             </View>
+            {errorMessage ? (
+              <Text style={styles.errorMessage}>{errorMessage}</Text>
+            ) : null}
           </View>
         
 
@@ -180,14 +208,14 @@ const ApplyForTyre = ({ customerData, loanType }) => {
           {isSubmitting ? (
             <ActivityIndicator color="#ffffff" size="small" />
           ) : (
-            <Text style={styles.submitButtonText}>Submit Application</Text>
+            <Text style={styles.submitButtonText}>{t('submitapplication')}</Text>
           )}
         </TouchableOpacity>
       </View>
 
       <View style={styles.bottom}>
         <Text style={styles.bottomText}>
-          Need help? Contact our support team at support@example.com
+          {t('footer')}
         </Text>
       </View>
     </ScrollView>
@@ -197,7 +225,7 @@ const ApplyForTyre = ({ customerData, loanType }) => {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    marginTop: 40,
+    marginTop: 20,
     marginHorizontal: 20,
   },
   title: {
@@ -237,6 +265,7 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   pickerContainer: {
+    backgroundColor: "white",
     borderWidth: 1,
     borderColor: '#cccccc',
     borderRadius: 8,
@@ -267,6 +296,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: 'gray',
   },
+  errorMessage: {
+    color: 'red',
+    marginBottom: 10,
+  }
 });
 
 export default ApplyForTyre;

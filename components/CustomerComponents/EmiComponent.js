@@ -434,7 +434,7 @@ import axios from 'axios';
 import { Table, Row } from 'react-native-table-component';
 import { useSelector } from 'react-redux';
 import { selectCustomerData } from '../../redux/slices/authSlice';
-
+import { useTranslation } from 'react-i18next';
 const formatDate = (inputDate) => {
   const options = { month: 'short', day: 'numeric', year: 'numeric' };
   const formattedDate = new Date(inputDate).toLocaleDateString('en-US', options);
@@ -442,6 +442,7 @@ const formatDate = (inputDate) => {
 };
 
 const EmiComponent = () => {
+  const { t } = useTranslation();
   const customerData = useSelector(selectCustomerData);
   const customerPhoneNumber = customerData?.['mobile number'] || 'N/A';
   const [activeLoanTables, setActiveLoanTables] = useState({});
@@ -454,7 +455,7 @@ const EmiComponent = () => {
         setLoading(true);
         const modifiedMobileNumber = customerPhoneNumber.length > 10 ? customerPhoneNumber.slice(-10) : customerPhoneNumber;
         const response = await axios.get(`https://backendforpnf.vercel.app/emi?criteria=sheet_26521917.column_35.column_87%20LIKE%20%22%25${encodeURIComponent(modifiedMobileNumber)}%22`);
-        
+        //console.log("Emi response", response.data.data)
         const apiTableData = response.data.data.map((loan, index) => ({
           amount: loan.amount,
           emiNumber: (index + 1).toString(),
@@ -494,7 +495,7 @@ const EmiComponent = () => {
         const sortedClosedLoanTables = {};
 
         sortedActiveLoanIds.forEach((loanID) => {
-          const hasUnpaidEmi = groupedActiveTables[loanID].some(emi => emi.paymentStatus.toLowerCase() === 'unpaid');
+          const hasUnpaidEmi = groupedActiveTables[loanID].some(emi => emi.paymentStatus.toLowerCase() === 'unpaid' || emi.paymentStatus.toLowerCase() === 'bounced');
           if (hasUnpaidEmi) {
             sortedActiveLoanTables[loanID] = groupedActiveTables[loanID];
           }
@@ -522,23 +523,32 @@ const EmiComponent = () => {
   const flexArr = [1.5, 1.5, 2, 2];
   const fontsize = 18;
 
+
+
+
+
   return (
     <View style={styles.container}>
-      <Text style={{ fontSize: 23, fontWeight: 'bold', color: 'black' }}>Active Loans</Text>
+      <Text style={{ fontSize: 23, fontWeight: 'bold', color: 'black' }}>{t('activeloans')}</Text>
       {loading && (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#3c82f6" />
-          <Text style={styles.loadingText}>Loading...</Text>
+          <Text style={styles.loadingText}>{t('loading')}</Text>
         </View>
       )}
       {!loading && activeLoanTables && Object.entries(activeLoanTables)
         .sort(([a], [b]) => parseInt(b) - parseInt(a))
         .map(([loanID, tableData]) => (
           <View key={loanID} style={styles.tableContainer}>
-            <Text style={styles.loanIdText}>Loan Account: {loanID}</Text>
+            <Text style={styles.loanIdText}>{t('loanaccount')} {loanID}</Text>
             <Table borderStyle={{ borderWidth: 1, borderColor: '#e5e7eb', marginBottom: 10, marginTop: 10 }}>
               <Row
-                data={['Emi Number', 'EMI Due Date', 'Amount', 'Status']}
+                data={[
+                  t('eminumber'),
+                  t('emiduedate'),
+                  t('amount'),
+                  t('status')
+                ]}
                 style={styles.head}
                 textStyle={styles.headText}
                 flexArr={flexArr}
@@ -561,7 +571,7 @@ const EmiComponent = () => {
                         padding: 10,
                       }}
                     >
-                      {rowData.paymentStatus}
+                      {t(`paymentStatus.${rowData.paymentStatus.toLowerCase()}`)}
                     </Text>,
                   ]}
                   style={styles.row}
@@ -573,17 +583,22 @@ const EmiComponent = () => {
           </View>
         ))}
       {!loading && Object.keys(activeLoanTables).length === 0 && (
-        <Text style={styles.noEmiText}>No Active loans.</Text>
+        <Text style={styles.noEmiText}>{t('noactiveloans')}</Text>
       )}
-      <Text style={{ fontSize: 23, fontWeight: 'bold', color: 'black' }}>Closed Loans</Text>
+      <Text style={{ fontSize: 23, fontWeight: 'bold', color: 'black' }}>{t('closedloans')}</Text>
       {!loading && closedLoanTables && Object.entries(closedLoanTables)
         .sort(([a], [b]) => parseInt(b) - parseInt(a))
         .map(([loanID, tableData]) => (
           <View key={loanID} style={styles.tableContainer}>
-            <Text style={styles.loanIdText}>Loan Account: {loanID}</Text>
+            <Text style={styles.loanIdText}>{t('loanaccount')}{loanID}</Text>
             <Table borderStyle={{ borderWidth: 1, borderColor: '#e5e7eb', marginBottom: 10, marginTop: 10 }}>
               <Row
-                data={['Emi Number', 'EMI Due Date', 'Amount', 'Status']}
+                 data={[
+                  t('eminumber'),
+                  t('emiduedate'),
+                  t('amount'),
+                  t('status')
+                ]}
                 style={styles.head}
                 textStyle={styles.headText}
                 flexArr={flexArr}
@@ -606,7 +621,7 @@ const EmiComponent = () => {
                         padding: 10,
                       }}
                     >
-                      {rowData.paymentStatus}
+                      {t(`paymentStatus.${rowData.paymentStatus.toLowerCase()}`)}
                     </Text>,
                   ]}
                   style={styles.row}
@@ -618,7 +633,7 @@ const EmiComponent = () => {
           </View>
         ))}
       {!loading && Object.keys(closedLoanTables).length === 0 && (
-        <Text style={styles.noEmiText}>No Closed loans </Text>
+        <Text style={styles.noEmiText}>{t('noclosedloans')}</Text>
       )}
     </View>
   );

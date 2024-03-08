@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState,useCallback } from 'react';
 import { View, Text, StyleSheet, Image, Dimensions, TouchableOpacityComponent, TouchableOpacity, Platform, ActivityIndicator } from 'react-native';
 import { Card } from 'react-native-paper'; // Import Card from react-native-paper
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
@@ -12,14 +12,21 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import { selectCustomerData } from '../../redux/slices/authSlice';
 import axios from 'axios';
 import { useDispatch } from 'react-redux'; 
+import { setFieldToUpdate } from '../../redux/slices/authSlice';
+import { useTranslation } from 'react-i18next';
+
+
+
+
 const CustomerProfile = () => {
+  const {t} = useTranslation();
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const customerData = useSelector(selectCustomerData);
   const customerPhoneNumber = customerData?.['mobile number'] || 'N/A';
   const imageUrl = 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg';
   const customerKYCData = useSelector(selectCustomerKYCData);
-  console.log("incustomerProfile", customerKYCData)
+  //console.log("incustomerProfile", customerKYCData)
   const record_id = customerKYCData.record_id;
   //console.log(record_id);
   const actionSheetRef = useRef();
@@ -30,17 +37,18 @@ const CustomerProfile = () => {
   const [altPhoneWidth, setAltPhoneWidth] = useState(null);
   const [altPhoneText, setAltPhoneText] = useState('');
   useEffect(() => {
-    if (addressWidth === null) {
-      setAddressText(customerKYCData['House Address'] || '');
-    }
-    if (altPhoneWidth === null) {
-      setAltPhoneText(customerKYCData['Alternate Phone Number'] || '');
-    }
-  }, [customerKYCData, addressWidth,altPhoneWidth ]);
+    setAddressText(customerKYCData['House Address'] || '');
+    setAltPhoneText(customerKYCData['Alternate Phone Number'] || '');
+  }, [customerKYCData]);
+  
+
+  
 
   const handlePress=(feildname)=>{
-    navigation.navigate('Update', { feildname })
+    dispatch(setFieldToUpdate(feildname));
+    navigation.navigate('Update')
   }
+  
   const openActionSheet = () => {
     if (actionSheetRef.current) {
       actionSheetRef.current.show();
@@ -132,7 +140,7 @@ const CustomerProfile = () => {
       const modifiedMobileNumber = customerPhoneNumber.length > 10 ? customerPhoneNumber.slice(-10) : customerPhoneNumber;
             const Kresponse = await axios.get(`https://backendforpnf.vercel.app/customerKyc?criteria=sheet_42284627.column_1100.column_87%20LIKE%20%22%25${encodeURIComponent(modifiedMobileNumber)}%22`);
             const apiData = Kresponse.data.data[0] || {};
-            console.log("kycData",apiData)
+            //console.log("kycData",apiData)
             dispatch(setCustomerKYCData(apiData)); 
     } catch (error) {
       console.log('Error in uploadBase64ToBackend:', error);
@@ -157,22 +165,20 @@ const CustomerProfile = () => {
   };
   const handleAltPhoneLayout = (event) => {
     if (!altPhoneWidth) {
-      setAltPhoneWidth(event.nativeEvent.layout.width);
+        setAltPhoneWidth(event.nativeEvent.layout.width);
     }
-  };
+};
+
   
-  // Define a function to truncate the alternate phone number if needed
   const truncatedAltPhone = () => {
     if (!altPhoneText || !altPhoneWidth) return '';
     const text = altPhoneText;
     const maxChars = 7; // Maximum characters before truncating
-    const maxCharsWidth = altPhoneWidth / 12; // Estimated width of 12 characters
     if (text.length > maxChars) {
-      return text.slice(0, maxChars) + '...';
+        return text.slice(0, maxChars) + '...';
     }
     return text;
-  };
-
+};
 
   
 
@@ -210,107 +216,151 @@ const CustomerProfile = () => {
       </View>
       {/* Use Card component for KYC data container */}
       <Card style={[styles.customerKYCContainer]}>
+      <TouchableOpacity onPress={() => handlePress('dob')}>
         <View style={styles.kycItem}>
-          <Text style={styles.keyText}>Date of Birth:</Text>
+          <Text style={styles.keyText}>{t('dob')}</Text>
           <View style={styles.valueContainer}>
             <Text style={styles.valueText}>{customerKYCData['Date of Birth']?.split(' ')[0]}</Text>
-            <TouchableOpacity onPress={() => handlePress('dob')}>
+            
               <Icon name="chevron-right" size={20} color="#9ca3af" style={styles.icon} />
-            </TouchableOpacity>
+            
           </View>
         </View>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handlePress('pan')}>
         <View style={styles.kycItem}>
-          <Text style={styles.keyText}>PAN Number:</Text>
+          <Text style={styles.keyText}>{t('pan')}</Text>
           <View style={styles.valueContainer}>
             <Text style={styles.valueText}>{customerKYCData['PAN Number']}</Text>
-            <TouchableOpacity onPress={() => handlePress('pan')}>
+            
               <Icon name="chevron-right" size={20} color="#9ca3af" style={styles.icon} />
-            </TouchableOpacity>
+            
           </View>
         </View>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => handlePress('noofchildren')}>
         <View style={styles.kycItem}>
-          <Text style={styles.keyText}>Number of Children:</Text>
+          <Text style={styles.keyText}>{t('numchildren')}</Text>
           <View style={styles.valueContainer}>
             <Text style={styles.valueText}>{customerKYCData['Number of Children']}</Text>
-            <TouchableOpacity onPress={() => handlePress('noofchildren')}>
+            
               <Icon name="chevron-right" size={20} color="#9ca3af" style={styles.icon} />
-            </TouchableOpacity>
+            
           </View>
         </View>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => handlePress('montlyemioutflow')}>
         <View style={styles.kycItem}>
-          <Text style={styles.keyText}>Monthly EMI Outflow:</Text>
+          <Text style={styles.keyText}>{t('monthlyemi')}</Text>
           <View style={styles.valueContainer}>
             <Text style={styles.valueText}>{customerKYCData['Monthly EMI Outflow']}</Text>
-            <TouchableOpacity onPress={() => handlePress('montlyemioutflow')}>
+            
               <Icon name="chevron-right" size={20} color="#9ca3af" style={styles.icon} />
-            </TouchableOpacity>
+            
           </View>
         </View>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handlePress('housetype')}>
         <View style={styles.kycItem}>
-          <Text style={styles.keyText}>House Owned or Rented:</Text>
+          <Text style={styles.keyText}>{t('housetype')}</Text>
           <View style={styles.valueContainer}>
             <Text style={styles.valueText}>{customerKYCData['House Owned or Rented']}</Text>
-            <TouchableOpacity onPress={() => handlePress('housetype')}>
+            
               <Icon name="chevron-right" size={20} color="#9ca3af" style={styles.icon} />
-            </TouchableOpacity>
+            
           </View>
         </View>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handlePress('noofyearsinbusiness')}>
         <View style={styles.kycItem}>
-          <Text style={styles.keyText}>Number of Years in Business:</Text>
+          <Text style={styles.keyText}>{t('numofbusinessyers')}</Text>
           <View style={styles.valueContainer}>
             <Text style={styles.valueText}>{customerKYCData['Number of years in business']}</Text>
-            <TouchableOpacity onPress={() => handlePress('noofyearsinbusiness')}>
+            
               <Icon name="chevron-right" size={20} color="#9ca3af" style={styles.icon} />
-            </TouchableOpacity>
+            
           </View>
         </View>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handlePress('numberoftrucks')}>
         <View style={styles.kycItem}>
-          <Text style={styles.keyText}>City:</Text>
+            <Text style={styles.keyText}>{t('nooftrucks')}</Text>
+            <View style={styles.valueContainer}>
+              <Text style={styles.valueText}>{customerKYCData['Number of Trucks']}</Text>
+              
+                <Icon name="chevron-right" size={20} color="#9ca3af" style={styles.icon} />
+              
+            </View>
+          </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => handlePress('city')}>
+        <View style={styles.kycItem}>
+          <Text style={styles.keyText}>{t('city')}</Text>
           <View style={styles.valueContainer}>
             <Text style={styles.valueText}>{customerKYCData['City']}</Text>
-            <TouchableOpacity onPress={() => handlePress('city')}>
+            
               <Icon name="chevron-right" size={20} color="#9ca3af" style={styles.icon} />
-            </TouchableOpacity>
+            
           </View>
+          
         </View>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handlePress('phone')}>
         <View style={styles.kycItem}>
-          <Text style={styles.keyText}>Phone Number:</Text>
+          <Text style={styles.keyText}>{t('phonenumber')}</Text>
           <View style={styles.valueContainer}>
             <Text style={styles.valueText}>{customerKYCData['Phone Number']}</Text>
-            <TouchableOpacity onPress={() => handlePress('phone')}>
+            
               <Icon name="chevron-right" size={20} color="#9ca3af" style={styles.icon} />
-            </TouchableOpacity>
+            
           </View>
         </View>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handlePress('altphone')}>
+          <View style={styles.kycItem}>
+              <Text style={styles.keyText}>{t('altnumber')}</Text>
+              <View style={styles.valueContainer} onLayout={handleAltPhoneLayout}>
+                  <Text numberOfLines={1} ellipsizeMode="tail" style={styles.valueText}>{truncatedAltPhone()}</Text>
+                  <Icon name="chevron-right" size={20} color="#9ca3af" style={styles.icon} />
+              </View>
+          </View>
+      </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => handlePress('marital')}>
         <View style={styles.kycItem}>
-          <Text style={styles.keyText}>Alternate Phone Number:</Text>
-          <View style={styles.valueContainer} onLayout={handleAltPhoneLayout}>
-            <Text numberOfLines={1} ellipsizeMode="tail" style={styles.valueText}>{truncatedAltPhone()}</Text>
-            <TouchableOpacity onPress={() => handlePress('altphone')}>
+          <Text style={styles.keyText}>{t('maritalstatus')}</Text>
+          <View style={styles.valueContainer}>
+            <Text style={styles.valueText}>{customerKYCData['Marital Status']}</Text>
+            
               <Icon name="chevron-right" size={20} color="#9ca3af" style={styles.icon} />
-            </TouchableOpacity>
+            
           </View>
         </View>
+        </TouchableOpacity>
         {/* New section for House Address */}
+        <TouchableOpacity onPress={() => handlePress('houseaddress')}>
         <View style={styles.kycItem}>
-          <Text style={styles.keyText}>House Address:</Text>
+          <Text style={styles.keyText}>{t('houseadress')}</Text>
           <View style={styles.valueContainer} onLayout={handleAddressLayout}>
             <Text style={styles.valueText}>{truncatedAddress()}</Text>
-            <TouchableOpacity onPress={() => handlePress('houseaddress')}>
+            
               <Icon name="chevron-right" size={20} color="#9ca3af" style={styles.icon} />
-            </TouchableOpacity>
+            
           </View>
         </View>
+        </TouchableOpacity>
       </Card>
       <ActionSheet ref={actionSheetRef}>
         <TouchableOpacity style={styles.button} onPress={handleTakePhoto}>
-          <Text style={styles.buttonText}>Take a Photo</Text>
+          <Text style={styles.buttonText}>{t('takeaphoto')}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={handleChooseFromGallery}>
-          <Text style={styles.buttonText}>Choose from Gallery</Text>
+          <Text style={styles.buttonText}>{t('choosefromgallery')}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => actionSheetRef.current?.hide()}>
-          <Text style={styles.buttonText}>Cancel</Text>
+          <Text style={styles.buttonText}>{t('cancel')}</Text>
         </TouchableOpacity>
       </ActionSheet>
       {loading && (
@@ -328,6 +378,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginHorizontal:20,
+    marginTop:20,
   },
   imageContainer: {
     position: 'relative',

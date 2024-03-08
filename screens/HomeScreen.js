@@ -52,10 +52,10 @@ const HomeScreen = () => {
   }, [isFocused, navigation]);
   return (
         <SafeAreaView style={styles.container}>
-          <ScrollView stickyHeaderIndices={[0]}>
-            <AppBar />
+          <AppBar />
+          
+            
             <MainContent/>
-          </ScrollView>
         </SafeAreaView>
       )
     }

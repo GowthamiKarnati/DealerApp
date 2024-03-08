@@ -7,7 +7,13 @@ import { useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux'; // Import useSelector hook
 import { selectCustomerData } from '../../redux/slices/authSlice';
+import { useTranslation } from 'react-i18next';
+
+
+
+
 const CustomerKYC = () => {
+  const {t} = useTranslation();
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const customerData = useSelector(selectCustomerData);
@@ -22,11 +28,12 @@ const CustomerKYC = () => {
         const modifiedMobileNumber = customerPhoneNumber.length > 10 ? customerPhoneNumber.slice(-10) : customerPhoneNumber;
         const response = await axios.get(`https://backendforpnf.vercel.app/customerKyc?criteria=sheet_42284627.column_1100.column_87%20LIKE%20%22%25${encodeURIComponent(modifiedMobileNumber)}%22`);
         const apiData = response.data.data[0] || {};
+        //console.log("apiData",apiData)
         const kycStatusFromData = apiData?.['KYC Status'];
         if (kycStatusFromData === 'Active') {
-          setKycStatus('Completed');
+          setKycStatus(t('completed'));
         } else {
-          setKycStatus('Incomplete');
+          setKycStatus(t('incomplete'));
         }
         const photoArray = JSON.parse(apiData?.['Photo'] || '[]');
         const firstImage = photoArray.length > 0 ? photoArray[0] : {};
@@ -34,18 +41,22 @@ const CustomerKYC = () => {
         setImageUrl(imageUri); 
         dispatch(setCustomerKYCData(apiData));
       } catch (err) {
-        console.log("Error in Fetching api Data", err)
+        console.log("Error in Fetching apiData in customerKYC file", err)
       }
     };
   
     fetchData();
-  }, [customerKYCData]); // Add customerKYCData as a dependency
+  }, []); // Add customerKYCData as a dependency
   
   const handleCardPress = () => { 
     navigation.navigate('CustomerProfile'); 
   };
+
+
+
+
+
   return (
-    
     <TouchableOpacity onPress={handleCardPress}>
       <View style={styles.cardContainer}>
       <View style={styles.leftContainer}>
@@ -76,8 +87,8 @@ const CustomerKYC = () => {
 
         </View>
         <View style={styles.infoContainer}>
-          <Text style={styles.cardName}>Customer KYC</Text>
-          <Text style={[styles.kycStatus, kycStatus === 'Completed' ? styles.completedStatus : styles.incompleteStatus]}>{kycStatus}</Text>
+          <Text style={styles.cardName}>{t('customerkyc')}</Text>
+          <Text style={[styles.kycStatus, kycStatus === t('completed') ? styles.completedStatus : styles.incompleteStatus]}>{kycStatus}</Text>
         </View>
       </View>
       
@@ -109,11 +120,10 @@ const styles = StyleSheet.create({
     
   },
   userImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    color:'black'
-
+    "width": 50,
+    "height": 50,
+    "borderRadius": 25,
+    "color": "black"
   },
   cardName: {
     color: 'black',
