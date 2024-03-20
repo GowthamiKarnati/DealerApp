@@ -6,6 +6,7 @@ export default {
     otpPlace: 'ओटीपी दर्ज करें',
     back:'पीछे',
     mycustomers:'मेरे ग्राहक',
+    myapplications:'मेरे अनुप्रयोग',
     search:'खोज...',
     customerdetails:'ग्राहक विवरण',
     applytyre:'टायर लोन लागू करें',
@@ -42,6 +43,7 @@ export default {
     entermontlyemifloe:'मासिक ईमआई बहार दर्ज करें',
     owned:'स्वामित्व',
     rented:'किराए पर',
+    "enterthepannumber": "पैन नंबर दर्ज करें",
     enternoofyearsinbusiness:'व्यापार में वर्षों की संख्या दर्ज करें',
     enternooftrucks:'ट्रकों की संख्या दर्ज करें',
     entercity:'शहर दर्ज करें',
@@ -136,11 +138,38 @@ export default {
     "paymentStatus": {
         "paid": "प्रदत्त",
         "unpaid": "अवैतनिक",
-        "bounced": "बाउंस्ड"
+        "bounced": "बाउंस्ड",
+        "clearing":"समाशोधन"
       },
     "owned": "स्वामित्व",
     "rented": "किराया पर",
     "married": "विवाहित",
-    "single": "अविवाहित"
+    "single": "अविवाहित",
+    "statusLabels": {
+      "sanctioned": "मंजूर",
+      "requested": "अनुरोधित",
+      "escalate": "उन्नति",
+      "rejected": "अस्वीकृत",
+      "expired": "समाप्त",
+      "canceled": "रद्द",
+      "loan account created": "ऋण खाता बनाया गया"
+    },
+    "noApplications": "कोई एप्लिकेशन नहीं",
+    "noCustomersFound": "कोई ग्राहक नहीं मिला",
+    "applyforloan":'ऋण के लिए आवेदन करें',
+    "newcustomer": "नया ग्राहक",
+    "existingcustomer": "मौजूदा ग्राहक",
+    "selectCustomer": "ग्राहक चुनें",
+    "selectLoanType": "लोन का प्रकार चुनें",
+    "tyreLoan": "टायर ऋण",
+    "insuranceLoan": "इंश्योरेंस ऋण",
+    next: 'आगे',
+    personalinformation: 'व्यक्तिगत जानकारी',
+    entername: 'अपना नाम दर्ज करें',
+    driverSalary: 'ड्राइवर की वेतन',
+    enterdriversalary: 'ड्राइवर की वेतन दर्ज करें',
+
+    entertrucknumber: 'ट्रक नंबर दर्ज करें'
+
 
 };

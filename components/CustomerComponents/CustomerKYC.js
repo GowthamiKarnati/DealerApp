@@ -46,7 +46,7 @@ const CustomerKYC = () => {
     };
   
     fetchData();
-  }, []); // Add customerKYCData as a dependency
+  }, [customerPhoneNumber, customerKYCData]); // Add customerKYCData as a dependency
   
   const handleCardPress = () => { 
     navigation.navigate('CustomerProfile'); 
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     "width": 50,
     "height": 50,
     "borderRadius": 25,
-    "color": "black"
+    
   },
   cardName: {
     color: 'black',

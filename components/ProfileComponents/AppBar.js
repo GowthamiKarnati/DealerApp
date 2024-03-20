@@ -92,7 +92,7 @@ const AppBar = () => {
   const currentLanguage = i18n.language;
 
   const handleBack = () => {
-    navigation.navigate('Home');
+    navigation.navigate('Start');
   };
 
   const handleLogout = async () => {

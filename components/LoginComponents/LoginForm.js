@@ -35,7 +35,7 @@ const LoginForm = () => {
       await AsyncStorage.setItem('userLoggedIn', 'true');
       await AsyncStorage.setItem('userMobileNumber', userMobileNumber);
       dispatch(setMobileNumber(userMobileNumber));
-      navigation.navigate('Home');
+      navigation.navigate('Start');
     }
   };
 

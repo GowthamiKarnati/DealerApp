@@ -7,14 +7,29 @@ import { useNavigation } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
+import { selectCustomerKYCData } from '../../redux/slices/authSlice';
 
+import { selectCustomerData } from '../../redux/slices/authSlice';
 
-
-const ApplyForTyre = ({ customerData, loanType }) => {
+const ApplyForTyre = ({  loanType }) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  
+  
+  const customerData= useSelector(selectCustomerData);
   const customerPhoneNumber = customerData?.['mobile number'] || 'N/A';
+  console.log(customerPhoneNumber)
+  const sourcerefid = customerData?.["DEALER reference_id"];
+  console.log(sourcerefid)
+  const source = customerData?.DEALER || null;
+  console.log(source);
+
+
+
+
+
   const [numberOfTires, setNumberOfTires] = useState('');
   const [selectedBrand, setSelectedBrand] = useState('');
   const [loanAmount, setLoanAmount] = useState('');
@@ -34,12 +49,13 @@ const ApplyForTyre = ({ customerData, loanType }) => {
     const fetchData = async () => {
       try {
         const modifiedMobileNumber = customerPhoneNumber.length > 10 ? customerPhoneNumber.slice(-10) : customerPhoneNumber;
-        
+        console.log('number', modifiedMobileNumber)
         const customerResponse = await axios.get(`https://backendforpnf.vercel.app/customerKyc?criteria=sheet_42284627.column_1100.column_87%20LIKE%20%22%25${encodeURIComponent(modifiedMobileNumber)}%22`);
         setCustomerDetails(customerResponse.data.data[0]);
-
+         console.log("customer", customerResponse.data.data[0])
         const vehicleResponse = await axios.get(`https://backendforpnf.vercel.app/vehicles?criteria=sheet_32026511.column_609.column_87%20LIKE%20%22%25${encodeURIComponent(modifiedMobileNumber)}%22`);
         setVehicleData(vehicleResponse.data.data);
+        console.log("vehicle",vehicleResponse.data.data);
       } catch (error) {
         console.error('Error fetching data:', error.message);
       }
@@ -74,10 +90,10 @@ const ApplyForTyre = ({ customerData, loanType }) => {
       const PanNumber = customerData?.pan || null;
       const mobilenumber = customerData?.['mobile number'] || null;
       const AlternateMobileNumber = customerData?.['alternate mobile number'] || null;
-      const Nooftrucks = customerData?.Trucks !== undefined ? customerData.Trucks : null;
+      const Nooftrucks = customerDetails ? customerDetails["Number of Trucks"] || null : null;
       const source = customerData?.DEALER || null;
       const sourcerefid = customerData?.["DEALER reference_id"];
-      console.log(sourcerefid)
+      console.log("sourceid",sourcerefid)
       const response = await axios.post(`https://backendforpnf.vercel.app/create`, {
         numberOfTires: loanType === 'tyre' ? numberOfTires : null,
         selectedBrand: loanType === 'tyre' ? selectedBrand : null,
@@ -97,6 +113,7 @@ const ApplyForTyre = ({ customerData, loanType }) => {
         date: currentDate,
         source,
         sourcerefid,
+        oldornew:'Existing',
         loanType: loanType === 'tyre' ? 'Tyre Loan' : 'Insurance Loan',
       });
 

@@ -4,13 +4,13 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import AppBar from '../components/ApplyComponents/AppBar'
 import ApplyForTyre from '../components/ApplyComponents/ApplyForTyre'
 const ApplyScreen = ({ route }) => {
-    const { customerData, loanType } = route.params;
+    const {  loanType, customerType } = route.params;
   return (
     <SafeAreaView style={styles.container}>
     
-      <AppBar customerData={customerData}/>
+      <AppBar />
       <ScrollView >
-      <ApplyForTyre customerData={customerData} loanType={loanType}/>
+      <ApplyForTyre  loanType={loanType}/>
     </ScrollView>
     </SafeAreaView>
     

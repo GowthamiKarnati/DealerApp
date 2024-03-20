@@ -455,7 +455,7 @@ const EmiComponent = () => {
         setLoading(true);
         const modifiedMobileNumber = customerPhoneNumber.length > 10 ? customerPhoneNumber.slice(-10) : customerPhoneNumber;
         const response = await axios.get(`https://backendforpnf.vercel.app/emi?criteria=sheet_26521917.column_35.column_87%20LIKE%20%22%25${encodeURIComponent(modifiedMobileNumber)}%22`);
-        //console.log("Emi response", response.data.data)
+        //console.log("Emi response", response.data)
         const apiTableData = response.data.data.map((loan, index) => ({
           amount: loan.amount,
           emiNumber: (index + 1).toString(),
@@ -464,7 +464,7 @@ const EmiComponent = () => {
           statusColor: loan.status.toLowerCase() === 'paid' ? 'green' : 'red',
           loanId: loan['loan id'],
         }));
-
+        //console.log("tableData",apiTableData);
         const groupedActiveTables = {};
         const groupedClosedTables = {};
 
@@ -550,7 +550,7 @@ const EmiComponent = () => {
                   t('status')
                 ]}
                 style={styles.head}
-                textStyle={styles.headText}
+                textStyle={{...styles.headText}}
                 flexArr={flexArr}
               />
               {tableData.map((rowData, index) => (
@@ -575,7 +575,7 @@ const EmiComponent = () => {
                     </Text>,
                   ]}
                   style={styles.row}
-                  textStyle={styles.text}
+                  textStyle={{...styles.text}}
                   flexArr={flexArr}
                 />
               ))}
@@ -600,7 +600,7 @@ const EmiComponent = () => {
                   t('status')
                 ]}
                 style={styles.head}
-                textStyle={styles.headText}
+                textStyle={{...styles.headText}}
                 flexArr={flexArr}
               />
               {tableData.map((rowData, index) => (
@@ -625,7 +625,7 @@ const EmiComponent = () => {
                     </Text>,
                   ]}
                   style={styles.row}
-                  textStyle={styles.text}
+                  textStyle={{...styles.text}}
                   flexArr={flexArr}
                 />
               ))}
@@ -679,6 +679,7 @@ const styles = StyleSheet.create({
     paddingTop: 15,
     alignItems: 'center',
   },
+  
   row: { flexDirection: 'row', height: 70 },
   loanIdText: {
     fontSize: 20,

@@ -26,9 +26,9 @@ const CustomerProfile = () => {
   const customerPhoneNumber = customerData?.['mobile number'] || 'N/A';
   const imageUrl = 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg';
   const customerKYCData = useSelector(selectCustomerKYCData);
-  //console.log("incustomerProfile", customerKYCData)
+  console.log("incustomerProfile", customerKYCData)
   const record_id = customerKYCData.record_id;
-  //console.log(record_id);
+  console.log(record_id);
   const actionSheetRef = useRef();
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);

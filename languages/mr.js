@@ -6,6 +6,7 @@ export default {
     otpPlace: 'OTP प्रविष्ट करा',
     back: 'मागे',
     mycustomers: 'माझे ग्राहक',
+    myapplications:'माझे अनुप्रयोग',
     search: 'शोध...',
     customerdetails: 'ग्राहक तपशील',
     applytyre: 'टायर अर्ज करा',
@@ -137,12 +138,39 @@ export default {
     "paymentStatus": {
         "paid": "भरले",
         "unpaid": "न भरलेले",
-        "bounced": "बाउंस्ड"
+        "bounced": "बाउंस्ड",
+        "clearing":"साफ करणे",
       },
     "owned": "स्वामित्व",
     "rented": "किरायाने",
     "married": "विवाहित",
-    "single": "अविवाहित"
+    "single": "अविवाहित",
+    "statusLabels": {
+      "sanctioned": "मंजूर",
+      "requested": "विनंती केलेली",
+      "escalate": "उच्चाकंड",
+      "rejected": "अस्वीकृत",
+      "expired": "कालबाह्य",
+      "canceled": "रद्द",
+      "loan account created": "ऋण खाते तयार केले"
+    },
+    "noApplications": "कोणतेही अनुप्रयोग नाहीत",
+    "noCustomersFound": "कोणतेही ग्राहक सापडले नाहीत",
+    "applyforloan":'कर्जासाठी अर्ज करा',
+    "newcustomer": "नवीन ग्राहक",
+    "existingcustomer": "अस्तित्वात असलेले ग्राहक",
+    "selectCustomer": "ग्राहक निवडा",
+    "selectLoanType": "कर्जाचा प्रकार निवडा",
+    "tyreLoan": "टायर कर्ज",
+    "insuranceLoan": "विमा कर्ज",
+    next: 'पुढे',
+    personalinformation: 'वैयक्तिक माहिती',
+    entername: 'तुमचं नाव नाव टाका',
+    entertrucknumber: 'ट्रक नंबर प्रविष्ट करा',
+    "enterthepannumber": "पॅन नंबर प्रविष्ट करा",
+    driverSalary: 'ड्रायव्हरची वेतन',
+    enterdriversalary: 'ड्रायव्हरची वेतन प्रविष्ट करा',
+
 
 
 };

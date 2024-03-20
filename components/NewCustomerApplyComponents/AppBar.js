@@ -9,7 +9,7 @@ const AppBar = () => {
   const {t} =useTranslation();
     const navigation = useNavigation();
     const handleSubmit=()=>{
-      navigation.navigate('Customer')
+      navigation.navigate('Start');
     }
     return (
         <SafeAreaView>

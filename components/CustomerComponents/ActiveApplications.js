@@ -35,7 +35,7 @@ const ActiveApplications = () => {
         //console.log("formateddata", formattedData);
         // Filter the data based on specific statuses
         const filteredData = formattedData.filter(item => ['sanctioned', 'requested', 'escalate'].includes(item.status));
-        const filteredloans = formattedData.filter(item => ['loan account created', 'expired'].includes(item.status));
+        const filteredloans = formattedData.filter(item => ['loan account created', 'expired', 'rejected'].includes(item.status));
         //console.log(filteredData)
         //console.log("showallloans",filteredloans);
       setTableData(filteredData);
@@ -85,7 +85,7 @@ const ActiveApplications = () => {
                 
                 <Text style={[styles.text, { flex: flexArr[1] }]}>{rowData.amount}</Text>
                 <Text style={[styles.text, { flex: flexArr[2] }]}> {rowData['sanctionedamount'] ? rowData['sanctionedamount'] : "0" }</Text>
-                <Text style={[styles.text, { flex: flexArr[3] }, rowData.status === 'sanctioned' ? styles.greenText : styles.orangeText]}>{rowData.status}</Text>
+                <Text style={[styles.text, { flex: flexArr[3] }, rowData.status === 'sanctioned' ? styles.greenText : rowData.status === 'escalate'? styles.purpleText:styles.yellowText]}>{t(`statusLabels.${rowData.status}`)}</Text>
               </View>
             ))}
           </View>
@@ -119,7 +119,12 @@ const ActiveApplications = () => {
                 
                 <Text style={[styles.text, { flex: flexArr[1] }]}>{rowData.amount}</Text>
                 <Text style={[styles.text, { flex: flexArr[2] }]}> {rowData['sanctionedamount'] ? rowData['sanctionedamount'] : "0" }</Text>
-                <Text style={[styles.text, { flex: flexArr[3] }, rowData.status === 'expired' ? styles.purpleText : styles.orangeText]}>{rowData.status}</Text>
+                <Text style={[styles.text, { flex: flexArr[3] }, 
+                rowData.status === 'expired' ? styles.blueText : 
+                rowData.status === 'rejected' ? styles.redText : 
+                styles.orangeText]}>
+                  {t(`statusLabels.${rowData.status}`)}
+                </Text>
               </View>
             ))}
           </View>
@@ -203,6 +208,18 @@ const styles = StyleSheet.create({
   },
   orangeText: {
     color: 'orange',
+  },
+  redText:{
+    color:'red',
+  },
+  yellowText:{
+     color:'gold'
+  },
+  blueText:{
+    color:'blue'
+  },
+  purpleText:{
+    color:'purple'
   },
   noDataText: {
     textAlign: 'center',

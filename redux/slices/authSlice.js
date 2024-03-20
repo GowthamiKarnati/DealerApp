@@ -9,6 +9,7 @@ const authSlice = createSlice({
     customerKYCData: null, 
     customerData: null,
     fieldToUpdate: null,
+    applicationData: null,
   },
   reducers: {
     setMobileNumber: (state, action) => {
@@ -26,13 +27,17 @@ const authSlice = createSlice({
     setFieldToUpdate: (state, action) => {
       state.fieldToUpdate = action.payload;
     },
+    setApplicationData: (state, action) => { // Action to set application data
+      state.applicationData = action.payload;
+    },
   },
 });
 
-export const { setMobileNumber, setSearchValue, setCustomerKYCData,setCustomerData,setFieldToUpdate } = authSlice.actions;
+export const { setMobileNumber, setSearchValue, setCustomerKYCData,setCustomerData,setFieldToUpdate,setApplicationData, } = authSlice.actions;
 export const selectMobileNumber = (state) => state.auth.mobileNumber;
 export const selectSearchValue = (state) => state.auth.searchValue;
 export const selectCustomerKYCData = (state) => state.auth.customerKYCData; 
 export const selectCustomerData = (state) => state.auth.customerData;
 export const selectFieldToUpdate = (state) => state.auth.fieldToUpdate;
+export const selectApplicationData = (state) => state.auth.applicationData;
 export default authSlice.reducer;

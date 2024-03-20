@@ -1,35 +1,60 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, ActivityIndicator, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  View,
+  Text,
+  ActivityIndicator,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+} from 'react-native';
 import axios from 'axios';
-import { useSelector, useDispatch } from 'react-redux';
-import { selectMobileNumber, selectSearchValue, setSearchValue } from '../../redux/slices/authSlice';
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import {useSelector, useDispatch} from 'react-redux';
+import {
+  selectMobileNumber,
+  selectSearchValue,
+  setSearchValue,
+} from '../../redux/slices/authSlice';
+import {useNavigation, useFocusEffect} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import firestore from '@react-native-firebase/firestore';
 import messaging from '@react-native-firebase/messaging';
 //import auth from '@react-native-firebase/auth';
 import Toast from 'react-native-toast-message';
-import { setCustomerData } from '../../redux/slices/authSlice';
+import {setCustomerData} from '../../redux/slices/authSlice';
+import { useTranslation } from 'react-i18next';
+
+
 
 const MainContent = () => {
+  const {t} = useTranslation();
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
+  const userMobileNumber = useSelector(selectMobileNumber);
+  const searchValue = useSelector(selectSearchValue);
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const userMobileNumber = useSelector(selectMobileNumber);
-  const navigation = useNavigation();
-  const searchValue = useSelector(selectSearchValue);
-  const dispatch = useDispatch();
+  
+  
+  
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
         let modifiedMobileNumber = '';
         if (userMobileNumber) {
-          modifiedMobileNumber = userMobileNumber.length > 10 ? userMobileNumber.slice(-10) : userMobileNumber;
-          const response = await axios.get(`https://backendforpnf.vercel.app/customers?criteria=sheet_95100183.column_242.column_238%20LIKE%20%22%25${modifiedMobileNumber}%22`);
+          modifiedMobileNumber =
+            userMobileNumber.length > 10
+              ? userMobileNumber.slice(-10)
+              : userMobileNumber;
+          const response = await axios.get(
+            `https://backendforpnf.vercel.app/customers?criteria=sheet_95100183.column_242.column_238%20LIKE%20%22%25${modifiedMobileNumber}%22`,
+          );
           setData(response.data.data || []);
           setLoading(false);
         } else {
-          console.log("Mobile number not available in Redux.");
+          console.log('Mobile number not available in Redux.');
           setLoading(false);
         }
       } catch (error) {
@@ -42,7 +67,8 @@ const MainContent = () => {
     fetchData();
     getToken();
   }, [userMobileNumber]);
-  const getToken=async()=>{
+
+  const getToken = async () => {
     const authStatus = await messaging().requestPermission();
     const enabled =
       authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
@@ -51,30 +77,36 @@ const MainContent = () => {
       console.log('Authorization status:', authStatus);
       const token = await messaging().getToken();
       const mobileNumber = userMobileNumber;
-      firestore().collection('dealers').doc(mobileNumber).set({
-        token: token
-      })
-      .then(() => {
-        console.log('Token added for mobile number: ', mobileNumber);
-      })
-      .catch(error => {
-        console.error('Error adding token: ', error);
-      });
+      firestore()
+        .collection('dealers')
+        .doc(mobileNumber)
+        .set({
+          token: token,
+        })
+        .then(() => {
+          console.log('Token added for mobile number: ', mobileNumber);
+        })
+        .catch(error => {
+          console.error('Error adding token: ', error);
+        });
     }
-  }
+  };
   useEffect(() => {
     // Apply local filtering based on searchValue
-    const filtered = data.filter((item) => {
+    const filtered = data.filter(item => {
       const fullName = item.name || '';
       const phoneNumber = item['mobile number'] || '';
       const lowerCaseQuery = searchValue.toLowerCase();
-      return fullName.toLowerCase().includes(lowerCaseQuery) || phoneNumber.includes(searchValue);
+      return (
+        fullName.toLowerCase().includes(lowerCaseQuery) ||
+        phoneNumber.includes(searchValue)
+      );
     });
 
     setFilteredData(filtered);
   }, [searchValue, data]);
 
-  const handleCustomer = (item) => {
+  const handleCustomer = item => {
     dispatch(setCustomerData(item));
     navigation.navigate('Customer');
   };
@@ -100,18 +132,23 @@ const MainContent = () => {
       }
     });
     const backgroundHandler = messaging().setBackgroundMessageHandler(
-      async (remoteMessage) => {
+      async remoteMessage => {
         console.log('Message handled in the background!', remoteMessage);
-        
+
         // Check if necessary data is available in remoteMessage.data
-        if (remoteMessage && remoteMessage.data && remoteMessage.data.name && remoteMessage.data.mobilenumber) {
-          console.log("Background message received:", remoteMessage);
-    
+        if (
+          remoteMessage &&
+          remoteMessage.data &&
+          remoteMessage.data.name &&
+          remoteMessage.data.mobilenumber
+        ) {
+          console.log('Background message received:', remoteMessage);
+
           // Extract name and mobile number from remoteMessage.data
-          const { name, mobilenumber } = remoteMessage.data;
+          const {name, mobilenumber} = remoteMessage.data;
     
           // Construct customerData object
-          const customerData = { name, 'mobile number': mobilenumber };
+          const customerData = {name, 'mobile number': mobilenumber};
     
           console.log(customerData); // Log customerData for verification
     
@@ -165,9 +202,9 @@ const MainContent = () => {
       {loading ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : data.length === 0 ? (
-        <Text style={{color:'red'}}>No customers found</Text>
+        <Text style={{color:'red'}}>{t('noCustomersFound')}</Text>
       ): filteredData.length === 0 ? (
-        <Text style={{color:'red'}}>No customers found for "{searchValue}"</Text>
+        <Text style={{color:'red'}}>{t('noCustomersFound')}, { searchValue }</Text>
       ) : (
         <FlatList
           data={filteredData}
@@ -176,6 +213,7 @@ const MainContent = () => {
           showsVerticalScrollIndicator={true} 
           contentContainerStyle={{ paddingBottom: 20 }}
           scrollIndicatorInsets={{ right: 10 }} 
+          refreshing={true}
         />
       )}
     </View>

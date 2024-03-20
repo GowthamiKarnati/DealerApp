@@ -1,11 +1,11 @@
 
 import React, { useEffect, useState } from 'react';
 import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
-import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigation , useFocusEffect } from '@react-navigation/native';
 import { selectCustomerKYCData } from '../../redux/slices/authSlice';
-import Icon from 'react-native-vector-icons/FontAwesome';
+
 
 const AppBar = () => {
   const dispatch = useDispatch();
