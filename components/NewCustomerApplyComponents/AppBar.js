@@ -5,11 +5,15 @@ import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 
 
-const AppBar = () => {
+const AppBar = ({ onPressBack =() => {} }) => {
   const {t} =useTranslation();
     const navigation = useNavigation();
     const handleSubmit=()=>{
-      navigation.navigate('Start');
+      if(onPressBack){
+        onPressBack();
+        return;   
+        }
+        navigation.navigate('Start');
     }
     return (
         <SafeAreaView>

@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native'
+import { View, ScrollView } from 'react-native'
 import React, { useState } from 'react';
 import { selectFieldToUpdate } from '../redux/slices/authSlice';
 import DobUpdate from '../components/UpdateComponents/DobUpdate';
@@ -11,7 +11,12 @@ import NumberofBusiness from '../components/UpdateComponents/NumberofBusiness';
 import NoofTrucks from '../components/UpdateComponents/NoofTrucks';
 import CityUpdate from '../components/UpdateComponents/CityUpdate';
 import PhoneUpdate from '../components/UpdateComponents/PhoneUpdate';
-import AltUpdate from '../components/UpdateComponents/AltUpdate';
+import TruckNumber from '../components/UpdateComponents/TruckNumber';
+import PanCardUpdate from '../components/UpdateComponents/PanCardUpdate';
+import AadharCardUpdate from '../components/UpdateComponents/AadharCardUpdate';
+
+
+
 const UpdateScreen = () => {
   const fieldName = useSelector(selectFieldToUpdate);
 
@@ -41,7 +46,13 @@ const UpdateScreen = () => {
       case 'altphone':
         return <PhoneUpdate alternate={true}/>;
       case 'marital':
-        return <HouseType maritals={true} />
+        return <HouseType maritals={true} />;
+      case 'trucknumber':
+        return <TruckNumber />
+      case 'pancard':
+        return <PanCardUpdate />
+      case 'aadharcard':
+        return <AadharCardUpdate />
       default:
         return null;
     }
@@ -49,7 +60,7 @@ const UpdateScreen = () => {
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      {/* Render the appropriate update component */}
+      
       {renderUpdateComponent()}
     </View>
   );

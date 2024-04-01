@@ -25,12 +25,16 @@ const DobUpdate = () => {
   const customerPhoneNumber = customerData?.['mobile number'] || 'N/A';
   const initialDob = customerKYCData['Date of Birth'].split(' ')[0] || '';
   const [dob, setDob] = useState(initialDob);
-  console.log(dob);
+  //console.log(dob);
   const [selectedDate, setSelectedDate] = useState('');
   const record_id = customerKYCData.record_id;
   const [loading, setLoading] = useState(false); 
-  const initialDate = '1960-01-01'; 
-  // Function to handle updating date of birth
+  // Get the current date
+const currentDate = new Date();
+const year = currentDate.getFullYear().toString();
+const month = (currentDate.getMonth() + 1).toString().padStart(2, '0'); // Month is zero-based
+const day = currentDate.getDate().toString().padStart(2, '0');
+const initialDate = `${year}-${month}-${day}`;
   const handleUpdateChildren = async() => {
     try {
       setLoading(true);
@@ -163,9 +167,7 @@ const DobUpdate = () => {
             }}
             renderDay={(day, item) => {
               // Set initial background color to lightblue
-              let backgroundColor = selectedDate === day.dateString ? 'lightblue' : 'transparent';
-          
-              // Return the TouchableOpacity with the date container inside
+              let backgroundColor = selectedDate === day.dateString ? 'lightblue' : 'red';
               return (
                 <TouchableOpacity
                   onPress={() => {

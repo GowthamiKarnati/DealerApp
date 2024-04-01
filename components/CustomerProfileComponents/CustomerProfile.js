@@ -14,7 +14,7 @@ import axios from 'axios';
 import { useDispatch } from 'react-redux'; 
 import { setFieldToUpdate } from '../../redux/slices/authSlice';
 import { useTranslation } from 'react-i18next';
-
+import KYCCard from './KYCCard';
 
 
 
@@ -26,20 +26,13 @@ const CustomerProfile = () => {
   const customerPhoneNumber = customerData?.['mobile number'] || 'N/A';
   const imageUrl = 'https://www.shutterstock.com/image-vector/vector-flat-illustration-grayscale-avatar-600nw-2264922221.jpg';
   const customerKYCData = useSelector(selectCustomerKYCData);
-  console.log("incustomerProfile", customerKYCData)
+  //console.log("incustomerProfile", customerKYCData)
   const record_id = customerKYCData.record_id;
-  console.log(record_id);
+  //olconsole.log(record_id);
   const actionSheetRef = useRef();
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [addressWidth, setAddressWidth] = useState(null); 
-  const [addressText, setAddressText] = useState('');
-  const [altPhoneWidth, setAltPhoneWidth] = useState(null);
-  const [altPhoneText, setAltPhoneText] = useState('');
-  useEffect(() => {
-    setAddressText(customerKYCData['House Address'] || '');
-    setAltPhoneText(customerKYCData['Alternate Phone Number'] || '');
-  }, [customerKYCData]);
+  const [files, setFiles] = useState(null); 
   
 
   
@@ -95,20 +88,9 @@ const CustomerProfile = () => {
       setImage(imageUri); 
       actionSheetRef.current?.hide()
       await uploadBase64ToBackend(base64Data);
-
-      // if (!result.didCancel) {
-      //   const imageUri = result.assets[0];
-      //   setImage(imageUri); 
-      //   console.log('Chosen image:', imageUri);
-      //   actionSheetRef.current?.hide()
-      //   await uploadImageToBackend(imageUri);
-      // } else {
-      //   console.log('User cancelled image picker');
-      // }
     } catch (error) {
       console.log('Error in handleChooseFromGallery:', error);
     }finally {
-      // Set loading to false when finished
       setLoading(false);
     }
   };
@@ -146,40 +128,6 @@ const CustomerProfile = () => {
       console.log('Error in uploadBase64ToBackend:', error);
     }
   };
-  const handleAddressLayout = (event) => {
-    if (!addressWidth) {
-      setAddressWidth(event.nativeEvent.layout.width);
-    }
-  };
-
-  const truncatedAddress = () => {
-    if (!addressText || !addressWidth) return '';
-    const text = addressText;
-    const maxCharsWidth = addressWidth / 12; // Estimated width of 12 characters
-    // Calculate the maximum characters based on the width of the container
-    const maxChars = 17; 
-    if (text.length > maxChars) {
-      return text.slice(0, maxChars) + '...';
-    }
-    return text;
-  };
-  const handleAltPhoneLayout = (event) => {
-    if (!altPhoneWidth) {
-        setAltPhoneWidth(event.nativeEvent.layout.width);
-    }
-};
-
-  
-  const truncatedAltPhone = () => {
-    if (!altPhoneText || !altPhoneWidth) return '';
-    const text = altPhoneText;
-    const maxChars = 7; // Maximum characters before truncating
-    if (text.length > maxChars) {
-        return text.slice(0, maxChars) + '...';
-    }
-    return text;
-};
-
   
 
   return (
@@ -214,143 +162,9 @@ const CustomerProfile = () => {
           <FontAwesomeIcon name="edit" style={styles.editIcon} size={25} color="white" />
         </TouchableOpacity>
       </View>
-      {/* Use Card component for KYC data container */}
+
       <Card style={[styles.customerKYCContainer]}>
-      <TouchableOpacity onPress={() => handlePress('dob')}>
-        <View style={styles.kycItem}>
-          <Text style={styles.keyText}>{t('dob')}</Text>
-          <View style={styles.valueContainer}>
-            <Text style={styles.valueText}>{customerKYCData['Date of Birth']?.split(' ')[0]}</Text>
-            
-              <Icon name="chevron-right" size={20} color="#9ca3af" style={styles.icon} />
-            
-          </View>
-        </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => handlePress('pan')}>
-        <View style={styles.kycItem}>
-          <Text style={styles.keyText}>{t('pan')}</Text>
-          <View style={styles.valueContainer}>
-            <Text style={styles.valueText}>{customerKYCData['PAN Number']}</Text>
-            
-              <Icon name="chevron-right" size={20} color="#9ca3af" style={styles.icon} />
-            
-          </View>
-        </View>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => handlePress('noofchildren')}>
-        <View style={styles.kycItem}>
-          <Text style={styles.keyText}>{t('numchildren')}</Text>
-          <View style={styles.valueContainer}>
-            <Text style={styles.valueText}>{customerKYCData['Number of Children']}</Text>
-            
-              <Icon name="chevron-right" size={20} color="#9ca3af" style={styles.icon} />
-            
-          </View>
-        </View>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => handlePress('montlyemioutflow')}>
-        <View style={styles.kycItem}>
-          <Text style={styles.keyText}>{t('monthlyemi')}</Text>
-          <View style={styles.valueContainer}>
-            <Text style={styles.valueText}>{customerKYCData['Monthly EMI Outflow']}</Text>
-            
-              <Icon name="chevron-right" size={20} color="#9ca3af" style={styles.icon} />
-            
-          </View>
-        </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => handlePress('housetype')}>
-        <View style={styles.kycItem}>
-          <Text style={styles.keyText}>{t('housetype')}</Text>
-          <View style={styles.valueContainer}>
-            <Text style={styles.valueText}>{customerKYCData['House Owned or Rented']}</Text>
-            
-              <Icon name="chevron-right" size={20} color="#9ca3af" style={styles.icon} />
-            
-          </View>
-        </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => handlePress('noofyearsinbusiness')}>
-        <View style={styles.kycItem}>
-          <Text style={styles.keyText}>{t('numofbusinessyers')}</Text>
-          <View style={styles.valueContainer}>
-            <Text style={styles.valueText}>{customerKYCData['Number of years in business']}</Text>
-            
-              <Icon name="chevron-right" size={20} color="#9ca3af" style={styles.icon} />
-            
-          </View>
-        </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => handlePress('numberoftrucks')}>
-        <View style={styles.kycItem}>
-            <Text style={styles.keyText}>{t('nooftrucks')}</Text>
-            <View style={styles.valueContainer}>
-              <Text style={styles.valueText}>{customerKYCData['Number of Trucks']}</Text>
-              
-                <Icon name="chevron-right" size={20} color="#9ca3af" style={styles.icon} />
-              
-            </View>
-          </View>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => handlePress('city')}>
-        <View style={styles.kycItem}>
-          <Text style={styles.keyText}>{t('city')}</Text>
-          <View style={styles.valueContainer}>
-            <Text style={styles.valueText}>{customerKYCData['City']}</Text>
-            
-              <Icon name="chevron-right" size={20} color="#9ca3af" style={styles.icon} />
-            
-          </View>
-          
-        </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => handlePress('phone')}>
-        <View style={styles.kycItem}>
-          <Text style={styles.keyText}>{t('phonenumber')}</Text>
-          <View style={styles.valueContainer}>
-            <Text style={styles.valueText}>{customerKYCData['Phone Number']}</Text>
-            
-              <Icon name="chevron-right" size={20} color="#9ca3af" style={styles.icon} />
-            
-          </View>
-        </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => handlePress('altphone')}>
-          <View style={styles.kycItem}>
-              <Text style={styles.keyText}>{t('altnumber')}</Text>
-              <View style={styles.valueContainer} onLayout={handleAltPhoneLayout}>
-                  <Text numberOfLines={1} ellipsizeMode="tail" style={styles.valueText}>{truncatedAltPhone()}</Text>
-                  <Icon name="chevron-right" size={20} color="#9ca3af" style={styles.icon} />
-              </View>
-          </View>
-      </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => handlePress('marital')}>
-        <View style={styles.kycItem}>
-          <Text style={styles.keyText}>{t('maritalstatus')}</Text>
-          <View style={styles.valueContainer}>
-            <Text style={styles.valueText}>{customerKYCData['Marital Status']}</Text>
-            
-              <Icon name="chevron-right" size={20} color="#9ca3af" style={styles.icon} />
-            
-          </View>
-        </View>
-        </TouchableOpacity>
-        {/* New section for House Address */}
-        <TouchableOpacity onPress={() => handlePress('houseaddress')}>
-        <View style={styles.kycItem}>
-          <Text style={styles.keyText}>{t('houseadress')}</Text>
-          <View style={styles.valueContainer} onLayout={handleAddressLayout}>
-            <Text style={styles.valueText}>{truncatedAddress()}</Text>
-            
-              <Icon name="chevron-right" size={20} color="#9ca3af" style={styles.icon} />
-            
-          </View>
-        </View>
-        </TouchableOpacity>
+      <KYCCard customerKYCData={customerKYCData} handlePress={handlePress} t={t} />
       </Card>
       <ActionSheet ref={actionSheetRef}>
         <TouchableOpacity style={styles.button} onPress={handleTakePhoto}>
@@ -405,32 +219,6 @@ const styles = StyleSheet.create({
     width:'100%',
     backgroundColor: 'white',
     marginBottom:20,
-  },
-  kycItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-    height:70,
-    alignItems:'center'
-  },
-  keyText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: 'black',
-  },
-  valueText: {
-    fontSize: 18,
-    color: '#4b5563',
-  },
-  valueContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  icon: {
-    marginLeft: 10,
   },
   lastKycItem: {
     borderBottomWidth: 0,

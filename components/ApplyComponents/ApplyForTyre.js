@@ -9,8 +9,9 @@ import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { selectCustomerKYCData } from '../../redux/slices/authSlice';
-
 import { selectCustomerData } from '../../redux/slices/authSlice';
+import { setSubmitting } from '../../redux/slices/authSlice';
+
 
 const ApplyForTyre = ({  loanType }) => {
   const {t} = useTranslation();
@@ -119,7 +120,7 @@ const ApplyForTyre = ({  loanType }) => {
 
       console.log('Server response:', response.data);
       //navigation.navigate('Customer', { customerData });
-      
+      dispatch(setSubmitting(true));
       navigation.navigate('Customer' )
       Toast.show({
         type: 'success',
@@ -134,7 +135,7 @@ const ApplyForTyre = ({  loanType }) => {
     } catch (error) {
       console.error('Error submitting application:', error);
     } finally {
-      setIsSubmitting(false);
+      setSubmitting(false);
       if (error.response) {
         setNumberOfTires(prevValues.numberOfTires);
         setSelectedBrand(prevValues.selectedBrand);

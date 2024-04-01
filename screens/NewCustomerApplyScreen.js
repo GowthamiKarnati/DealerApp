@@ -1,14 +1,24 @@
 import { View, Text, SafeAreaView,StyleSheet, ScrollView } from 'react-native'
-import React from 'react'
+import React,{useState} from 'react';
+import { useNavigation } from '@react-navigation/native';
 import AppBar from '../components/NewCustomerApplyComponents/AppBar';
 import NewApplication from '../components/NewCustomerApplyComponents/NewApplication';
 const NewCustomerApplyScreen = ({route}) => {
-    const {loanType} = route.params;
+  const navigation = useNavigation();
+    const {loanType} = route.params;    
+    const [showPersonalInfo, setShowPersonalInfo] = useState(false);
+   const onPressBack =()=>{
+    if(showPersonalInfo){
+      setShowPersonalInfo(false);
+      return;
+    }
+    navigation.navigate('Start');
+   }
   return (
     <SafeAreaView style={styles.container}>
-        <AppBar />
+        <AppBar onPressBack={onPressBack} />
         <ScrollView>
-        <NewApplication loanType={loanType}/>
+        <NewApplication loanType={loanType} showPersonalInfo={showPersonalInfo} setShowPersonalInfo={setShowPersonalInfo} />
         </ScrollView>
     </SafeAreaView>
   )

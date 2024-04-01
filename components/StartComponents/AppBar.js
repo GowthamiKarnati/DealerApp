@@ -20,9 +20,8 @@ const AppBar = () => {
           <FontAwesomeIcon name="user-circle" style={styles.icon} size={24} color="white" />
         </TouchableOpacity>
         <View style={styles.titleContainer}>
-          <Text style={styles.appBarTitle}>PNF Finance</Text>
-        </View>
-        
+          <Text style={[styles.appBarTitle]}>PNF Finance</Text>
+          </View>
       </View>
     </SafeAreaView>
   );
@@ -39,8 +38,8 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     flex: 1,
-    justifyContent: 'center',
-    marginTop:5 
+    
+    alignItems: 'center', // Center the title horizontally
   },
   appBarTitle: {
     flex:1,

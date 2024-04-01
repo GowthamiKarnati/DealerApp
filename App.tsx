@@ -87,7 +87,7 @@
 //     </NavigationContainer>
 //   );
 // }
-
+//const api="http://10.0.2.2:5000
 // export default App;
 import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
