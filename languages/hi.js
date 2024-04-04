@@ -117,7 +117,7 @@ export default {
     "panLabel": "पैन नंबर",
     "panPlaceholder": "पैन नंबर दर्ज करें",
     "updateButton": "अपडेट ",
-    "panLengthError": "पैन नंबर 10 अंकों का होना चाहिए",
+    "panLengthError": "पैन नंबर में 10 अक्षर होने चाहिए",
     "updateSuccess": "सफलतापूर्वक अपडेट किया गया",
     "updateChildrenTitle": "बच्चों की संख्या अपडेट करें",
     "updateEmiTitle": "मासिक ईएमआई आउटफ्लो अपडेट करें",
@@ -205,6 +205,10 @@ export default {
   panmismatch:'पैन एक समान होना चाहिए',
   "selectMaritalStatus": "वैवाहिक स्थिति चुनें",
   "selectHouseType": "घर का प्रकार चुनें",
+  "Please correct the confirmation error above before editing this field":'कृपया इस क्षेत्र को संपादित करने से पहले, ऊपर की पुष्टि त्रुटि को सही करें',
+  addedsuccessfully:'सफलतापूर्वक जोड़ा गया',
+  uploadsuccessfully:'अपलोड सफलतापूर्वक हुआ',
+  
 
 
 

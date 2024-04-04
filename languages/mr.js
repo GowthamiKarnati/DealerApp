@@ -117,7 +117,7 @@ export default {
     "panLabel": "पॅन नंबर",
     "panPlaceholder": "पॅन नंबर प्रविष्ट करा",
     "updateButton": "अपडेट",
-    "panLengthError": "पॅन नंबर 10 अंकी असणे आवश्यक आहे",
+    "panLengthError": "पॅन नंबरमध्ये 10 वर्ण असणे आवश्यक आहे",
     "updateSuccess": "यशस्वीरित्या अपडेट केले गेले",
     "updateChildrenTitle": "मुलांची संख्या अपडेट करा",
     "updateEmiTitle": "मासिक ईएमआय आउटफ्लो अपडेट करा",
@@ -206,6 +206,9 @@ export default {
     panmismatch:'पॅन सामायिक असणे आवश्यक आहे',
     "selectMaritalStatus": "वैवाहिक स्थिती निवडा",
     "selectHouseType": "घराचा प्रकार निवडा",
+    "Please correct the confirmation error above before editing this field":'कृपया हा क्षेत्र संपादित करण्यापूर्वी, वरील पुष्टी त्रुटी सुधारा',
+    addedsuccessfully:'यशस्वीरित्या जोडले गेले',
+    uploadsuccessfully:'यशस्वीरित्या अपलोड केले गेले'
 
 
 };

@@ -467,7 +467,7 @@ const TruckNumber = () => {
       Toast.show({
         type: 'success',
         position:'bottom',
-        text1: 'Added Succesfully', 
+        text1: t('addedsuccessfully'), 
         visibilityTime: 3000,
         autoHide: true,
         topOffset: 30,

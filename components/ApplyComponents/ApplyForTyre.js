@@ -113,15 +113,16 @@ const ApplyForTyre = ({  loanType }) => {
         Nooftrucks,
         date: currentDate,
         source,
+        confpanNumber:PanNumber,
         sourcerefid,
         oldornew:'Existing',
         loanType: loanType === 'tyre' ? 'Tyre Loan' : 'Insurance Loan',
       });
 
-      console.log('Server response:', response.data);
+      //console.log('Server response:', response.data);
       //navigation.navigate('Customer', { customerData });
       dispatch(setSubmitting(true));
-      navigation.navigate('Customer' )
+      navigation.navigate('Start' )
       Toast.show({
         type: 'success',
         position: 'bottom',

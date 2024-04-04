@@ -1,5 +1,5 @@
-import { View, Text, SafeAreaView,StyleSheet, ScrollView } from 'react-native'
-import React,{useState} from 'react';
+import { View, Text, SafeAreaView,StyleSheet, ScrollView ,BackHandler,Alert} from 'react-native'
+import React,{useState, useEffect} from 'react';
 import { useNavigation } from '@react-navigation/native';
 import AppBar from '../components/NewCustomerApplyComponents/AppBar';
 import NewApplication from '../components/NewCustomerApplyComponents/NewApplication';
@@ -7,6 +7,19 @@ const NewCustomerApplyScreen = ({route}) => {
   const navigation = useNavigation();
     const {loanType} = route.params;    
     const [showPersonalInfo, setShowPersonalInfo] = useState(false);
+    const handleHardwareBackPress = () => {
+      if (showPersonalInfo) {
+          setShowPersonalInfo(false);
+          return true; 
+      }
+      return false; 
+  };
+
+  useEffect(() => {
+      const backHandler = BackHandler.addEventListener('hardwareBackPress', handleHardwareBackPress);
+
+      return () => backHandler.remove();
+  }, [showPersonalInfo]);
    const onPressBack =()=>{
     if(showPersonalInfo){
       setShowPersonalInfo(false);

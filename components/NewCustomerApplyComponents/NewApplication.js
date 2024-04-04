@@ -12,7 +12,7 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import Collapsible from 'react-native-collapsible';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { setSubmitting } from '../../redux/slices/authSlice';
-
+import WheelPicker from 'react-native-wheel-scrollview-picker';
 
 const NewApplication = ({ loanType, showPersonalInfo, setShowPersonalInfo}) => {
       
@@ -62,6 +62,7 @@ const NewApplication = ({ loanType, showPersonalInfo, setShowPersonalInfo}) => {
       const [dayModalVisible, setDayModalVisible] = useState(false);
       const [monthModalVisible, setMonthModalVisible] = useState(false);
       const [yearModalVisible, setYearModalVisible] = useState(false);
+      const [panmismatch, setPanmismatch] = useState('');
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -85,10 +86,10 @@ const NewApplication = ({ loanType, showPersonalInfo, setShowPersonalInfo}) => {
 
   const handleNext = () => {
     // Perform validation checks
-    // if ((!loanAmount && loanType === 'insurance') || (!numberOfTires || !selectedBrand || !loanAmount) && loanType === 'tyre') {
-    //   setErrorMessage(t('pleasefillinsurancefeilds'));
-    //     return;
-    // }
+    if ((!loanAmount && loanType === 'insurance') || (!numberOfTires || !selectedBrand || !loanAmount) && loanType === 'tyre') {
+      setErrorMessage(t('pleasefillinsurancefeilds'));
+        return;
+    }
   
     // Proceed to the next step
     setShowPersonalInfo(true);
@@ -96,7 +97,7 @@ const NewApplication = ({ loanType, showPersonalInfo, setShowPersonalInfo}) => {
   
    const sourcerefid = dealerData?.record_id || null;
    const source = dealerData?.dealer || null;
-   console.log(sourcerefid, source);
+   //console.log(sourcerefid, source);
 
   const handleSubmit = async () => {
     try {
@@ -104,13 +105,14 @@ const NewApplication = ({ loanType, showPersonalInfo, setShowPersonalInfo}) => {
       if (
         name.trim() === '' ||
         panNumber.trim() === '' ||
+        confpanNumber.trim() === '' ||
         mobileNumber.trim() === '' ||
         numberOfTrucks.trim() === '' ||
         yearsInBusiness.trim() === '' ||
         monthlyEmiOutflow.trim() === '' ||
         numberOfChildren.trim() === '' ||
         truckNumber.trim() === '' ||
-        driverSalary.trim() === '' || 
+         
         panFiles.length === 0 ||
         frontFiles.length === 0 ||
         backFiles.length === 0 ||
@@ -344,6 +346,9 @@ const renderDays = () => {
       <Text style={styles.dayItemText}>{item.label}</Text>
     </TouchableOpacity>
   );
+  const handleDayChange = (selectedDay) => {
+    setDOBDay(selectedDay);
+  };
 
   return (
     <View style={styles.container}>
@@ -520,11 +525,6 @@ const renderDays = () => {
                     />
                 </View>
             </TouchableOpacity>
-        {/* <TouchableOpacity onPress={togglePersonalInfoCollapse}>
-          <Text style={{ fontSize: 20, fontWeight: '600', alignSelf:'center', marginBottom:10}}>
-            {t('personalinformation')}
-            </Text>
-        </TouchableOpacity> */}
          
     <Collapsible collapsed={personalInfoCollapsed}>
           <View style={styles.formGroup}>
@@ -541,79 +541,63 @@ const renderDays = () => {
           <View style={styles.formGroup}>
       <Text style={styles.label}>Date of Birth<Text style={{ color: 'red', marginLeft: 5 }}>*</Text></Text>
       <View style={styles.dobInputContainer}>
-        {/* Day */}
-        <TouchableOpacity
-          style={[styles.input, styles.dobInput]}
-          onPress={() => setDayModalVisible(true)}
-        >
-          <Text>{dobDay}</Text>
-        </TouchableOpacity>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={dayModalVisible}
-          onRequestClose={() => setDayModalVisible(false)}
-        >
-          <View style={styles.modalContainer}>
-          <View style={[styles.modalContent, { height: Math.min(renderDays().length * 50, 300) }]}>
-              <FlatList
-                data={renderDays()}
-                renderItem={renderDayItem}
-                keyExtractor={(item) => item.value}
-              />
-            </View>
+        {/* Day Picker */}
+        <View style={{flexDirection:"row"}}>
+        <View style={styles.inputContainer}>
+          <Picker
+            selectedValue={dobDay}
+            style={{fontSize:10, textAlign:'center', justifyContent:'center',color:'black'}}
+            onValueChange={(itemValue) => setDOBDay(itemValue)}
+            dropdownIconColor="black"
+            itemStyle={{padding:0, backgroundColor:'yellow'}}
+              mode="dropdown"
+          >
+            <Picker.Item label="DD" value="DD" style={{fontSize:15, color:'black'}}/>
+            {renderDays().map((day, index) => (
+              <Picker.Item key={index} label={day.label} value={day.value} />
+            ))}
+          </Picker>
           </View>
-        </Modal>
 
-        {/* Month */}
-        <TouchableOpacity
-          style={[styles.input, styles.dobInput]}
-          onPress={() => setMonthModalVisible(true)}
-        >
-          <Text>{dobMonth}</Text>
-        </TouchableOpacity>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={monthModalVisible}
-          onRequestClose={() => setMonthModalVisible(false)}
-        >
-          <View style={styles.modalContainer}>
-          <View style={[styles.modalContent, { height: Math.min(renderDays().length * 50, 300) }]}>
-              <FlatList
-                data={renderMonths()}
-                renderItem={renderMonthItem}
-                keyExtractor={(item) => item.value}
-              />
-            </View>
-          </View>
-        </Modal>
+        {/* Month Picker */}
+        <View style={styles.inputContainer}>
+          <Picker
+            selectedValue={dobMonth}
+            style={{fontSize:5,color:'black'}}
+            onValueChange={(itemValue) => setDOBMonth(itemValue)}
+            dropdownIconColor="black"
+            itemStyle={{padding:0, backgroundColor:'yellow'}}
+              mode="dropdown"
+          >
+            <Picker.Item label="MM" value="MM" style={{fontSize:15, color:'black'}}/>
+            {renderMonths().map((month, index) => (
+              <Picker.Item key={index} label={month.label} value={month.value} />
+            ))}
+          </Picker>
+          
+        </View>
 
-        {/* Year */}
-        <TouchableOpacity
-          style={[styles.input, styles.dobInput]}
-          onPress={() => setYearModalVisible(true)}
-        >
-          <Text>{dobYear}</Text>
-        </TouchableOpacity>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={yearModalVisible}
-          onRequestClose={() => setYearModalVisible(false)}
-        >
-          <View style={styles.modalContainer}>
-          <View style={[styles.modalContent, { height: Math.min(renderDays().length * 50, 300) }]}>
-              <FlatList
-                data={renderYears()}
-                renderItem={renderYearItem}
-                keyExtractor={(item) => item.value}
-              />
-            </View>
-          </View>
-        </Modal>
+        </View> 
+
+        {/* Year Picker */}
+        <View style={styles.inputContainer}>
+          <Picker
+            selectedValue={dobYear}
+            style={{fontSize:5, color:'black'}}
+            onValueChange={(itemValue) => setDOBYear(itemValue)}
+            dropdownIconColor="black"
+            itemStyle={{padding:0, backgroundColor:'yellow'}}
+              mode="dropdown"
+          >
+            <Picker.Item label="YYYY" value="YYYY" style={{fontSize:15, color:'black'}}/>
+            {renderYears().map((year, index) => (
+              <Picker.Item key={index} label={year.label} value={year.value} />
+            ))}
+          </Picker>
+        </View>
       </View>
     </View>
+
           <View style={styles.formGroup}>
             <Text style={styles.label}>{t('pan')}<Text style={{ color: 'red', marginLeft: 5 }}>*</Text></Text>
             <TextInput
@@ -675,19 +659,20 @@ const renderDays = () => {
             //   keyboardType='default'
             // />
             onChangeText={(text) => {
-              if (text.length <= 10) {
+              // if (text.length <= 10) {
                 setconfPanNumber(text);
-              } else {
-                setConfpanError(t('panLengthError'));
-              }
+              // } else {
+              //   setConfpanError(t('panLengthError'));
+              // }
             }}
             onBlur={() => {
               if (confpanNumber !== panNumber) {
-                setConfpanError(t('panmismatch'));
+                setPanmismatch(t('panmismatch'));
               } else {
-                setConfpanError(null);
+                setPanmismatch(null);
               }
             }}
+            onFocus={()=>setPanmismatch('')}
               keyboardType='default'
             />
             {confpanError ? <Text style={styles.errorMessage}>{confpanError}</Text> : null}
@@ -696,10 +681,15 @@ const renderDays = () => {
                 setConfpanError(null);
               }, 5000) // Adjust the time as needed (5000 milliseconds = 5 seconds)
             )}
+            
+            {panmismatch ? <Text style={styles.errorMessage}>{panmismatch}</Text> : null}
           </View>
           <View style={styles.formGroup}>
             <Text style={styles.label}>{t('phonenumber')}<Text style={{ color: 'red', marginLeft: 5 }}>*</Text></Text>
-            <TextInput
+            {panmismatch && (
+              <Text style={styles.errorMessage}>{t('Please correct the confirmation error above before editing this field')}</Text>
+            )}
+                      <TextInput
               style={styles.input}
               keyboardType="phone-pad"
               placeholder="Enter your mobile number"
@@ -717,7 +707,7 @@ const renderDays = () => {
                   //setLoading(false);
                 }
               }}
-              
+              editable={!panmismatch}
             />
              {phoneerrorMessage ? <Text style={styles.errorMessage}>{phoneerrorMessage}</Text> : null}
              {phoneerrorMessage && (
@@ -762,7 +752,7 @@ const renderDays = () => {
             <TextInput
               style={styles.input}
               keyboardType="phone-pad"
-
+              
               placeholder={t('enternooftrucks')}
               placeholderTextColor="black"
               value={numberOfTrucks}
@@ -846,7 +836,7 @@ const renderDays = () => {
             />
           </View>
           <View style={styles.formGroup}>
-            <Text style={styles.label}>{t('driverSalary')}<Text style={{ color: 'red', marginLeft: 5 }}>*</Text></Text>
+            <Text style={styles.label}>{t('driverSalary')}</Text>
             <TextInput
               style={styles.input}
               keyboardType="phone-pad"
@@ -1027,10 +1017,10 @@ headerText: {
 icon: {
     marginLeft: 10,
 },
-dobInputContainer: {
-  flexDirection: 'row',
-  justifyContent: 'space-between',
-},
+// dobInputContainer: {
+//   flexDirection: 'row',
+//   justifyContent: 'space-between',
+// },
 dobInput: {
   flex: 1,
   marginRight: 5,
@@ -1050,12 +1040,55 @@ modalContent: {
 },
 dayItem: {
   paddingVertical: 10,
-},
-dayItemText: {
-  fontSize: 20,
   fontWeight:'500'
 },
-
+dayItemText: {
+  fontSize: 16,
+  marginBottom:8
+  
+},
+closeButton: {
+  position: 'absolute',
+  top: 10,
+  right: 10,
+  padding: 10,
+  backgroundColor: 'transparent',
+},
+closeButtonText: {
+  color: 'red',
+  fontSize: 18,
+},
+dobInputContainer: {
+  flexDirection: 'column',
+  justifyContent: 'space-between',
+  height:120,
+  flexWrap:'wrap'
+  ,
+  overflow: 'hidden',
+},
+inputContainer: {
+  flex: 1,
+  borderWidth: 1,
+  borderColor: '#ccc',
+  borderRadius: 5,
+  marginHorizontal: 2,
+  overflow: 'hidden',
+  width:'50%',
+  marginBottom:5,
+  justifyContent:'center'
+},
+inputp: {
+  flex: 1,
+  height: 70,
+  alignItems:'center',
+  justifyContent:'center'
+  
+  
+},
+pickerInput: {
+  flex: 1,
+  fontSize:5,
+},
 
 });
 

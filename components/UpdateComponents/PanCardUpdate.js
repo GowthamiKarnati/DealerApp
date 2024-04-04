@@ -106,7 +106,7 @@ const PanCardUpdate = () => {
       Toast.show({
         type: 'success',
         position:'bottom',
-        text1: 'Uploaded Successfully', 
+        text1: t('uploadsuccessfully'), 
         visibilityTime: 3000,
         autoHide: true,
         topOffset: 30,

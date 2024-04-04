@@ -928,7 +928,7 @@
 
 // export default Buttons;
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, ScrollView, TouchableHighlight } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, ScrollView, TouchableHighlight,RefreshControl } from 'react-native';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import axios from 'axios';
 import { selectMobileNumber,selectIsSubmitting } from '../../redux/slices/authSlice';
@@ -938,7 +938,10 @@ import { setApplicationData, setSubmitting } from '../../redux/slices/authSlice'
 import { useTranslation } from 'react-i18next';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { BottomSheet } from 'react-native-elements';
-
+import firestore from '@react-native-firebase/firestore';
+import messaging from '@react-native-firebase/messaging';
+//import auth from '@react-native-firebase/auth';
+import Toast from 'react-native-toast-message';
 
 
 const Buttons = () => {
@@ -949,15 +952,18 @@ const Buttons = () => {
   const userMobileNumber = useSelector(selectMobileNumber);
   const scrollViewRef = useRef(null);
   const isSubmitting = useSelector(selectIsSubmitting);
-  console.log(isSubmitting);
+  //console.log(isSubmitting);
   const [tableData, setTableData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAdditionalButtons, setShowAdditionalButtons] = useState(false);
   const [loanType, setLoanType] = useState('');
-  const [bottomSheetVisible, setBottomSheetVisible] = useState(false); // State to control bottom sheet visibility
+  const [bottomSheetVisible, setBottomSheetVisible] = useState(false); 
+  const [refreshing, setRefreshing] = useState(false);
+  const [initialDataFetched, setInitialDataFetched] = useState(false);
 
-  useEffect(() => {
+  
     const fetchData = async () => {
+      setLoading(true);
       try {
         let modifiedMobileNumber = '';
         if (userMobileNumber) {
@@ -986,6 +992,7 @@ const Buttons = () => {
           const filteredData = formattedData.filter(item => ['sanctioned', 'requested', 'escalate'].includes(item.status));
           const sortedData = filteredData.sort((a, b) => new Date(b.date) - new Date(a.date)); // Sort by date, latest on top
           setTableData(sortedData);
+          dispatch(setSubmitting(false));
         } else {
           console.log('Mobile number not available in Redux.');
           setLoading(false);
@@ -994,12 +1001,117 @@ const Buttons = () => {
         console.error('Error fetching data:', error.message);
       } finally {
         setLoading(false);
+        
       }
     };
-
-    fetchData();
-    dispatch(setSubmitting(false));
+    const handleRefresh = () => {
+      setRefreshing(true); // Set refreshing to true to indicate a refresh is in progress
+      // Scroll to the top of the ScrollView
+      scrollViewRef.current.scrollTo({ y: 0, animated: true });
+      // Call your fetchData function to refresh the data
+      fetchData().finally(() => {
+        setRefreshing(false);
+      });
+    };
+    
+  
+  useEffect(() => {
+    getToken();
+    fetchData().then(() => {
+      setInitialDataFetched(true);
+    });
   }, [userMobileNumber,isSubmitting, dispatch]);
+
+  const getToken = async () => {
+    const authStatus = await messaging().requestPermission();
+    const enabled =
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+    if (enabled) {
+      console.log('Authorization status:', authStatus);
+      const token = await messaging().getToken();
+      const mobileNumber = userMobileNumber;
+      console.log(mobileNumber);
+      firestore()
+        .collection('dealers')
+        .doc(mobileNumber)
+        .set({
+          token: token,
+        })
+        .then(() => {
+          console.log('Token added for mobile number: ', mobileNumber);
+        })
+        .catch(error => {
+          console.error('Error adding token: ', error);
+        });
+    }
+  };
+
+  useEffect(() => {
+    // Handle foreground notifications
+    const foregroundHandler = messaging().onMessage(async remoteMessage => {
+      console.log('Message handled in the foreground!', remoteMessage);
+      // Display notification or update UI as needed
+      if (remoteMessage && remoteMessage.notification) {
+        const { title, body } = remoteMessage.notification;
+        console.log('Notification Title:', title);
+        console.log('Notification Body:', body);
+        Toast.show({
+          type: 'info',
+          position: 'top',
+          text1: title,
+          text2: body,
+          visibilityTime: 10000, // 10 seconds duration
+          autoHide: true,
+          topOffset: 40,
+          bottomOffset: 40,
+        });
+      }
+    });
+    const backgroundHandler = messaging().setBackgroundMessageHandler(
+      async remoteMessage => {
+        console.log('Message handled in the background!', remoteMessage);
+
+        // Check if necessary data is available in remoteMessage.data
+        if (
+          remoteMessage &&
+          remoteMessage.data &&
+          remoteMessage.data.name &&
+          remoteMessage.data.mobilenumber
+        ) {
+          console.log('Background message received:', remoteMessage);
+
+          // Extract name and mobile number from remoteMessage.data
+          const {name, mobilenumber} = remoteMessage.data;
+    
+          // Construct customerData object
+          const customerData = {name, 'mobile number': mobilenumber};
+    
+          console.log(customerData); // Log customerData for verification
+    
+          // Navigate to the 'Customer' screen with customerData as route params
+          if (navigation) {
+            navigation.navigate('Home'); // Pass customerData as route params
+          } else {
+            console.warn('Navigation is not available in the background handler.');
+          }
+        }
+      }
+    );
+    
+  
+    // Cleanup function
+    return () => {
+      foregroundHandler();
+    };
+  }, []);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchData();
+    setRefreshing(false);
+  };
+
 
   const handleCustomers = () => {
     navigation.navigate('Home');
@@ -1052,7 +1164,16 @@ const Buttons = () => {
   }, [isFocused]);
 
   return (
-    <ScrollView  contentContainerStyle={{ flexGrow: 1 }}>
+    <ScrollView
+      contentContainerStyle={{ flexGrow: 1 }}
+      ref={scrollViewRef}
+      refreshControl={
+        initialDataFetched && ( // Only render RefreshControl if initial data fetching is completed
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        )
+      }
+      
+    >
       <View style={styles.container}>
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.buttonTyre} onPress={handleCustomers}>

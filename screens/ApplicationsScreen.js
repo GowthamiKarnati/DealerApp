@@ -7,10 +7,9 @@ const ApplicationsScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <AppBar />
-      <ScrollView>
-       
+      
         <Applications />
-      </ScrollView>
+      
     </SafeAreaView>
   )
 }

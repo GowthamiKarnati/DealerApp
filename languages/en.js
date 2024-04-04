@@ -118,7 +118,7 @@ export default {
     "panLabel": "Pan Number",
     "panPlaceholder": "Enter the pan number",
     "updateButton": "Update",
-    "panLengthError": "Pan number must have 10 digits",
+    "panLengthError": "Pan Number must have 10 characters",
     "updateSuccess": "Updated Successfully",
     "updateChildrenTitle": "Update Number of Children",
     "updateEmiTitle": "Update Monthly Emi Outflow",
@@ -205,4 +205,10 @@ export default {
   "panmismatch":'PAN must be the same',
   "selectMaritalStatus": "Select Marital Status",
   "selectHouseType": "Select House Type",
+  "Please correct the confirmation error above before editing this field":"Please correct the confirmation error above before editing this field",
+  addedsuccessfully:'Added Successfully',
+  uploadsuccessfully:'Uploaded Successfully',
+  
+
+
   };

@@ -19,6 +19,7 @@ const CustomerKYC = () => {
   const navigation = useNavigation();
   const customerData = useSelector(selectCustomerData);
   const customerKYCData = useSelector(selectCustomerKYCData);
+  const [dataFetched, setDataFetched] = useState(false); 
   //console.log("CustomerKYCDATA",customerKYCData);
   const [kycStatus, setKycStatus] = useState('');
   const customerPhoneNumber = customerData?.['mobile number'] || 'N/A';
@@ -42,7 +43,7 @@ const CustomerKYC = () => {
         const firstImage = photoArray.length > 0 ? photoArray[0] : {};
         const imageUri = firstImage.fullpath || '';
         setImageUrl(imageUri); 
-        
+        setDataFetched(true);
       } catch (err) {
         console.log("Error in Fetching apiData in customerKYC file", err)
       }
@@ -107,7 +108,7 @@ const CustomerKYC = () => {
 
       </View>
       
-      <Icon name="chevron-right" size={20} color="#9ca3af" style={styles.icon} />
+      {dataFetched && <Icon name="chevron-right" size={20} color="#9ca3af" style={styles.icon} />}
       
     </View>
     </TouchableOpacity>

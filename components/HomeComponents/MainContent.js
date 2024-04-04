@@ -34,63 +34,67 @@ const MainContent = () => {
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [loading, setLoading] = useState(true);
-  
+  const [refreshing, setRefreshing] = useState(false);
   
   
   
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        let modifiedMobileNumber = '';
-        if (userMobileNumber) {
-          modifiedMobileNumber =
-            userMobileNumber.length > 10
-              ? userMobileNumber.slice(-10)
-              : userMobileNumber;
-          const response = await axios.get(
-            `https://backendforpnf.vercel.app/customers?criteria=sheet_95100183.column_242.column_238%20LIKE%20%22%25${modifiedMobileNumber}%22`,
-          );
-          setData(response.data.data || []);
-          setLoading(false);
-        } else {
-          console.log('Mobile number not available in Redux.');
-          setLoading(false);
-        }
-      } catch (error) {
-        console.error('Error fetching data Customer Data :', error);
-        setData([]);
-        setLoading(false);
-      }
-    };
-
     fetchData();
-    getToken();
+    //getToken();
   }, [userMobileNumber]);
 
-  const getToken = async () => {
-    const authStatus = await messaging().requestPermission();
-    const enabled =
-      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-    if (enabled) {
-      console.log('Authorization status:', authStatus);
-      const token = await messaging().getToken();
-      const mobileNumber = userMobileNumber;
-      firestore()
-        .collection('dealers')
-        .doc(mobileNumber)
-        .set({
-          token: token,
-        })
-        .then(() => {
-          console.log('Token added for mobile number: ', mobileNumber);
-        })
-        .catch(error => {
-          console.error('Error adding token: ', error);
-        });
+
+  const fetchData = async () => {
+    try {
+     
+      let modifiedMobileNumber = '';
+      if (userMobileNumber) {
+        modifiedMobileNumber =
+          userMobileNumber.length > 10
+            ? userMobileNumber.slice(-10)
+            : userMobileNumber;
+        const response = await axios.get(
+          `https://backendforpnf.vercel.app/customers?criteria=sheet_95100183.column_242.column_238%20LIKE%20%22%25${modifiedMobileNumber}%22`,
+        );
+        setData(response.data.data || []);
+        setLoading(false);
+      } else {
+        console.log('Mobile number not available in Redux.');
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error('Error fetching data Customer Data :', error);
+      setData([]);
+      
+    }finally {
+      
+      setRefreshing(false); 
     }
   };
+  // const getToken = async () => {
+  //   const authStatus = await messaging().requestPermission();
+  //   const enabled =
+  //     authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+  //     authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+  //   if (enabled) {
+  //     console.log('Authorization status:', authStatus);
+  //     const token = await messaging().getToken();
+  //     const mobileNumber = userMobileNumber;
+  //     console.log(mobileNumber);
+  //     firestore()
+  //       .collection('dealers')
+  //       .doc(mobileNumber)
+  //       .set({
+  //         token: token,
+  //       })
+  //       .then(() => {
+  //         console.log('Token added for mobile number: ', mobileNumber);
+  //       })
+  //       .catch(error => {
+  //         console.error('Error adding token: ', error);
+  //       });
+  //   }
+  // };
   useEffect(() => {
     // Apply local filtering based on searchValue
     const filtered = data.filter(item => {
@@ -110,70 +114,77 @@ const MainContent = () => {
     dispatch(setCustomerData(item));
     navigation.navigate('Customer');
   };
-  useEffect(() => {
-    // Handle foreground notifications
-    const foregroundHandler = messaging().onMessage(async remoteMessage => {
-      console.log('Message handled in the foreground!', remoteMessage);
-      // Display notification or update UI as needed
-      if (remoteMessage && remoteMessage.notification) {
-        const { title, body } = remoteMessage.notification;
-        console.log('Notification Title:', title);
-        console.log('Notification Body:', body);
-        Toast.show({
-          type: 'info',
-          position: 'top',
-          text1: title,
-          text2: body,
-          visibilityTime: 10000, // 10 seconds duration
-          autoHide: true,
-          topOffset: 40,
-          bottomOffset: 40,
-        });
-      }
-    });
-    const backgroundHandler = messaging().setBackgroundMessageHandler(
-      async remoteMessage => {
-        console.log('Message handled in the background!', remoteMessage);
+  // useEffect(() => {
+  //   // Handle foreground notifications
+  //   const foregroundHandler = messaging().onMessage(async remoteMessage => {
+  //     console.log('Message handled in the foreground!', remoteMessage);
+  //     // Display notification or update UI as needed
+  //     if (remoteMessage && remoteMessage.notification) {
+  //       const { title, body } = remoteMessage.notification;
+  //       console.log('Notification Title:', title);
+  //       console.log('Notification Body:', body);
+  //       Toast.show({
+  //         type: 'info',
+  //         position: 'top',
+  //         text1: title,
+  //         text2: body,
+  //         visibilityTime: 10000, // 10 seconds duration
+  //         autoHide: true,
+  //         topOffset: 40,
+  //         bottomOffset: 40,
+  //       });
+  //     }
+  //   });
+  //   const backgroundHandler = messaging().setBackgroundMessageHandler(
+  //     async remoteMessage => {
+  //       console.log('Message handled in the background!', remoteMessage);
 
-        // Check if necessary data is available in remoteMessage.data
-        if (
-          remoteMessage &&
-          remoteMessage.data &&
-          remoteMessage.data.name &&
-          remoteMessage.data.mobilenumber
-        ) {
-          console.log('Background message received:', remoteMessage);
+  //       // Check if necessary data is available in remoteMessage.data
+  //       if (
+  //         remoteMessage &&
+  //         remoteMessage.data &&
+  //         remoteMessage.data.name &&
+  //         remoteMessage.data.mobilenumber
+  //       ) {
+  //         console.log('Background message received:', remoteMessage);
 
-          // Extract name and mobile number from remoteMessage.data
-          const {name, mobilenumber} = remoteMessage.data;
+  //         // Extract name and mobile number from remoteMessage.data
+  //         const {name, mobilenumber} = remoteMessage.data;
     
-          // Construct customerData object
-          const customerData = {name, 'mobile number': mobilenumber};
+  //         // Construct customerData object
+  //         const customerData = {name, 'mobile number': mobilenumber};
     
-          console.log(customerData); // Log customerData for verification
+  //         console.log(customerData); // Log customerData for verification
     
-          // Navigate to the 'Customer' screen with customerData as route params
-          if (navigation) {
-            navigation.navigate('Home'); // Pass customerData as route params
-          } else {
-            console.warn('Navigation is not available in the background handler.');
-          }
-        }
-      }
-    );
+  //         // Navigate to the 'Customer' screen with customerData as route params
+  //         if (navigation) {
+  //           navigation.navigate('Home'); // Pass customerData as route params
+  //         } else {
+  //           console.warn('Navigation is not available in the background handler.');
+  //         }
+  //       }
+  //     }
+  //   );
     
   
-    // Cleanup function
-    return () => {
-      foregroundHandler();
-    };
-  }, []);
+  //   // Cleanup function
+  //   return () => {
+  //     foregroundHandler();
+  //   };
+  // }, []);
   useFocusEffect(
     React.useCallback(() => {
       dispatch(setSearchValue(''));
     }, [dispatch])
   );
-  // );
+  const handleRefresh = () => {
+    setRefreshing(true); // Set refreshing to true when refresh action starts
+    fetchData(); // Call the fetchData function again to fetch updated data
+  };
+
+
+
+
   const renderCard = ({ item }) => {
     // Convert item.name and item['mobile number'] to uppercase
     const name = item.name ? item.name.toUpperCase() : 'N/A';
@@ -213,7 +224,8 @@ const MainContent = () => {
           showsVerticalScrollIndicator={true} 
           contentContainerStyle={{ paddingBottom: 20 }}
           scrollIndicatorInsets={{ right: 10 }} 
-          refreshing={true}
+          refreshing={refreshing} // Set refreshing prop to control refresh state
+          onRefresh={handleRefresh}
         />
       )}
     </View>
