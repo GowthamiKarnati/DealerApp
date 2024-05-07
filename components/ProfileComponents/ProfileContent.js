@@ -1,17 +1,20 @@
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, Dimensions } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { selectMobileNumber } from '../../redux/slices/authSlice';
 import { useTranslation } from 'react-i18next';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import firestore from '@react-native-firebase/firestore';
+import { Picker } from '@react-native-picker/picker';
+const { width, height } = Dimensions.get('window');
 
 const ProfileContent = () => {
-  const {t} = useTranslation();
+  const { t, i18n } = useTranslation();
   const userMobileNumber = useSelector(selectMobileNumber);
   const [dealerData, setDealerData] = useState(null);
   const [loading, setLoading] = useState(true);
-  
+  const currentLanguage = i18n.language;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,7 +42,10 @@ const ProfileContent = () => {
       </View>
     );
   }
-
+  const handleChangeLanguage = async (value) => {
+    await AsyncStorage.setItem('selectedLanguage', value);
+    i18n.changeLanguage(value);
+  };
   return (
     <View>
       <Text style={styles.title}> {t('userprofile')} </Text>
@@ -68,7 +74,18 @@ const ProfileContent = () => {
         <Text style={styles.label}>{t('irate')}</Text>
         <Text style={styles.value}>{dealerData?.irate || '-'}</Text>
       </View>
-      
+      <View style={styles.pickerContainer}>
+          <Picker
+            selectedValue={currentLanguage}
+            onValueChange={(itemValue) => handleChangeLanguage(itemValue)}
+            style={styles.picker}
+            dropdownIconColor='black'
+          >
+            <Picker.Item label="English" value="en" />
+            <Picker.Item label="हिन्दी" value="hi" />
+            <Picker.Item label="मराठी" value="mr" />
+          </Picker>
+        </View>
     </View>
     <View style={styles.bottom}>
         <Text style={styles.bottomText}>
@@ -126,6 +143,19 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: 'gray',
   },
+  pickerContainer: {
+    // marginLeft: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor:"#E1F3FD",
+    borderRadius:width*0.03,
+  },
+  picker: {
+    color: '#0072B1',
+    width:width*0.78,
+    // backgroundColor:'#C4FAFA'
+  },
+
 });
 
 export default ProfileContent;

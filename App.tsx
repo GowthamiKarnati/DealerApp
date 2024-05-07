@@ -102,7 +102,7 @@ import ProfileScreen from './screens/ProfileScreen';
 import { selectMobileNumber, setMobileNumber } from './redux/slices/authSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomerScreen from './screens/CustomerScreen';
-import { ActivityIndicator, View } from 'react-native';
+import { ActivityIndicator, View,Image } from 'react-native';
 import ReviewScreen from './screens/ReviewScreen';
 import CustomerProfileScreen from './screens/CustomerProfileScreen';
 import UpdateScreen from './screens/UpdateScreen';
@@ -148,8 +148,12 @@ function App() {
 
   if (initialLoading) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" color="#0000ff" />
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor:'white' }}>
+      <Image
+        source={require('./images/Logo.png')}
+        style={{ width: '60%', resizeMode: 'contain', margin: 30 }}
+      />
+        {/* <ActivityIndicator size="large" color="#0000ff" /> */}
       </View>
     );
     

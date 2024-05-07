@@ -209,7 +209,28 @@ export default {
   addedsuccessfully:'सफलतापूर्वक जोड़ा गया',
   uploadsuccessfully:'अपलोड सफलतापूर्वक हुआ',
   
-
+  "FillHouseDetails": "घर के विवरण भरें",
+  "HouseImages": "घर की छवियाँ",
+  "Attach": "जोड़ें",
+  "HouseLocation": "घर का स्थान",
+  "InvalidURL": "अमान्य URL",
+  "HowToGetGoogleMapsURL": "Google Maps URL कैसे प्राप्त करें?",
+  "AttachHouseImages": "5 छवियाँ जोड़ें",
+  "EnterGoogleMapsURL": "Google Maps URL दर्ज करें",
+  "OpenGoogleMaps": "अपने डिवाइस पर Google Maps खोलें।",
+  "SearchLocation": "अपने घर या इच्छित स्थान की खोज करें।",
+  "ClickMarker": "स्थान चिह्नित करें या मैप पर लंबा दबाएं।",
+  "SelectShare": "\"साझा करें\" विकल्प का चयन करें।",
+  "ChooseCopyLink": "साझा मेनू से \"लिंक कॉपी करें\" चुनें।",
+  "PasteURL": "प्रतिपादित URL को ऐप में प्रदान क्षेत्र में पेस्ट करें।",
+  "HouseDetails": "घर के विवरण",
+  "HouseImagesUpdate": "घर की छवियाँ अपडेट",
+  "HouseImages": "घर की छवियाँ",
+  "chooseImages": "छवियाँ चुनें",
+  "uploadButton": "अपलोड",
+  "UpdateHouseLocation": "घर की स्थान अपडेट करें",
+  "Vehicle images":"वाहन छवियाँ",
+  
 
 
 

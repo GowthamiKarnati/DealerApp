@@ -30,7 +30,7 @@ const DobUpdate = () => {
     try{
     setLoading(true);
     let data;
-        data = { record_id,noofyearsinbusiness,marital:customerKYCData['Marital Status'],housetype:customerKYCData['House Owned or Rented'],monthlyemioutflow:customerKYCData['Monthly EMI Outflow'], noofchildren: customerKYCData['Number of Children'], dob: customerKYCData['Date of Birth'], pan: customerKYCData['PAN Number'],nooftrucks:customerKYCData['Number of Trucks'] ,city:customerKYCData['City'],houseaddress:customerKYCData['House Address'],phone:customerKYCData['Phone Number'],altphone:customerKYCData['Alternate Phone Number'],status : "Updated"};
+        data = { record_id,noofyearsinbusiness,marital:customerKYCData['Marital Status'],housetype:customerKYCData['House Owned or Rented'],monthlyemioutflow:customerKYCData['Monthly EMI Outflow'], noofchildren: customerKYCData['Number of Children'], dob: customerKYCData['Date of Birth'], pan: customerKYCData['PAN Number'],nooftrucks:customerKYCData['Number of Trucks'] ,city:customerKYCData['City'],houseaddress:customerKYCData['House Address'],phone:customerKYCData['Phone Number'],altphone:customerKYCData['Alternate Phone Number'],status : "Updated",houseUrl : customerKYCData['House Location URL'],};
         console.log(data)
         const response = await axios.post(`https://backendforpnf.vercel.app/updatedob`, data);
         console.log('Server response:', response.data);

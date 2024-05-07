@@ -204,7 +204,8 @@ const PhoneUpdate = ({ alternate }) => {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [altphone, setAltphone] = useState(customerKYCData['Alternate Phone Number'] ?? '');
-
+  const houseUrl = customerKYCData['House Location URL'];
+  console.log("House Url:", houseUrl);
   const handleUpdateChildren = async () => {
     try {
       let data;
@@ -239,7 +240,8 @@ const PhoneUpdate = ({ alternate }) => {
           noofchildren: customerKYCData['Number of Children'],
           dob: customerKYCData['Date of Birth'],
           pan: customerKYCData['PAN Number'],
-          status : "Updated"
+          status : "Updated",
+          houseUrl : customerKYCData['House Location URL'],
         };
       } else {
         data = {
@@ -256,7 +258,8 @@ const PhoneUpdate = ({ alternate }) => {
           dob: customerKYCData['Date of Birth'],
           pan: customerKYCData['PAN Number'],
           altphone: customerKYCData['Alternate Phone Number'],
-          status : "Updated"
+          status : "Updated",
+          houseUrl : customerKYCData['House Location URL'],
         };
       }
 

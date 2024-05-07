@@ -1,5 +1,5 @@
-import React, { useState,useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity,ActivityIndicator,Image,Modal,FlatList } from 'react-native';
+import React, { useState,useEffect, useCallback } from 'react';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity,ActivityIndicator,Image,Modal,FlatList,LayoutAnimation } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
@@ -12,7 +12,7 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import Collapsible from 'react-native-collapsible';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { setSubmitting } from '../../redux/slices/authSlice';
-import WheelPicker from 'react-native-wheel-scrollview-picker';
+
 
 const NewApplication = ({ loanType, showPersonalInfo, setShowPersonalInfo}) => {
       
@@ -52,6 +52,7 @@ const NewApplication = ({ loanType, showPersonalInfo, setShowPersonalInfo}) => {
       const [uploadingImage, setUploadingImage] = useState(false);
       const [personalInfoCollapsed, setPersonalInfoCollapsed] = useState(true);
       const [kycDocumentsCollapsed, setKycDocumentsCollapsed] = useState(true);
+      const [housedetails, setHousedetails] =  useState(true);
       const [dobDay, setDOBDay] = useState('DD');
       const [dobMonth, setDOBMonth] = useState('MM');
       const [dobYear, setDOBYear] = useState('YYYY');
@@ -59,10 +60,14 @@ const NewApplication = ({ loanType, showPersonalInfo, setShowPersonalInfo}) => {
       const [phoneerrorMessage, setphoneErrorMessage] = useState('');
       const [alternateError, setAlternateError] = useState('');
       const [confpanError, setConfpanError]= useState('');
-      const [dayModalVisible, setDayModalVisible] = useState(false);
-      const [monthModalVisible, setMonthModalVisible] = useState(false);
-      const [yearModalVisible, setYearModalVisible] = useState(false);
       const [panmismatch, setPanmismatch] = useState('');
+      const [houseUrl, setHouseUrl] = useState('');
+      const [instructionsVisible, setInstructionsVisible] = useState(false);
+      const [validUrl, setValidUrl] = useState(true);
+      const [hupload, setHupload] =  useState(false);
+      const [houseImages, setHouseImages] = useState([]);
+      const [files, setFiles] = useState([]); 
+      
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -102,6 +107,9 @@ const NewApplication = ({ loanType, showPersonalInfo, setShowPersonalInfo}) => {
   const handleSubmit = async () => {
     try {
       const dob = `${dobDay}/${dobMonth}/${dobYear}`;
+      // if (!validUrl) {
+      //   return;
+      // }
       if (
         name.trim() === '' ||
         panNumber.trim() === '' ||
@@ -112,7 +120,7 @@ const NewApplication = ({ loanType, showPersonalInfo, setShowPersonalInfo}) => {
         monthlyEmiOutflow.trim() === '' ||
         numberOfChildren.trim() === '' ||
         truckNumber.trim() === '' ||
-         
+        
         panFiles.length === 0 ||
         frontFiles.length === 0 ||
         backFiles.length === 0 ||
@@ -159,7 +167,9 @@ const NewApplication = ({ loanType, showPersonalInfo, setShowPersonalInfo}) => {
         aadharfront:frontFiles,
         aadharback:backFiles,
         dob: dob || null,
-        confpanNumber
+        confpanNumber,
+        houseUrl,
+        houseImages :files
       });
   
       console.log('Server response:', response.data);
@@ -272,13 +282,79 @@ const NewApplication = ({ loanType, showPersonalInfo, setShowPersonalInfo}) => {
       console.log('Error in uploadBase64ToBackend:', error);
     }
   };
+  
 
-const togglePersonalInfoCollapse = () => {
-  setPersonalInfoCollapsed(!personalInfoCollapsed);
+const handleGallery = async () => {
+    
+    const options = {
+      mediaType: 'photo',
+      selectionLimit: 5, // Adjust the selection limit as needed
+      includeBase64: true,
+    };
+  
+    try {
+      const result = await launchImageLibrary(options);
+      const selectedImages = result.assets.map((asset) => asset.uri);
+      setHouseImages(selectedImages);
+  
+      const uploadedFiles = [];
+      for (const asset of result.assets) {
+        const base64Data = asset.base64;
+        const uploadedFile = await base64ToBackend(base64Data);
+        uploadedFiles.push(uploadedFile);
+      }
+  
+      // Set all uploaded files
+      setFiles(uploadedFiles.flat()); // Flatten the array and update files state
+    } catch (error) {
+      console.log('Error in handleGalleryLaunch:', error);
+    } 
+  };
+
+  const base64ToBackend = async (base64Data) => {
+    try {
+      setUploadingImage(true);
+      const response = await axios.post('https://backendforpnf.vercel.app/fileUpload', { base64Data }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      console.log('Server response:', response.data);
+      const { msg: { files: uploadedFiles, success } } = response.data;
+      setUploadingImage(false);
+      return uploadedFiles;// Update files state
+      
+    } catch (error) {
+      console.log('Error in uploadBase64ToBackend:', error);
+    }
+  };
+
+  const togglePersonalInfoCollapse = useCallback(() => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setPersonalInfoCollapsed(!personalInfoCollapsed);
+  },[personalInfoCollapsed]);
+
+  const toggleKycDocumentsCollapse = useCallback(() => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setKycDocumentsCollapsed(!kycDocumentsCollapsed);
+  },[kycDocumentsCollapsed]);
+  const toggleHouseDetailsCollapse = useCallback(() => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setHousedetails(!housedetails)
+  },[housedetails]);
+  const handleHouseUrlChange = (url) => {
+    setHouseUrl(url);
+    validateUrl(url);
+  };
+  const validateUrl = (url) => {
+    const pattern = /^(ftp|http|https):\/\/[^ "]+$/;
+    setValidUrl(pattern.test(url));
 };
-const toggleKycDocumentsCollapse = () => {
-  setKycDocumentsCollapsed(!kycDocumentsCollapsed);
-};
+  const showInstructions = () => {
+    setInstructionsVisible(!instructionsVisible);
+  };
+
 const renderDays = () => {
     const days = [];
     for (let i = 1; i <= 31; i++) {
@@ -314,41 +390,9 @@ const renderDays = () => {
     return years;
   };
 
-  const handleDaySelect = (day) => {
-    setDOBDay(day);
-    setDayModalVisible(false);
-  };
+  
 
-  const handleMonthSelect = (month) => {
-    setDOBMonth(month);
-    setMonthModalVisible(false);
-  };
-
-  const handleYearSelect = (year) => {
-    setDOBYear(year);
-    setYearModalVisible(false);
-  };
-
-  const renderDayItem = ({ item }) => (
-    <TouchableOpacity style={styles.item} onPress={() => handleDaySelect(item.value)}>
-       <Text style={styles.dayItemText}>{item.label}</Text>
-    </TouchableOpacity>
-  );
-
-  const renderMonthItem = ({ item }) => (
-    <TouchableOpacity style={styles.item} onPress={() => handleMonthSelect(item.value)}>
-      <Text style={styles.dayItemText}>{item.label}</Text>
-    </TouchableOpacity>
-  );
-
-  const renderYearItem = ({ item }) => (
-    <TouchableOpacity style={styles.item} onPress={() => handleYearSelect(item.value)}>
-      <Text style={styles.dayItemText}>{item.label}</Text>
-    </TouchableOpacity>
-  );
-  const handleDayChange = (selectedDay) => {
-    setDOBDay(selectedDay);
-  };
+  
 
   return (
     <View style={styles.container}>
@@ -388,10 +432,10 @@ const renderDays = () => {
                   dropdownIconColor='black'
                 >
                   <Picker.Item label={t('selectbrand')} value="Select the brand" enabled={false}/>
-                  <Picker.Item label={t('ceat')} value="CEAT" />
-                  <Picker.Item label={t('mrf')} value="MRF" />
-                  <Picker.Item label={t('apollo')} value="Apollo" />
-                  <Picker.Item label={t('others')} value="others" />
+                  <Picker.Item label="CEAT" value="CEAT" />
+                  <Picker.Item label="MRF" value="MRF" />
+                  <Picker.Item label="Apollo" value="Apollo" />
+                  <Picker.Item label="Others" value="Others" />
                 </Picker>
               </View>
             </View>
@@ -441,7 +485,7 @@ const renderDays = () => {
             )}
               {!upload &&
               <TouchableOpacity style={styles.uploadButton} onPress={handleUpload}>
-              <Text style={styles.uploadText}>{t('attach')}</Text>
+              <Text style={styles.uploadText}>{t('Attach')}</Text>
               </TouchableOpacity>
               }
               {upload &&
@@ -470,7 +514,7 @@ const renderDays = () => {
             )}
             {!fupload &&
               <TouchableOpacity style={styles.uploadButton} onPress={()=>setFupload(true)}>
-              <Text style={styles.uploadText}>{t('attach')}</Text>
+              <Text style={styles.uploadText}>{t('Attach')}</Text>
               </TouchableOpacity>
               }
               {fupload &&
@@ -497,7 +541,7 @@ const renderDays = () => {
             )}
             {!bupload &&
               <TouchableOpacity style={styles.uploadButton} onPress={()=>setBupload(true)}>
-              <Text style={styles.uploadText}>{t('attach')}</Text>
+              <Text style={styles.uploadText}>{t('Attach')}</Text>
               </TouchableOpacity>
               }
               {bupload &&
@@ -567,7 +611,7 @@ const renderDays = () => {
             onValueChange={(itemValue) => setDOBMonth(itemValue)}
             dropdownIconColor="black"
             itemStyle={{padding:0, backgroundColor:'yellow'}}
-              mode="dropdown"
+            mode="dropdown"
           >
             <Picker.Item label="MM" value="MM" style={{fontSize:15, color:'black'}}/>
             {renderMonths().map((month, index) => (
@@ -810,7 +854,7 @@ const renderDays = () => {
               onChangeText={setNumberOfChildren}
             />
           </View>
-          <View style={styles.formGroup}>
+          {/* <View style={styles.formGroup}>
                 <Text style={styles.label}>{t('housetype')}<Text style={{ color: 'red', marginLeft: 5 }}>*</Text></Text>
                 <View style={styles.pickerContainer}>
                   <Picker
@@ -824,7 +868,7 @@ const renderDays = () => {
                     <Picker.Item label={t('rented')} value="Rented" />
                   </Picker>
                 </View>
-              </View>
+              </View> */}
           <View style={styles.formGroup}>
             <Text style={styles.label}>{t('trucknum')}<Text style={{ color: 'red', marginLeft: 5 }}>*</Text></Text>
             <TextInput
@@ -847,7 +891,89 @@ const renderDays = () => {
             />
           </View>
       </Collapsible>
+      <TouchableOpacity onPress={toggleHouseDetailsCollapse}>
+          <View style={styles.header}>
+              <Text style={styles.headerText}>{t('FillHouseDetails')}</Text>
+              <Icon
+                  name={housedetails ? 'chevron-right' : 'chevron-down'}
+                  size={20}
+                  color="#9ca3af"
+                  style={styles.icon}
+              />
+          </View>
+      </TouchableOpacity>
+      <Collapsible collapsed={housedetails}>
+      <View style={styles.formGroup}>
+        {/* House Type */}
+        <Text style={styles.label}>{t('housetype')}<Text style={{ color: 'red', marginLeft: 5 }}>*</Text></Text>
+          <View style={styles.pickerContainer}>
+            <Picker
+                selectedValue={houseType}
+                onValueChange={(itemValue) => setHouseType(itemValue)}
+                style={styles.picker}
+                dropdownIconColor='black'
+            >
+                <Picker.Item label={t('selectHouseType')} value="" enabled={false}/>
+                <Picker.Item label={t('owned')} value="Owned" />
+                <Picker.Item label={t('rented')} value="Rented" />
+            </Picker>
+          </View>
+      </View>
+      <View style={styles.formGroup}>
+  
+  <Text style={styles.label}>{t('HouseImages')}</Text>
+  <Text style={{ color: '#555', marginBottom: 5 }}>{t('AttachHouseImages')}</Text>
+  <TouchableOpacity style={styles.uploadButton} onPress={handleGallery}>
+      <Text style={styles.uploadText}>{t('Attach')}</Text>
+    </TouchableOpacity>
+  {houseImages.length > 0 ? (
+    <View style={[styles.panCardContainer,{flexDirection: 'row',flexWrap: 'wrap'}]}>
+      {houseImages.map((imageUri, index) => (
+        <View key={index} style={{margin: 5,}}>
+        <Image
+          key={index}
+          source={{ uri: imageUri }}
+          style={styles.panCardImage}
+          resizeMode={'cover'}
+        />
+        </View>
+      ))}
+    </View>
+  ) : (
+    null
+  )}
+  
+</View>
+      
+      <View style={styles.formGroup}>
+                    <Text style={styles.label}>{t('HouseLocation')}</Text>
+                    <TextInput
+                        style={[styles.input, !validUrl && styles.invalidInput]}
+                        placeholder= {t('EnterGoogleMapsURL')}
+                        placeholderTextColor="black"
+                        value={houseUrl}
+                        onChangeText={handleHouseUrlChange}
+                    />
+                     {!validUrl && <Text style={styles.errorText}>{t('InvalidURL')}</Text>}
+                    <TouchableOpacity onPress={showInstructions}>
+                        <Text style={styles.instructionsLink}>{t('HowToGetGoogleMapsURL')}</Text>
+                    </TouchableOpacity>
+                </View>
+      </Collapsible>
      
+      {instructionsVisible && (
+                <View style={styles.instructionsContainer}>
+                    <Text style={styles.instructionsText}>
+                      1.{t('OpenGoogleMaps')}{"\n"}
+                      2.{t('SearchLocation')}{"\n"}
+                      3.{t('ClickMarker')}{"\n"}
+                      4.{t('SelectShare')}{"\n"}
+                      5.{t('ChooseCopyLink')}{"\n"}
+                      6.{t('PasteURL')}
+                    </Text>
+
+                </View>
+            )}
           {errorforpersonal ? (
               <Text style={styles.errorMessage}>{errorforpersonal}</Text>
             ) : null}
@@ -1005,14 +1131,16 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: '#f0f0f0',
-    padding: 15,
+    padding: 20,
     marginBottom:10,
-    borderRadius:10
+    borderRadius:10,
+    
 },
 headerText: {
     fontSize: 23,
     fontWeight: 'bold',
     color: 'black',
+    
 },
 icon: {
     marginLeft: 10,
@@ -1061,9 +1189,8 @@ closeButtonText: {
 dobInputContainer: {
   flexDirection: 'column',
   justifyContent: 'space-between',
-  height:120,
-  flexWrap:'wrap'
-  ,
+  height:115,
+  flexWrap:'wrap',
   overflow: 'hidden',
 },
 inputContainer: {
@@ -1078,7 +1205,24 @@ inputContainer: {
   justifyContent:'center'
 },
 inputp: {
-  flex: 1,
+  flex: 1,dobInputContainer: {
+    flexDirection: 'row', // Changed to row to align pickers horizontally
+    justifyContent: 'space-between',
+    height: 120, // Adjusted height to accommodate all pickers
+    flexWrap: 'wrap',
+    overflow: 'hidden',
+  },
+  inputContainer: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    marginHorizontal: 2,
+    overflow: 'hidden',
+    marginBottom: 5,
+    justifyContent: 'center',
+    height: 120, // Added to ensure all pickers have the same height
+  },
   height: 70,
   alignItems:'center',
   justifyContent:'center'
@@ -1088,6 +1232,22 @@ inputp: {
 pickerInput: {
   flex: 1,
   fontSize:5,
+},
+instructionsLink: {
+  color: 'blue',
+  
+  
+},
+instructionsContainer: {
+  backgroundColor: '#f0f0f0',
+  padding: 10,
+  marginBottom:5
+},
+instructionsText: {
+  fontSize: 14,
+},
+invalidInput: {
+  borderColor: 'red',
 },
 
 });

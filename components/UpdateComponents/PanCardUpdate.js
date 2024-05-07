@@ -6,12 +6,12 @@ import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux'; 
 import axios from 'axios';
-import { selectCustomerKYCData } from '../../redux/slices/authSlice';
+import { selectCustomerKYCData, setCustomerKYCData } from '../../redux/slices/authSlice';
 import Toast from 'react-native-toast-message';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import ImagePicker from 'react-native-image-crop-picker';
-
-
+import { setUpdatingValue } from '../../redux/slices/authSlice';
+import { selectCustomerData } from '../../redux/slices/authSlice';
 
 const PanCardUpdate = () => {
   const { t } = useTranslation();
@@ -20,7 +20,8 @@ const PanCardUpdate = () => {
   const customerKYCData = useSelector(selectCustomerKYCData);
   //console.log("inpan",customerKYCData);
   console.log("customerKYCData['PAN Card']:", customerKYCData['PAN Card']);
-
+  const customerData =  useSelector(selectCustomerData)
+  const customerPhoneNumber = customerData?.['mobile number'] || 'N/A';
   const record_id = customerKYCData.record_id;
   const imageUrl = 'https://sc0.blr1.cdn.digitaloceanspaces.com/article/126722-ebpzzqejgp-1567498856.jpeg';
   const [panCardImage, setPanCardImage] = useState(null);
@@ -30,6 +31,7 @@ const PanCardUpdate = () => {
 
   const handleCameraLaunch = async () => {
     setLoading(true);
+    
     const options = {
       mediaType: 'photo',
       selectionLimit: 1,
@@ -51,6 +53,7 @@ const PanCardUpdate = () => {
 
   const handleGalleryLaunch = async () => {
     setLoading(true);
+   
     const options = {
       mediaType: 'photo',
       selectionLimit: 1,
@@ -111,6 +114,11 @@ const PanCardUpdate = () => {
         autoHide: true,
         topOffset: 30,
       });
+      navigation.navigate('CustomerProfile');
+      const modifiedMobileNumber = customerPhoneNumber.length > 10 ? customerPhoneNumber.slice(-10) : customerPhoneNumber;
+      const Kresponse = await axios.get(`https://backendforpnf.vercel.app/customerKyc?criteria=sheet_42284627.column_1100.column_87%20LIKE%20%22%25${encodeURIComponent(modifiedMobileNumber)}%22`);
+      const apiData = Kresponse.data.data[0] || {};
+      dispatch(setCustomerKYCData(apiData));  
     } catch (error) {
       console.log('Error in handleUpload:', error);
     }

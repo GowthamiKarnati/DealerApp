@@ -44,7 +44,8 @@ const CityUpdate = ({house}) => {
         houseaddress: customerKYCData['House Address'],
         phone: customerKYCData['Phone Number'],
         altphone: customerKYCData['Alternate Phone Number'],
-        status : "Updated"
+        status : "Updated",
+        houseUrl : customerKYCData['House Location URL'],
       };
     } else {
       data = { 
@@ -61,7 +62,8 @@ const CityUpdate = ({house}) => {
         pan: customerKYCData['PAN Number'],
         altphone: customerKYCData['Alternate Phone Number'],
         phone: customerKYCData['Phone Number'],
-        status : "Updated"
+        status : "Updated",
+        houseUrl : customerKYCData['House Location URL'],
       };
     }
     console.log("Data to be sent:", data); 

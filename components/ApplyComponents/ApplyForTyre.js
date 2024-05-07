@@ -23,9 +23,9 @@ const ApplyForTyre = ({  loanType }) => {
   const customerPhoneNumber = customerData?.['mobile number'] || 'N/A';
   console.log(customerPhoneNumber)
   const sourcerefid = customerData?.["DEALER reference_id"];
-  console.log(sourcerefid)
+  //console.log(sourcerefid)
   const source = customerData?.DEALER || null;
-  console.log(source);
+  //console.log(source);
 
 
 
@@ -178,10 +178,10 @@ const ApplyForTyre = ({  loanType }) => {
                   dropdownIconColor='black'
                 >
                   <Picker.Item label={t('selectbrand')} value="Select the brand" enabled={false}/>
-                  <Picker.Item label={t('ceat')} value="CEAT" />
-                  <Picker.Item label={t('mrf')} value="MRF" />
-                  <Picker.Item label={t('apollo')} value="Apollo" />
-                  <Picker.Item label={t('others')} value="others" />
+                  <Picker.Item label="CEAT" value="CEAT" />
+                  <Picker.Item label="MRF" value="MRF" />
+                  <Picker.Item label="Apollo" value="Apollo" />
+                  <Picker.Item label="Others" value="Others" />
                 </Picker>
               </View>
             </View>

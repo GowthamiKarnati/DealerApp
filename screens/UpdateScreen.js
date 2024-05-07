@@ -14,6 +14,8 @@ import PhoneUpdate from '../components/UpdateComponents/PhoneUpdate';
 import TruckNumber from '../components/UpdateComponents/TruckNumber';
 import PanCardUpdate from '../components/UpdateComponents/PanCardUpdate';
 import AadharCardUpdate from '../components/UpdateComponents/AadharCardUpdate';
+import HouseImagesUpdate from '../components/UpdateComponents/HouseImagesUpdate';
+import HouseLocationUpdate from '../components/UpdateComponents/HouseLocationUpdate';
 
 
 
@@ -53,6 +55,10 @@ const UpdateScreen = () => {
         return <PanCardUpdate />
       case 'aadharcard':
         return <AadharCardUpdate />
+      case 'houseimage':
+        return <HouseImagesUpdate />
+      case 'houselocation':
+        return <HouseLocationUpdate />
       default:
         return null;
     }

@@ -208,7 +208,29 @@ export default {
     "selectHouseType": "घराचा प्रकार निवडा",
     "Please correct the confirmation error above before editing this field":'कृपया हा क्षेत्र संपादित करण्यापूर्वी, वरील पुष्टी त्रुटी सुधारा',
     addedsuccessfully:'यशस्वीरित्या जोडले गेले',
-    uploadsuccessfully:'यशस्वीरित्या अपलोड केले गेले'
+    uploadsuccessfully:'यशस्वीरित्या अपलोड केले गेले',
+    "FillHouseDetails": "घराचे तपशील भरा",
+    "HouseImages": "घराचे चित्र",
+    "Attach": "प्रस्तुत करा",
+    "HouseLocation": "घराचे स्थान",
+    "InvalidURL": "अवैध URL",
+    "HowToGetGoogleMapsURL": "Google Maps URL कशा मिळवावा?",
+    "AttachHouseImages": "५ चित्रे जोडा",
+    "EnterGoogleMapsURL": "Google Maps URL प्रविष्ट करा",
+    "OpenGoogleMaps": "आपल्या डिव्हाइसवर Google Maps उघडा।",
+  "SearchLocation": "आपल्या घर किंवा इच्छित स्थानाची शोध करा।",
+  "ClickMarker": "स्थानाचा चिन्ह प्रेस करा किंवा मॅपवर लांब दाबा।",
+  "SelectShare": "\"सामायिक करा\" निवडा।",
+  "ChooseCopyLink": "सामायिकी मेनूमधून \"लिंक कॉपी करा\" निवडा।",
+  "PasteURL": "प्रतिलिपीत URL ऍपमध्ये प्रदान क्षेत्रामध्ये पेस्ट करा।",
+  "HouseDetails": "घराचे तपशील",
+  "HouseImagesUpdate": "घरची छायाचित्रे सुधारणा",
+  "HouseImages": "घरची छायाचित्रे",
+  "chooseImages": "छायाचित्रे निवडा",
+  "uploadButton": "अपलोड करा",
+  "UpdateHouseLocation": "घरची स्थान अपडेट करा",
+  "Vehicle images": "वाहनाची छायांची",
+  
 
 
 };

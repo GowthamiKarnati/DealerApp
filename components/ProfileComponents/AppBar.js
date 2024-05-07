@@ -78,6 +78,8 @@ import firestore from '@react-native-firebase/firestore';
 import { useTranslation } from 'react-i18next';
 import { Picker } from '@react-native-picker/picker';
 const { width, height } = Dimensions.get('window');
+
+
 const CustomPicker = ({ selectedValue, onValueChange }) => (
   <View style={styles.customPicker}>
     <Text style={styles.customPickerText}>{selectedValue}</Text>
@@ -89,7 +91,7 @@ const AppBar = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const userMobileNumber = useSelector(selectMobileNumber);
-  const currentLanguage = i18n.language;
+  //const currentLanguage = i18n.language;
 
   const handleBack = () => {
     navigation.navigate('Start');
@@ -106,10 +108,10 @@ const AppBar = () => {
     }
   };
 
-  const handleChangeLanguage = async (value) => {
-    await AsyncStorage.setItem('selectedLanguage', value);
-    i18n.changeLanguage(value);
-  };
+  // const handleChangeLanguage = async (value) => {
+  //   await AsyncStorage.setItem('selectedLanguage', value);
+  //   i18n.changeLanguage(value);
+  // };
 
   return (
     <SafeAreaView>
@@ -121,7 +123,7 @@ const AppBar = () => {
           <Text style={styles.appBarTitle}>{t('profile')}</Text>
         </View>
         
-        <View style={styles.pickerContainer}>
+        {/* <View style={styles.pickerContainer}>
           <Picker
             selectedValue={currentLanguage}
             onValueChange={(itemValue) => handleChangeLanguage(itemValue)}
@@ -132,7 +134,7 @@ const AppBar = () => {
             <Picker.Item label="हिन्दी" value="hi" />
             <Picker.Item label="मराठी" value="mr" />
           </Picker>
-        </View>
+        </View> */}
         <TouchableOpacity onPress={handleLogout}>
           <Icon name="sign-out-alt" size={23} color="white" />
         </TouchableOpacity>

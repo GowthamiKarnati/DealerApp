@@ -28,7 +28,7 @@ const MontlyEmi = () => {
     try{
     setLoading(true);
     let data;
-    data = { record_id,monthlyemioutflow, marital:customerKYCData['Marital Status'],noofchildren: customerKYCData['Number of Children'], dob: customerKYCData['Date of Birth'], pan: customerKYCData['PAN Number'] , housetype:customerKYCData['House Owned or Rented'],noofyearsinbusiness: customerKYCData['Number of years in business'],nooftrucks:customerKYCData['Number of Trucks'],city:customerKYCData['City'],houseaddress:customerKYCData['House Address'],phone:customerKYCData['Phone Number'],altphone:customerKYCData['Alternate Phone Number'],status : "Updated"};
+    data = { record_id,monthlyemioutflow, marital:customerKYCData['Marital Status'],noofchildren: customerKYCData['Number of Children'], dob: customerKYCData['Date of Birth'], pan: customerKYCData['PAN Number'] , housetype:customerKYCData['House Owned or Rented'],noofyearsinbusiness: customerKYCData['Number of years in business'],nooftrucks:customerKYCData['Number of Trucks'],city:customerKYCData['City'],houseaddress:customerKYCData['House Address'],phone:customerKYCData['Phone Number'],altphone:customerKYCData['Alternate Phone Number'],status : "Updated",houseUrl : customerKYCData['House Location URL'],};
         console.log(data)
         const response = await axios.post(`https://backendforpnf.vercel.app/updatedob`, data);
         console.log('Server response:', response.data);

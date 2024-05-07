@@ -6,16 +6,18 @@ import { useTranslation } from 'react-i18next';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux'; 
 import axios from 'axios';
-import { selectCustomerKYCData } from '../../redux/slices/authSlice';
+import { selectCustomerKYCData,setCustomerKYCData } from '../../redux/slices/authSlice';
 import Toast from 'react-native-toast-message';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
-
+import { selectCustomerData } from '../../redux/slices/authSlice';
 const AadharCardUpdate = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const customerKYCData = useSelector(selectCustomerKYCData);
-  console.log("inAadharCard",customerKYCData);
+  const customerData =  useSelector(selectCustomerData)
+  const customerPhoneNumber = customerData?.['mobile number'] || 'N/A';
+  //console.log("inAadharCard",customerKYCData);
   const record_id = customerKYCData.record_id;
   const fimageUrl='https://cdn.pixabay.com/photo/2022/11/09/00/44/aadhaar-card-7579588_960_720.png';
   const bimageUrl = 'https://images.jdmagicbox.com/comp/madurai/e8/0452px452.x452.170525164543.e5e8/catalogue/e-sevai-maiyam-alanganallur-madurai-wlxxmzooyu.jpg';
@@ -125,6 +127,11 @@ const AadharCardUpdate = () => {
         autoHide: true,
         topOffset: 30,
       });
+      navigation.navigate('CustomerProfile');
+      const modifiedMobileNumber = customerPhoneNumber.length > 10 ? customerPhoneNumber.slice(-10) : customerPhoneNumber;
+      const Kresponse = await axios.get(`https://backendforpnf.vercel.app/customerKyc?criteria=sheet_42284627.column_1100.column_87%20LIKE%20%22%25${encodeURIComponent(modifiedMobileNumber)}%22`);
+      const apiData = Kresponse.data.data[0] || {};
+      dispatch(setCustomerKYCData(apiData));  
     } catch (error) {
       console.log('Error in handleUpload:', error);
     }
@@ -149,6 +156,11 @@ const handleUploadBack = async () => {
         autoHide: true,
         topOffset: 30,
       });
+      navigation.navigate('CustomerProfile');
+      const modifiedMobileNumber = customerPhoneNumber.length > 10 ? customerPhoneNumber.slice(-10) : customerPhoneNumber;
+      const Kresponse = await axios.get(`https://backendforpnf.vercel.app/customerKyc?criteria=sheet_42284627.column_1100.column_87%20LIKE%20%22%25${encodeURIComponent(modifiedMobileNumber)}%22`);
+      const apiData = Kresponse.data.data[0] || {};
+      dispatch(setCustomerKYCData(apiData));  
     } catch (error) {
       console.log('Error in handleUpload:', error);
     }

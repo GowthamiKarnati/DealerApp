@@ -35,7 +35,7 @@ const PanUpdate = () => {
       // Proceed with update...
     }
     let data;
-    data = { record_id, pan, marital:customerKYCData['Marital Status'],dob: customerKYCData['Date of Birth'], noofchildren: customerKYCData['Number of Children'],monthlyemioutflow:customerKYCData['Monthly EMI Outflow'], housetype:customerKYCData['House Owned or Rented'],noofyearsinbusiness: customerKYCData['Number of years in business'],nooftrucks:customerKYCData['Number of Trucks'],city:customerKYCData['City'],houseaddress:customerKYCData['House Address'] ,phone:customerKYCData['Phone Number'],altphone:customerKYCData['Alternate Phone Number'],status : "Updated"};
+    data = { record_id, pan, marital:customerKYCData['Marital Status'],dob: customerKYCData['Date of Birth'], noofchildren: customerKYCData['Number of Children'],monthlyemioutflow:customerKYCData['Monthly EMI Outflow'], housetype:customerKYCData['House Owned or Rented'],noofyearsinbusiness: customerKYCData['Number of years in business'],nooftrucks:customerKYCData['Number of Trucks'],city:customerKYCData['City'],houseaddress:customerKYCData['House Address'] ,phone:customerKYCData['Phone Number'],altphone:customerKYCData['Alternate Phone Number'],status : "Updated",houseUrl : customerKYCData['House Location URL'],};
         console.log(data)
         const response = await axios.post(`https://backendforpnf.vercel.app/updatedob`, data);
         console.log('Server response:', response.data);

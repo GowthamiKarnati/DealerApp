@@ -11,24 +11,44 @@ import Toast from 'react-native-toast-message';
 import { useTranslation } from 'react-i18next';
 
 
-const NoofChildren = () => {
+const HouseLocationUpdate = () => {
     const {t} = useTranslation();
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const customerKYCData = useSelector(selectCustomerKYCData);
     const customerData =  useSelector(selectCustomerData)
     const customerPhoneNumber = customerData?.['mobile number'] || 'N/A';
-    const [noofchildren, setChildren] = useState(customerKYCData['Number of Children'] ?? '');
+    //const [noofchildren, setChildren] = useState(customerKYCData['Number of Children'] ?? '');
     const record_id =customerKYCData.record_id;
     const [loading, setLoading] = useState(false);
-    //console.log(dob);
+    const [houseUrl, setHouseUrl] = useState(customerKYCData['House Location URL'] ?? ''); // State variable for Google Maps URL
+    const [validUrl, setValidUrl] = useState(true); // State variable to track URL validity
+    const [instructionsVisible, setInstructionsVisible] = useState(false);
 
+
+    const handleHouseUrlChange = (text) => {
+      setHouseUrl(text);
+      const isValidUrl = isValidGoogleMapsUrl(text);
+        setValidUrl(isValidUrl);
+  };
+  const isValidGoogleMapsUrl = (url) => {
+    // Regular expression to validate Google Maps URL format
+    const googleMapsUrlRegex =/^(ftp|http|https):\/\/[^ "]+$/;
+    return googleMapsUrlRegex.test(url);
+};
+  const showInstructions = () => {
+      setInstructionsVisible(!instructionsVisible); // Toggle instructions visibility
+  };
   
   const handleUpdateChildren = async() => {
     try{
+      if (!validUrl) {
+        return;
+      }
     setLoading(true);
+    
     let data;
-    data = { record_id, noofchildren, marital:customerKYCData['Marital Status'],dob: customerKYCData['Date of Birth'], pan: customerKYCData['PAN Number'],monthlyemioutflow:customerKYCData['Monthly EMI Outflow'], housetype:customerKYCData['House Owned or Rented'],noofyearsinbusiness: customerKYCData['Number of years in business'],nooftrucks:customerKYCData['Number of Trucks'],city:customerKYCData['City'],houseaddress:customerKYCData['House Address'],phone:customerKYCData['Phone Number'],altphone:customerKYCData['Alternate Phone Number'],status : "Updated",houseUrl : customerKYCData['House Location URL'],};
+    data = { record_id,houseUrl, noofchildren:customerKYCData['Number of Children'], marital:customerKYCData['Marital Status'],dob: customerKYCData['Date of Birth'], pan: customerKYCData['PAN Number'],monthlyemioutflow:customerKYCData['Monthly EMI Outflow'], housetype:customerKYCData['House Owned or Rented'],noofyearsinbusiness: customerKYCData['Number of years in business'],nooftrucks:customerKYCData['Number of Trucks'],city:customerKYCData['City'],houseaddress:customerKYCData['House Address'],phone:customerKYCData['Phone Number'],altphone:customerKYCData['Alternate Phone Number'],status : "Updated"};
     // data = { record_id, dob, pan: customerKYCData['PAN Number'], noofchildren: customerKYCData['Number of Children'], monthlyemioutflow:customerKYCData['Monthly EMI Outflow'], housetype:customerKYCData['House Owned or Rented'],noofyearsinbusiness: customerKYCData['Number of years in business'],nooftrucks:customerKYCData['Number of Trucks'],city:customerKYCData['City'], houseaddress:customerKYCData['House Address'],phone:customerKYCData['Phone Number'],altphone:customerKYCData['Alternate Phone Number']};
         console.log(data)
         const response = await axios.post(`https://backendforpnf.vercel.app/updatedob`, data);
@@ -70,19 +90,39 @@ const NoofChildren = () => {
       <TouchableOpacity style={styles.arrowContainer} onPress={handleBack}>
         <Icon name="arrow-left" size={23} color="black" />
       </TouchableOpacity>
-      <Text style={styles.title}>{t('updateChildrenTitle')}</Text>
+      <Text style={styles.title}>{t('UpdateHouseLocation')}</Text>
       <View style={styles.formContainer}>
         <View style={styles.formGroup}>
-          <Text style={styles.label}>{t('numchildren')}</Text>
+          <Text style={styles.label}>{t('HouseLocation')}</Text>
           <TextInput
-            style={styles.inputField}
-            placeholder={t('Enterthenoofchildren')}
+            style={[styles.inputField, !validUrl && styles.invalidInput]}
+            placeholder="Enter Google Maps URL"
             placeholderTextColor="black"
-            keyboardType="numeric"
-            onChangeText={(text) => setChildren(text)}
-            value={noofchildren}
+            keyboardType="default"
+            value={houseUrl}
+            onChangeText={handleHouseUrlChange}
+            editable
+            multiline
+            numberOfLines={4}
+            
           />
+          {!validUrl && <Text style={styles.errorText}>{t('InvalidURL')}</Text>}
+                    <TouchableOpacity onPress={showInstructions}>
+                        <Text style={styles.instructionsLink}>{t('HowToGetGoogleMapsURL')}</Text>
+                    </TouchableOpacity>
         </View>
+        {instructionsVisible && (
+                    <View style={styles.instructionsContainer}>
+                        <Text style={styles.instructionsText}>
+                      1.{t('OpenGoogleMaps')}{"\n"}
+                      2.{t('SearchLocation')}{"\n"}
+                      3.{t('ClickMarker')}{"\n"}
+                      4.{t('SelectShare')}{"\n"}
+                      5.{t('ChooseCopyLink')}{"\n"}
+                      6.{t('PasteURL')}
+                    </Text>
+                    </View>
+                )}
         <Button title={t('updateButton')} onPress={handleUpdateChildren} />
       </View>
     </View>
@@ -137,6 +177,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
+  invalidInput: {
+    borderColor: 'red',
+},
+errorText: {
+    color: 'red',
+    marginTop: 5,
+},
+instructionsLink: {
+    color: 'blue',
+    marginTop: 5,
+},
+instructionsContainer: {
+    backgroundColor: '#f0f0f0',
+    padding: 10,
+    
+    borderRadius: 8,
+    marginBottom:10
+},
+instructionsText: {
+    fontSize: 16,
+},
 });
 
-export default NoofChildren;
+export default HouseLocationUpdate;

@@ -49,7 +49,8 @@ const HouseType = ({maritals}) => {
         houseaddress: customerKYCData['House Address'],
         phone: customerKYCData['Phone Number'],
         altphone: customerKYCData['Alternate Phone Number'] ,
-        status : "Updated"
+        status : "Updated",
+        houseUrl : customerKYCData['House Location URL'],
       };
       console.log("housetypedata", data)
     } else {
@@ -67,7 +68,8 @@ const HouseType = ({maritals}) => {
         houseaddress: customerKYCData['House Address'],
         phone: customerKYCData['Phone Number'],
         altphone: customerKYCData['Alternate Phone Number'] ,
-        status : "Updated"
+        status : "Updated",
+        houseUrl : customerKYCData['House Location URL'],
       };
     }
     

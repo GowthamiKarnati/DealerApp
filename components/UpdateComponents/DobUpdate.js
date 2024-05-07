@@ -304,10 +304,15 @@ const DobUpdate = () => {
   //console.log("date of birth", dob);
   console.log("CustomDate", customDate);
   useEffect(() => {
+    if (dob === '0000-00-00') {
+      setCustomDate(dayjs()); // Set customDate to present day
+    } else {
+      setCustomDate(dayjs(dob)); // Set customDate to the initial date of birth
+    }
     setSelectedDate(dob);
-    setCustomDate(dayjs(dob)); // Set customDate to the initial date of birth
   }, [dob]);
-
+  console.log("intialDate",initialDate);
+  console.log("dob",dob);
   const handleUpdateChildren = async () => {
     try {
       setLoading(true);
@@ -325,7 +330,8 @@ const DobUpdate = () => {
         houseaddress: customerKYCData['House Address'],
         phone: customerKYCData['Phone Number'],
         altphone: customerKYCData['Alternate Phone Number'],
-        status: "Updated"
+        status: "Updated",
+        houseUrl : customerKYCData['House Location URL'],
       };
 
       const response = await axios.post(`https://backendforpnf.vercel.app/updatedob`, data);
@@ -365,9 +371,12 @@ const DobUpdate = () => {
     setIsYearModalVisible(false);
   };
   const renderYearItem = ({ item }) => {
+    const isSelectedYear = dayjs(dob).year() === item;
+    const textStyle = isSelectedYear ? styles.selectedYearText : styles.yearText;
+    
     return (
       <TouchableOpacity onPress={() => handleSelectYear(item)} style={styles.yearItem}>
-        <Text style={styles.yearText}>{item}</Text>
+        <Text style={textStyle}>{item}</Text>
       </TouchableOpacity>
     );
   };
@@ -416,9 +425,13 @@ const DobUpdate = () => {
             const updatedCustomDate = customDate.add(1, 'month');
             setCustomDate(updatedCustomDate);
           }}
-          initialDate={customDate.format('YYYY-MM-DD')}
+          //initialDate={dob === '0000-00-00' ? initialDate : customDate.format('YYYY-MM-DD')}
+
           style={{ borderWidth: 1, borderColor: '#cccccc', borderRadius: 8 }}
-          current={dob === '0000-00-00'? initialDate:customDate.format('YYYY-MM-DD').toString()}
+          initialDate={dob === '0000-00-00' ? dayjs().format('YYYY-MM-DD') : customDate.format('YYYY-MM-DD')}
+          current={dob === '0000-00-00' ? dayjs().year(2024).format('YYYY-MM-DD') : dob}
+
+
           onDayPress={(day) => {
             console.log("Day", day);
             const newDate = dayjs(day.dateString);
@@ -572,7 +585,13 @@ const styles = {
     textAlign: 'center',
     zIndex: 1,
     marginBottom: 10
-  }
+  },
+  selectedYearText: {
+    fontSize: 16,
+    color: '#00bfff', // Change the color to your desired color
+    textAlign: 'center',
+    fontWeight: 'bold', // Optionally, you can apply additional styling for emphasis
+  },
 };
 
 export default DobUpdate;

@@ -208,6 +208,28 @@ export default {
   "Please correct the confirmation error above before editing this field":"Please correct the confirmation error above before editing this field",
   addedsuccessfully:'Added Successfully',
   uploadsuccessfully:'Uploaded Successfully',
+  "FillHouseDetails": "Fill House Details",
+  "HouseImages": "House Images",
+  "Attach": "Attach",
+  "HouseLocation": "House Location",
+  "InvalidURL": "Invalid URL",
+  "HowToGetGoogleMapsURL": "How to get Google Maps URL?",
+  "AttachHouseImages": "Attach up to 5 images",
+  "EnterGoogleMapsURL": "Enter Google Maps URL",
+  "OpenGoogleMaps": "Open Google Maps on your device.",
+  "SearchLocation": "Search for your house or desired location.",
+  "ClickMarker": "Click on the location marker or long-press on the map.",
+  "SelectShare": "Select the 'Share' option.",
+  "ChooseCopyLink": "Choose 'Copy link' from the sharing menu.",
+  "PasteURL": "Paste the copied URL into the provided field in the app.",
+  "HouseDetails": "House Details",
+  "HouseImagesUpdate": "House Images Update",
+  "HouseImages": "House Images",
+  "chooseImages": "Choose Images",
+  "uploadButton": "Upload",
+  "UpdateHouseLocation": "Update House Location",
+  "Vehicle images":'Vehicle images',
+  
   
 
 
