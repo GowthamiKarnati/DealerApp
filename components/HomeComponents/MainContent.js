@@ -21,9 +21,7 @@ import messaging from '@react-native-firebase/messaging';
 //import auth from '@react-native-firebase/auth';
 import Toast from 'react-native-toast-message';
 import {setCustomerData} from '../../redux/slices/authSlice';
-import { useTranslation } from 'react-i18next';
-
-
+import {useTranslation} from 'react-i18next';
 
 const MainContent = () => {
   const {t} = useTranslation();
@@ -35,18 +33,14 @@ const MainContent = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  
-  
-  
+
   useEffect(() => {
     fetchData();
     //getToken();
   }, [userMobileNumber]);
 
-
   const fetchData = async () => {
     try {
-     
       let modifiedMobileNumber = '';
       if (userMobileNumber) {
         modifiedMobileNumber =
@@ -56,6 +50,7 @@ const MainContent = () => {
         const response = await axios.get(
           `https://backendforpnf.vercel.app/customers?criteria=sheet_95100183.column_242.column_238%20LIKE%20%22%25${modifiedMobileNumber}%22`,
         );
+        console.log(response.data.data);
         setData(response.data.data || []);
         setLoading(false);
       } else {
@@ -65,10 +60,8 @@ const MainContent = () => {
     } catch (error) {
       console.error('Error fetching data Customer Data :', error);
       setData([]);
-      
-    }finally {
-      
-      setRefreshing(false); 
+    } finally {
+      setRefreshing(false);
     }
   };
   // const getToken = async () => {
@@ -150,12 +143,12 @@ const MainContent = () => {
 
   //         // Extract name and mobile number from remoteMessage.data
   //         const {name, mobilenumber} = remoteMessage.data;
-    
+
   //         // Construct customerData object
   //         const customerData = {name, 'mobile number': mobilenumber};
-    
+
   //         console.log(customerData); // Log customerData for verification
-    
+
   //         // Navigate to the 'Customer' screen with customerData as route params
   //         if (navigation) {
   //           navigation.navigate('Home'); // Pass customerData as route params
@@ -165,8 +158,7 @@ const MainContent = () => {
   //       }
   //     }
   //   );
-    
-  
+
   //   // Cleanup function
   //   return () => {
   //     foregroundHandler();
@@ -175,33 +167,36 @@ const MainContent = () => {
   useFocusEffect(
     React.useCallback(() => {
       dispatch(setSearchValue(''));
-    }, [dispatch])
+    }, [dispatch]),
   );
   const handleRefresh = () => {
     setRefreshing(true); // Set refreshing to true when refresh action starts
     fetchData(); // Call the fetchData function again to fetch updated data
   };
 
-
-
-
-  const renderCard = ({ item }) => {
+  const renderCard = ({item}) => {
     // Convert item.name and item['mobile number'] to uppercase
     const name = item.name ? item.name.toUpperCase() : 'N/A';
-    const mobileNumber = item['mobile number'] ? item['mobile number'].toUpperCase() : 'N/A';
-  
+    const mobileNumber = item['mobile number']
+      ? item['mobile number'].toUpperCase()
+      : 'N/A';
+
     return (
       <TouchableOpacity
         style={styles.cardContainer}
-        onPress={() => handleCustomer(item)}
-      >
+        onPress={() => handleCustomer(item)}>
         <View style={styles.cardContent}>
           <View style={styles.textContainer}>
             <Text style={styles.cardName}>{name}</Text>
             <Text style={styles.cardPhone}>{mobileNumber}</Text>
           </View>
           <View style={styles.iconContainer}>
-            <Icon name="chevron-right" size={20} color="gray" style={styles.icon} />
+            <Icon
+              name="chevron-right"
+              size={20}
+              color="gray"
+              style={styles.icon}
+            />
           </View>
         </View>
       </TouchableOpacity>
@@ -213,17 +208,19 @@ const MainContent = () => {
       {loading ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : data.length === 0 ? (
-        <Text style={{color:'red'}}>{t('noCustomersFound')}</Text>
-      ): filteredData.length === 0 ? (
-        <Text style={{color:'red'}}>{t('noCustomersFound')}, { searchValue }</Text>
+        <Text style={{color: 'red'}}>{t('noCustomersFound')}</Text>
+      ) : filteredData.length === 0 ? (
+        <Text style={{color: 'red'}}>
+          {t('noCustomersFound')}, {searchValue}
+        </Text>
       ) : (
         <FlatList
           data={filteredData}
           keyExtractor={(item, index) => index.toString()}
           renderItem={renderCard}
-          showsVerticalScrollIndicator={true} 
-          contentContainerStyle={{ paddingBottom: 20 }}
-          scrollIndicatorInsets={{ right: 10 }} 
+          showsVerticalScrollIndicator={true}
+          contentContainerStyle={{paddingBottom: 20}}
+          scrollIndicatorInsets={{right: 10}}
           refreshing={refreshing} // Set refreshing prop to control refresh state
           onRefresh={handleRefresh}
         />
@@ -235,7 +232,7 @@ const MainContent = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop:20,
+    marginTop: 20,
     marginHorizontal: 10,
   },
   cardContainer: {
@@ -243,10 +240,10 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     padding: 15,
     borderRadius: 10,
-    minHeight: 110, 
+    minHeight: 110,
     elevation: 4,
-    flexDirection: 'row', 
-    alignItems: 'center', 
+    flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
   },
   cardName: {
@@ -272,9 +269,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   icon: {
-    marginTop: 10, 
+    marginTop: 10,
   },
 });
-
 
 export default MainContent;

@@ -1,12 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator,RefreshControl, ScrollView} from 'react-native';
-import { Table, Row } from 'react-native-table-component';
-import { useSelector, useDispatch } from 'react-redux'; 
-import {  selectSearchValue } from '../../redux/slices/authSlice';
-import { selectApplicationData } from '../../redux/slices/authSlice';
-import { useTranslation } from 'react-i18next';
-
-
+import React, {useState, useEffect} from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ActivityIndicator,
+  RefreshControl,
+  ScrollView,
+} from 'react-native';
+import {Table, Row} from 'react-native-table-component';
+import {useSelector, useDispatch} from 'react-redux';
+import {selectSearchValue} from '../../redux/slices/authSlice';
+import {selectApplicationData} from '../../redux/slices/authSlice';
+import {useTranslation} from 'react-i18next';
 
 const Applications = () => {
   const {t} = useTranslation();
@@ -15,35 +20,39 @@ const Applications = () => {
   const apiData = useSelector(selectApplicationData);
   const searchValue = useSelector(selectSearchValue);
   const [refreshing, setRefreshing] = useState(false);
-  console.log('Applications', apiData)
+  console.log('Applications', apiData);
 
   useEffect(() => {
-
     fetchData();
   }, [apiData, searchValue]);
 
   const fetchData = async () => {
     try {
-      const filteredData = apiData.filter(item =>
-        item['Full Name'].toLowerCase().includes(searchValue.toLowerCase()) ||
-        item['Workflow Status'].toLowerCase().includes(searchValue.toLowerCase()) ||
-        item.record_id.includes(searchValue)
+      const filteredData = apiData.filter(
+        item =>
+          item['Full Name'].toLowerCase().includes(searchValue.toLowerCase()) ||
+          item['Workflow Status']
+            .toLowerCase()
+            .includes(searchValue.toLowerCase()) ||
+          item.record_id.includes(searchValue),
       );
-      const capitalizeFirstLetter = (str) => {
+      const capitalizeFirstLetter = str => {
         if (!str) return '';
-      
+
         return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
       };
       const formattedData = filteredData.map(item => ({
         id: item.record_id,
-        date:item.Date,
-        fullName : capitalizeFirstLetter(item['Full Name'].toLowerCase()),
+        date: item.Date,
+        fullName: capitalizeFirstLetter(item['Full Name'].toLowerCase()),
         amount: parseFloat(item['Loan amount requested']),
         sanctionedAmount: parseFloat(item['amount sanctioned']),
         status: item['Workflow Status'].toLowerCase().trim(),
       }));
-      
-      const sortedData = formattedData.sort((a, b) => new Date(b.date) - new Date(a.date));// Sort by date, latest on top
+
+      const sortedData = formattedData.sort(
+        (a, b) => new Date(b.date) - new Date(a.date),
+      ); // Sort by date, latest on top
 
       setTableData(sortedData);
     } catch (error) {
@@ -59,8 +68,7 @@ const Applications = () => {
     setRefreshing(false);
   };
 
-
-  const getStatusColor = (status) => {
+  const getStatusColor = status => {
     switch (status) {
       case 'loan account created':
         return 'orange';
@@ -80,41 +88,57 @@ const Applications = () => {
   };
 
   return (
-    <ScrollView 
-    style={styles.container}
+    <ScrollView
+      style={styles.container}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }
-    >
+      }>
       {/* <Text>{searchValue}</Text> */}
       {loading ? ( // Show ActivityIndicator while loading is true
         <ActivityIndicator style={styles.loader} size="large" color="#0000ff" />
       ) : (
         <View>
           {tableData.length > 0 ? (
-            <Table borderStyle={{ borderWidth: 1, borderColor: '#e5e7eb' }}>
-              <Row 
-              data={[
-                t('id'),
-                t('date'),
-                t('name'),
-                t('amount'),
-                t('sanctinedamount'),
-                t('status')
-              ]}
-              style={styles.header} 
-              textStyle={styles.headerText} 
+            <Table borderStyle={{borderWidth: 1, borderColor: '#e5e7eb'}}>
+              <Row
+                data={[
+                  t('id'),
+                  t('date'),
+                  t('name'),
+                  t('amount'),
+                  t('sanctinedamount'),
+                  t('status'),
+                ]}
+                style={styles.header}
+                textStyle={styles.headerText}
               />
               {tableData.map((rowData, index) => (
                 <Row
                   key={index}
                   data={[
-                    <Text style={{ paddingHorizontal: 18, paddingVertical: 20 }}>{rowData.id}</Text>,
-                    <Text style={{ paddingHorizontal: 10, paddingVertical: 0 }}>{rowData.date.split(' ')[0]}</Text>,
-                    <Text style={{fontSize:13, paddingHorizontal:5}}>{rowData.fullName}</Text>,
-                    <Text style={{ paddingHorizontal: 10, paddingVertical: 22 }}>{"₹" + rowData.amount.toString()}</Text>,
-                    <Text style={{ paddingHorizontal: 10, paddingVertical: 22 }}>{"₹" + rowData.sanctionedAmount.toString()}</Text>,
-                    <Text style={{ color: getStatusColor(rowData.status), paddingHorizontal:7, fontSize:13 }}>{t(`statusLabels.${rowData.status}`)}</Text>,
+                    <Text style={{paddingHorizontal: 18, paddingVertical: 20}}>
+                      {rowData.id}
+                    </Text>,
+                    <Text style={{paddingHorizontal: 10, paddingVertical: 0}}>
+                      {rowData.date.split(' ')[0]}
+                    </Text>,
+                    <Text style={{fontSize: 13, paddingHorizontal: 5}}>
+                      {rowData.fullName}
+                    </Text>,
+                    <Text style={{paddingHorizontal: 10, paddingVertical: 22}}>
+                      {'₹' + rowData.amount.toString()}
+                    </Text>,
+                    <Text style={{paddingHorizontal: 10, paddingVertical: 22}}>
+                      {'₹' + rowData.sanctionedAmount.toString()}
+                    </Text>,
+                    <Text
+                      style={{
+                        color: getStatusColor(rowData.status),
+                        paddingHorizontal: 7,
+                        fontSize: 13,
+                      }}>
+                      {t(`statusLabels.${rowData.status}`)}
+                    </Text>,
                   ]}
                   textStyle={styles.cell}
                 />

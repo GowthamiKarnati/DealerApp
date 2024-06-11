@@ -1,13 +1,19 @@
-
-import React, { useState } from 'react';
-import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
+import React, {useState} from 'react';
+import {
+  View,
+  Text,
+  SafeAreaView,
+  StyleSheet,
+  TouchableOpacity,
+  TextInput,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import { useSelector, useDispatch } from 'react-redux';
-import { useNavigation , useFocusEffect } from '@react-navigation/native';
-import {  setSearchValue } from '../../redux/slices/authSlice';
-import { useTranslation } from 'react-i18next';
+import {useSelector, useDispatch} from 'react-redux';
+import {useNavigation, useFocusEffect} from '@react-navigation/native';
+import {setSearchValue} from '../../redux/slices/authSlice';
+import {useTranslation} from 'react-i18next';
 const AppBar = () => {
-  const {t}= useTranslation();
+  const {t} = useTranslation();
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const [searchText, setSearchText] = useState('');
@@ -16,7 +22,7 @@ const AppBar = () => {
     navigation.navigate('Start');
   };
 
-  const handleSearch = (text) => {
+  const handleSearch = text => {
     setSearchText(text);
     dispatch(setSearchValue(text));
     console.log('Searching for:', text);
@@ -24,7 +30,7 @@ const AppBar = () => {
   useFocusEffect(
     React.useCallback(() => {
       setSearchText('');
-    }, [])
+    }, []),
   );
   return (
     <SafeAreaView>
@@ -54,12 +60,11 @@ const styles = StyleSheet.create({
     padding: 16,
     flexDirection: 'row',
     alignItems: 'center',
-    
   },
   titleContainer: {
     flex: 1,
-    justifyContent: 'center', 
-    alignItems: 'center', 
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   appBarTitle: {
     fontSize: 20,
@@ -79,7 +84,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     borderRadius: 8,
     flex: 1,
-    color:'black'
+    color: 'black',
   },
   logout: {
     marginLeft: 'auto',

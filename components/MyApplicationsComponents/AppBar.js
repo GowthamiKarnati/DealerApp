@@ -1,17 +1,20 @@
-import React, { useState } from 'react';
-import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
-import { useSelector, useDispatch } from 'react-redux';
-import { useNavigation } from '@react-navigation/native';
-import { setSearchValue } from '../../redux/slices/authSlice';
-import { useTranslation } from 'react-i18next';
+import React, {useState} from 'react';
+import {
+  View,
+  Text,
+  SafeAreaView,
+  StyleSheet,
+  TouchableOpacity,
+  TextInput,
+} from 'react-native';
+import {useSelector, useDispatch} from 'react-redux';
+import {useNavigation} from '@react-navigation/native';
+import {setSearchValue} from '../../redux/slices/authSlice';
+import {useTranslation} from 'react-i18next';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
-
-
-
-
 const AppBar = () => {
-  const { t } = useTranslation();
+  const {t} = useTranslation();
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const [searchText, setSearchText] = useState('');
@@ -20,12 +23,10 @@ const AppBar = () => {
     navigation.navigate('Start');
   };
 
-  const handleSearch = (text) => {
+  const handleSearch = text => {
     setSearchText(text);
-    dispatch(setSearchValue(text)); 
+    dispatch(setSearchValue(text));
   };
-
-
 
   return (
     <SafeAreaView>

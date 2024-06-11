@@ -20,22 +20,22 @@
 //   const handlePdfClick = async () => {
 //     try {
 //       const response = await axios.get('https://backendforpnf.vercel.app/testloans?criteria=sheet_59283844.column_793=+919960008186');
-  
+
 //       if (response.data && response.data.data && response.data.data.length > 0) {
 //         const loanData = response.data.data[0];
-        
+
 //         if (loanData && loanData.PDF) {
 //           const pdfArray = JSON.parse(loanData.PDF);
-          
+
 //           if (pdfArray && pdfArray.length > 0) {
 //             const pdfInfo = pdfArray[0];
-            
+
 //             if (pdfInfo && pdfInfo.filepath) {
 //               const pdfUrl = `https://pnf.tigersheet.com/user/file/download?filepath=${pdfInfo.filepath}&column_id=1209&row_id=${loanData.record_id}&list_id=59283844`;
-              
+
 //               // Prompt the user to download the PDF file manually
 //               console.log('Please download the PDF file:', pdfUrl);
-//               // 
+//               //
 //               setPdfUrl(pdfUrl);
 //               setShowPdfModal(true);
 //             }
@@ -50,7 +50,7 @@
 //       console.error('Error fetching PDF:', error);
 //     }
 //   };
-  
+
 //   return (
 //     <SafeAreaView>
 //       <View style={styles.container}>
@@ -134,14 +134,22 @@
 // function alert(arg0: string) {
 //   throw new Error('Function not implemented.');
 // }
-import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Linking, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  SafeAreaView,
+  StyleSheet,
+  TouchableOpacity,
+  Linking,
+  Alert,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import React, { useState } from 'react';
-import { useNavigation } from '@react-navigation/native';
+import React, {useState} from 'react';
+import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
-import { useSelector } from 'react-redux'; // Import useSelector hook
-import { selectCustomerData } from '../../redux/slices/authSlice';
-import { useTranslation } from 'react-i18next';
+import {useSelector} from 'react-redux'; // Import useSelector hook
+import {selectCustomerData} from '../../redux/slices/authSlice';
+import {useTranslation} from 'react-i18next';
 const AppBar = () => {
   const {t} = useTranslation();
   const customerData = useSelector(selectCustomerData);
@@ -163,7 +171,7 @@ const AppBar = () => {
   const handleCloseModal = () => {
     setShowPdfModal(false);
   };
-  
+
   return (
     <SafeAreaView>
       <View style={styles.container}>
@@ -175,8 +183,8 @@ const AppBar = () => {
         </View>
       </View>
     </SafeAreaView>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -185,7 +193,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#12b981',
     padding: 16,
     alignItems: 'center',
-    
   },
   appBarTitle: {
     fontSize: 23,

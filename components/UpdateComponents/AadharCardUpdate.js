@@ -1,43 +1,56 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Button, StyleSheet, Modal, ActivityIndicator, Image } from 'react-native';
+import React, {useState} from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Button,
+  StyleSheet,
+  Modal,
+  ActivityIndicator,
+  Image,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import { useTranslation } from 'react-i18next';
-import { useNavigation } from '@react-navigation/native';
-import { useDispatch, useSelector } from 'react-redux'; 
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {useTranslation} from 'react-i18next';
+import {useNavigation} from '@react-navigation/native';
+import {useDispatch, useSelector} from 'react-redux';
 import axios from 'axios';
-import { selectCustomerKYCData,setCustomerKYCData } from '../../redux/slices/authSlice';
+import {
+  selectCustomerKYCData,
+  setCustomerKYCData,
+} from '../../redux/slices/authSlice';
 import Toast from 'react-native-toast-message';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
-import { selectCustomerData } from '../../redux/slices/authSlice';
+import {selectCustomerData} from '../../redux/slices/authSlice';
 const AadharCardUpdate = () => {
-  const { t } = useTranslation();
+  const {t} = useTranslation();
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const customerKYCData = useSelector(selectCustomerKYCData);
-  const customerData =  useSelector(selectCustomerData)
+  const customerData = useSelector(selectCustomerData);
   const customerPhoneNumber = customerData?.['mobile number'] || 'N/A';
   //console.log("inAadharCard",customerKYCData);
   const record_id = customerKYCData.record_id;
-  const fimageUrl='https://cdn.pixabay.com/photo/2022/11/09/00/44/aadhaar-card-7579588_960_720.png';
-  const bimageUrl = 'https://images.jdmagicbox.com/comp/madurai/e8/0452px452.x452.170525164543.e5e8/catalogue/e-sevai-maiyam-alanganallur-madurai-wlxxmzooyu.jpg';
+  const fimageUrl =
+    'https://cdn.pixabay.com/photo/2022/11/09/00/44/aadhaar-card-7579588_960_720.png';
+  const bimageUrl =
+    'https://images.jdmagicbox.com/comp/madurai/e8/0452px452.x452.170525164543.e5e8/catalogue/e-sevai-maiyam-alanganallur-madurai-wlxxmzooyu.jpg';
   const [aadharFrontImage, setAadharFrontImage] = useState(null);
   const [aadharBackImage, setAadharBackImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [frontImageFiles, setFrontImageFiles] = useState(null);
-  const [backImageFiles, setBackImageFiles] = useState(null); 
+  const [backImageFiles, setBackImageFiles] = useState(null);
   const [editOptions, setEditOptions] = useState(false);
   const [editOptionsforback, setEditOptionforBack] = useState(false);
 
-  const handleCameraLaunch = async (isFront) => {
+  const handleCameraLaunch = async isFront => {
     setLoading(true);
     const options = {
       mediaType: 'photo',
       selectionLimit: 1,
       includeBase64: true,
-      freeStyleCropEnabled:true,
-      useFrontCamera:true,
-      
+      freeStyleCropEnabled: true,
+      useFrontCamera: true,
     };
     try {
       const result = await launchCamera(options);
@@ -57,12 +70,12 @@ const AadharCardUpdate = () => {
     }
   };
 
-  const handleGalleryLaunch = async (isFront) => {
+  const handleGalleryLaunch = async isFront => {
     setLoading(true);
     const options = {
       mediaType: 'photo',
       selectionLimit: 1,
-      includeBase64: true
+      includeBase64: true,
     };
 
     try {
@@ -85,20 +98,25 @@ const AadharCardUpdate = () => {
 
   const uploadBase64ToBackend = async (base64Data, imageType) => {
     try {
-      const response = await axios.post('https://backendforpnf.vercel.app/fileUpload', { base64Data }, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
+      const response = await axios.post(
+        'https://backendforpnf.vercel.app/fileUpload',
+        {base64Data},
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        },
+      );
 
       console.log('Server response:', response.data);
-      const { msg: { files: uploadedFiles, success } } = response.data;
+      const {
+        msg: {files: uploadedFiles, success},
+      } = response.data;
       if (imageType === 'front') {
         setFrontImageFiles(uploadedFiles); // Update front image files state
       } else {
         setBackImageFiles(uploadedFiles); // Update back image files state
       }
-
     } catch (error) {
       console.log('Error in uploadBase64ToBackend:', error);
     }
@@ -106,81 +124,96 @@ const AadharCardUpdate = () => {
 
   const handleUpload = async () => {
     try {
-      let data = { record_id,
-        files:frontImageFiles
-     };
+      let data = {record_id, files: frontImageFiles};
 
-      
-
-      const updateResponse = await axios.post('https://backendforpnf.vercel.app/updateAadharphoto', data, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
+      const updateResponse = await axios.post(
+        'https://backendforpnf.vercel.app/updateAadharphoto',
+        data,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        },
+      );
 
       console.log('Update response:', updateResponse.data);
       Toast.show({
         type: 'success',
-        position:'bottom',
-        text1: 'Uploaded Successfully', 
+        position: 'bottom',
+        text1: 'Uploaded Successfully',
         visibilityTime: 3000,
         autoHide: true,
         topOffset: 30,
       });
       navigation.navigate('CustomerProfile');
-      const modifiedMobileNumber = customerPhoneNumber.length > 10 ? customerPhoneNumber.slice(-10) : customerPhoneNumber;
-      const Kresponse = await axios.get(`https://backendforpnf.vercel.app/customerKyc?criteria=sheet_42284627.column_1100.column_87%20LIKE%20%22%25${encodeURIComponent(modifiedMobileNumber)}%22`);
+      const modifiedMobileNumber =
+        customerPhoneNumber.length > 10
+          ? customerPhoneNumber.slice(-10)
+          : customerPhoneNumber;
+      const Kresponse = await axios.get(
+        `https://backendforpnf.vercel.app/customerKyc?criteria=sheet_42284627.column_1100.column_87%20LIKE%20%22%25${encodeURIComponent(
+          modifiedMobileNumber,
+        )}%22`,
+      );
       const apiData = Kresponse.data.data[0] || {};
-      dispatch(setCustomerKYCData(apiData));  
+      dispatch(setCustomerKYCData(apiData));
     } catch (error) {
       console.log('Error in handleUpload:', error);
     }
-};
-const handleUploadBack = async () => {
+  };
+  const handleUploadBack = async () => {
     try {
-      let data = { record_id,
-        files:backImageFiles
-     };
-      const updateResponse = await axios.post('https://backendforpnf.vercel.app/updateAadharback', data, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
+      let data = {record_id, files: backImageFiles};
+      const updateResponse = await axios.post(
+        'https://backendforpnf.vercel.app/updateAadharback',
+        data,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        },
+      );
 
       console.log('Update response:', updateResponse.data);
       Toast.show({
         type: 'success',
-        position:'bottom',
-        text1: t('uploadsuccessfully'), 
+        position: 'bottom',
+        text1: t('uploadsuccessfully'),
         visibilityTime: 3000,
         autoHide: true,
         topOffset: 30,
       });
       navigation.navigate('CustomerProfile');
-      const modifiedMobileNumber = customerPhoneNumber.length > 10 ? customerPhoneNumber.slice(-10) : customerPhoneNumber;
-      const Kresponse = await axios.get(`https://backendforpnf.vercel.app/customerKyc?criteria=sheet_42284627.column_1100.column_87%20LIKE%20%22%25${encodeURIComponent(modifiedMobileNumber)}%22`);
+      const modifiedMobileNumber =
+        customerPhoneNumber.length > 10
+          ? customerPhoneNumber.slice(-10)
+          : customerPhoneNumber;
+      const Kresponse = await axios.get(
+        `https://backendforpnf.vercel.app/customerKyc?criteria=sheet_42284627.column_1100.column_87%20LIKE%20%22%25${encodeURIComponent(
+          modifiedMobileNumber,
+        )}%22`,
+      );
       const apiData = Kresponse.data.data[0] || {};
-      dispatch(setCustomerKYCData(apiData));  
+      dispatch(setCustomerKYCData(apiData));
     } catch (error) {
       console.log('Error in handleUpload:', error);
     }
-};
-
+  };
 
   const handleBack = () => {
-    navigation.navigate('CustomerProfile')
+    navigation.navigate('CustomerProfile');
   };
 
   const handleshowEditOptions = () => {
     setEditOptions(!editOptions);
   };
-  const handleBackEditOptions = () =>{
+  const handleBackEditOptions = () => {
     setEditOptionforBack(!editOptionsforback);
-  }
+  };
   return (
     <View style={styles.container}>
       {loading && (
-        <Modal transparent={true} animationType='fade'>
+        <Modal transparent={true} animationType="fade">
           <View style={styles.modalContainer}>
             <ActivityIndicator size="large" color="blue" />
           </View>
@@ -192,66 +225,86 @@ const handleUploadBack = async () => {
       <Text style={styles.title}>{t('aadharCardUpdateTitle')}</Text>
       <View style={styles.formContainer}>
         <View style={styles.uploadContainer}>
-        <Text style={styles.label}>{t('aadharFrontImageLabel')}</Text>
+          <Text style={styles.label}>{t('aadharFrontImageLabel')}</Text>
           {aadharFrontImage ? (
             <View style={styles.imagePreviewContainer}>
-                <Image
+              <Image
                 source={{
-                    uri: typeof aadharFrontImage === 'string' ? aadharFrontImage : aadharFrontImage.uri || '',
-                    headers: {
+                  uri:
+                    typeof aadharFrontImage === 'string'
+                      ? aadharFrontImage
+                      : aadharFrontImage.uri || '',
+                  headers: {
                     Accept: '*/*',
-                    },
+                  },
                 }}
                 style={styles.imagePreview}
                 resizeMode={'stretch'}
-                />
+              />
             </View>
-            ) : (
-                customerKYCData && customerKYCData['Aadhar Front'] && customerKYCData['Aadhar Front'].length > 0 ? (
-                <View style={styles.imagePreviewContainer}>
-                <Image
-                    source={{
-                    uri: JSON.parse(customerKYCData['Aadhar Front'])[0]?.fullpath || fimageUrl,
-                    headers: {
-                        Accept: '*/*',
-                    },
-                    }}
-                    style={styles.imagePreview}
-                    resizeMode={'stretch'}
-                />
-                </View>
-            ) : null
-            )}
-          <TouchableOpacity style={styles.editIconContainer} onPress={handleshowEditOptions}>
-            <FontAwesomeIcon name="edit" style={styles.editIcon} size={30} color="black" />
+          ) : customerKYCData &&
+            customerKYCData['Aadhar Front'] &&
+            customerKYCData['Aadhar Front'].length > 0 ? (
+            <View style={styles.imagePreviewContainer}>
+              <Image
+                source={{
+                  uri:
+                    JSON.parse(customerKYCData['Aadhar Front'])[0]?.fullpath ||
+                    fimageUrl,
+                  headers: {
+                    Accept: '*/*',
+                  },
+                }}
+                style={styles.imagePreview}
+                resizeMode={'stretch'}
+              />
+            </View>
+          ) : null}
+          <TouchableOpacity
+            style={styles.editIconContainer}
+            onPress={handleshowEditOptions}>
+            <FontAwesomeIcon
+              name="edit"
+              style={styles.editIcon}
+              size={30}
+              color="black"
+            />
           </TouchableOpacity>
-          
         </View>
         {editOptions && (
-            <>
-         <View style={styles.uploadButtonsContainer}>
-         <TouchableOpacity style={styles.uploadButton} onPress={()=> handleCameraLaunch(true)}>
-           <Icon name="camera" size={20} color="white"  />
-           <Text style={styles.uploadButtonText}>{t('takeaphoto')}</Text>
-         </TouchableOpacity>
-         <TouchableOpacity style={styles.uploadButton} onPress={()=> handleGalleryLaunch(true)}>
-           <Icon name="image" size={20} color="white"  />
-           <Text style={styles.uploadButtonText}>{t('choosefromgallery')}</Text>
-         </TouchableOpacity>
-         
-       </View>
-       <Button title={t('uploadButton')} onPress={handleUpload} />
-
-       </>
+          <>
+            <View style={styles.uploadButtonsContainer}>
+              <TouchableOpacity
+                style={styles.uploadButton}
+                onPress={() => handleCameraLaunch(true)}>
+                <Icon name="camera" size={20} color="white" />
+                <Text style={styles.uploadButtonText}>{t('takeaphoto')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.uploadButton}
+                onPress={() => handleGalleryLaunch(true)}>
+                <Icon name="image" size={20} color="white" />
+                <Text style={styles.uploadButtonText}>
+                  {t('choosefromgallery')}
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <Button title={t('uploadButton')} onPress={handleUpload} />
+          </>
         )}
         <View style={styles.uploadContainer}>
-        <Text style={[styles.label, { marginTop: 5 }]}>{t('aadharBackImageLabel')}</Text>
+          <Text style={[styles.label, {marginTop: 5}]}>
+            {t('aadharBackImageLabel')}
+          </Text>
 
           {aadharBackImage ? (
             <View style={styles.imagePreviewContainer}>
               <Image
                 source={{
-                  uri: typeof aadharBackImage === 'string' ? aadharBackImage : aadharBackImage.uri || '',
+                  uri:
+                    typeof aadharBackImage === 'string'
+                      ? aadharBackImage
+                      : aadharBackImage.uri || '',
                   headers: {
                     Accept: '*/*',
                   },
@@ -260,57 +313,69 @@ const handleUploadBack = async () => {
                 resizeMode={'stretch'}
               />
             </View>
-          ) : 
-          customerKYCData && customerKYCData['Aadhar Back'] && customerKYCData['Aadhar Back'].length > 0  ? (
+          ) : customerKYCData &&
+            customerKYCData['Aadhar Back'] &&
+            customerKYCData['Aadhar Back'].length > 0 ? (
             <View style={styles.imagePreviewContainer}>
-            <Image
+              <Image
                 source={{
-                uri: JSON.parse(customerKYCData['Aadhar Back'])[0]?.fullpath || bimageUrl,
-                headers: {
+                  uri:
+                    JSON.parse(customerKYCData['Aadhar Back'])[0]?.fullpath ||
+                    bimageUrl,
+                  headers: {
                     Accept: '*/*',
-                },
+                  },
                 }}
                 style={styles.imagePreview}
                 resizeMode={'stretch'}
-            />
+              />
             </View>
-        ):(
+          ) : (
             <View style={styles.imagePreviewContainer}>
-              <Image 
-                source={{ 
+              <Image
+                source={{
                   uri: bimageUrl,
                   headers: {
                     Accept: '*/*',
                   },
-                }} 
+                }}
                 style={styles.imagePreview}
                 resizeMode={'stretch'}
               />
             </View>
           )}
-          <TouchableOpacity style={styles.editIconContainer} onPress={handleBackEditOptions}>
-            <FontAwesomeIcon name="edit" style={styles.editIcon} size={30} color="black" />
+          <TouchableOpacity
+            style={styles.editIconContainer}
+            onPress={handleBackEditOptions}>
+            <FontAwesomeIcon
+              name="edit"
+              style={styles.editIcon}
+              size={30}
+              color="black"
+            />
           </TouchableOpacity>
-          
         </View>
         {editOptionsforback && (
-            <>
-         <View style={styles.uploadButtonsContainer}>
-         <TouchableOpacity style={styles.uploadButton} onPress={()=>handleCameraLaunch(false)}>
-           <Icon name="camera" size={20} color="white"  />
-           <Text style={styles.uploadButtonText}>{t('takeaphoto')}</Text>
-         </TouchableOpacity>
-         <TouchableOpacity style={styles.uploadButton} onPress={()=>handleGalleryLaunch(false)}>
-           <Icon name="image" size={20} color="white"  />
-           <Text style={styles.uploadButtonText}>{t('choosefromgallery')}</Text>
-         </TouchableOpacity>
-         
-       </View>
-       <Button title={t('uploadButton')} onPress={handleUploadBack} />
-       </>
+          <>
+            <View style={styles.uploadButtonsContainer}>
+              <TouchableOpacity
+                style={styles.uploadButton}
+                onPress={() => handleCameraLaunch(false)}>
+                <Icon name="camera" size={20} color="white" />
+                <Text style={styles.uploadButtonText}>{t('takeaphoto')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.uploadButton}
+                onPress={() => handleGalleryLaunch(false)}>
+                <Icon name="image" size={20} color="white" />
+                <Text style={styles.uploadButtonText}>
+                  {t('choosefromgallery')}
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <Button title={t('uploadButton')} onPress={handleUploadBack} />
+          </>
         )}
-        
-        
       </View>
     </View>
   );
@@ -383,15 +448,14 @@ const styles = StyleSheet.create({
   uploadButtonsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    gap:'10'
+    gap: '10',
   },
   editIconContainer: {
-    position: 'absolute', 
-    top: '62%', 
-    left: '50%', 
-    transform: [{ translateX: -12 }, { translateY: -12 }], // Adjust for the icon size to center it
+    position: 'absolute',
+    top: '62%',
+    left: '50%',
+    transform: [{translateX: -12}, {translateY: -12}], // Adjust for the icon size to center it
   },
 });
 
 export default AadharCardUpdate;
-

@@ -937,6 +937,7 @@ import { Table, Row } from 'react-native-table-component';
 import { setApplicationData, setSubmitting } from '../../redux/slices/authSlice';
 import { useTranslation } from 'react-i18next';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import Icons from 'react-native-vector-icons/MaterialIcons'
 import { BottomSheet } from 'react-native-elements';
 import firestore from '@react-native-firebase/firestore';
 import messaging from '@react-native-firebase/messaging';
@@ -1191,6 +1192,12 @@ const Buttons = () => {
           <TouchableOpacity style={[styles.buttonTyre, { backgroundColor: '#f59e0c' }]} onPress={handleApplications}>
             <Icon name="money-check-alt" size={22} color="white" style={styles.iconStyle} />
             <Text style={styles.buttonText}>{t('myapplications')}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.buttonTyre, { backgroundColor: '#b8860b' }]} onPress={() =>{
+            navigation.navigate('EmiTracker')
+          }}>
+            <Icons name="upcoming" size={22} color="white" style={styles.iconStyle} />
+            <Text style={styles.buttonText}>Upcoming and Past Emi's</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.tableContainer}>

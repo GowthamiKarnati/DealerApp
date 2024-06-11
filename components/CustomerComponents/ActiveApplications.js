@@ -1,9 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ActivityIndicator,
+  TouchableOpacity,
+} from 'react-native';
 import axios from 'axios';
-import { selectCustomerData } from '../../redux/slices/authSlice';
-import { useSelector } from 'react-redux';
-import { useTranslation } from 'react-i18next';
+import {selectCustomerData} from '../../redux/slices/authSlice';
+import {useSelector} from 'react-redux';
+import {useTranslation} from 'react-i18next';
 
 const ActiveApplications = () => {
   const {t} = useTranslation();
@@ -14,32 +20,43 @@ const ActiveApplications = () => {
   const [tableData, setTableData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isTableVisible, setTableVisibility] = useState(false);
-  const [allloans, setAllloans] = useState([])
+  const [allloans, setAllloans] = useState([]);
   const [showAllLoans, setShowAllLoans] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const modifiedMobileNumber = customerPhoneNumber.length > 10 ? customerPhoneNumber.slice(-10) : customerPhoneNumber;
-        console.log(modifiedMobileNumber)
+        const modifiedMobileNumber =
+          customerPhoneNumber.length > 10
+            ? customerPhoneNumber.slice(-10)
+            : customerPhoneNumber;
+        console.log(modifiedMobileNumber);
         //const response = await axios.get(`https://backendforpnf.vercel.app/loanapplication?criteria=sheet_38562544.column_203=942035807`);
-       const response = await axios.get(`https://backendforpnf.vercel.app/loanapplication?criteria=sheet_38562544.column_203%20LIKE%20%22%25${encodeURIComponent(modifiedMobileNumber)}%22`);
+        const response = await axios.get(
+          `https://backendforpnf.vercel.app/loanapplication?criteria=sheet_38562544.column_203%20LIKE%20%22%25${encodeURIComponent(
+            modifiedMobileNumber,
+          )}%22`,
+        );
         const apiData = response.data.data;
         //console.log("loan application Data : ", apiData)
-        const formattedData = apiData.map((item) => ({
+        const formattedData = apiData.map(item => ({
           id: item.record_id,
           amount: parseFloat(item['Loan amount requested']),
-          sanctionedamount : parseFloat(item['amount sanctioned']),
+          sanctionedamount: parseFloat(item['amount sanctioned']),
           status: item['Workflow Status'].toLowerCase().trim(),
         }));
         //console.log("formateddata", formattedData);
         // Filter the data based on specific statuses
-        const filteredData = formattedData.filter(item => ['sanctioned', 'requested', 'escalate'].includes(item.status));
-        const filteredloans = formattedData.filter(item => ['loan account created', 'expired', 'rejected'].includes(item.status));
+        const filteredData = formattedData.filter(item =>
+          ['sanctioned', 'requested', 'escalate'].includes(item.status),
+        );
+        const filteredloans = formattedData.filter(item =>
+          ['loan account created', 'expired', 'rejected'].includes(item.status),
+        );
         //console.log(filteredData)
         //console.log("showallloans",filteredloans);
-      setTableData(filteredData);
-      setAllloans(filteredloans)
+        setTableData(filteredData);
+        setAllloans(filteredloans);
       } catch (error) {
         console.error('Error fetching data:', error.message);
       } finally {
@@ -48,7 +65,7 @@ const ActiveApplications = () => {
     };
 
     fetchData();
-  }, []);
+  }, [customerPhoneNumber]);
   const toggleTableVisibility = () => {
     setTableVisibility(!isTableVisible);
   };
@@ -63,76 +80,121 @@ const ActiveApplications = () => {
       <TouchableOpacity onPress={toggleTableVisibility} style={styles.button}>
         <Text style={styles.buttonText}>{t('activeloanapplications')}</Text>
       </TouchableOpacity>
-      {isTableVisible && (
-      loading ? (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#3c82f6" />
-          <Text style={styles.loadingText}>{t('loading')}</Text>
-        </View>
-      ) : tableData.length > 0 ? (
-        <View style={styles.tableContainer}>
-          <View style={styles.table}>
-            <View style={styles.head}>
-              <Text style={[styles.headText, { flex: flexArr[0] }]}>{t('id')}</Text>
-              
-              <Text style={[styles.headText, { flex: flexArr[1] }]}>{t('amount')}</Text>
-              <Text style={[styles.headText, { flex: flexArr[2] }]}>{t('sanctinedamount')}</Text>
-              <Text style={[styles.headText, { flex: flexArr[3] }]}>{t('status')}</Text>
-            </View>
-            {tableData.map((rowData, index) => (
-              <View key={index} style={styles.row}>
-                <Text style={[styles.text, { flex: flexArr[0] }]}>{rowData.id}</Text>
-                
-                <Text style={[styles.text, { flex: flexArr[1] }]}>{rowData.amount}</Text>
-                <Text style={[styles.text, { flex: flexArr[2] }]}> {rowData['sanctionedamount'] ? rowData['sanctionedamount'] : "0" }</Text>
-                <Text style={[styles.text, { flex: flexArr[3] }, rowData.status === 'sanctioned' ? styles.greenText : rowData.status === 'escalate'? styles.purpleText:styles.yellowText]}>{t(`statusLabels.${rowData.status}`)}</Text>
-              </View>
-            ))}
+      {isTableVisible &&
+        (loading ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#3c82f6" />
+            <Text style={styles.loadingText}>{t('loading')}</Text>
           </View>
-        </View>
-      ) : (
-        <Text style={styles.noDataText}>{t('noactiveloanapplications')}</Text>
-      )
-      )}
+        ) : tableData.length > 0 ? (
+          <View style={styles.tableContainer}>
+            <View style={styles.table}>
+              <View style={styles.head}>
+                <Text style={[styles.headText, {flex: flexArr[0]}]}>
+                  {t('id')}
+                </Text>
+
+                <Text style={[styles.headText, {flex: flexArr[1]}]}>
+                  {t('amount')}
+                </Text>
+                <Text style={[styles.headText, {flex: flexArr[2]}]}>
+                  {t('sanctinedamount')}
+                </Text>
+                <Text style={[styles.headText, {flex: flexArr[3]}]}>
+                  {t('status')}
+                </Text>
+              </View>
+              {tableData.map((rowData, index) => (
+                <View key={index} style={styles.row}>
+                  <Text style={[styles.text, {flex: flexArr[0]}]}>
+                    {rowData.id}
+                  </Text>
+
+                  <Text style={[styles.text, {flex: flexArr[1]}]}>
+                    {rowData.amount}
+                  </Text>
+                  <Text style={[styles.text, {flex: flexArr[2]}]}>
+                    {' '}
+                    {rowData.sanctionedamount ? rowData.sanctionedamount : '0'}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.text,
+                      {flex: flexArr[3]},
+                      rowData.status === 'sanctioned'
+                        ? styles.greenText
+                        : rowData.status === 'escalate'
+                        ? styles.purpleText
+                        : styles.yellowText,
+                    ]}>
+                    {t(`statusLabels.${rowData.status}`)}
+                  </Text>
+                </View>
+              ))}
+            </View>
+          </View>
+        ) : (
+          <Text style={styles.noDataText}>{t('noactiveloanapplications')}</Text>
+        ))}
       <TouchableOpacity onPress={toggleShowAllLoans} style={styles.button}>
         <Text style={styles.buttonText}>{t('showallloanapplication')}</Text>
       </TouchableOpacity>
-      {showAllLoans && (
-      loading ? (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#3c82f6" />
-          <Text style={styles.loadingText}>{t('loading')}</Text>
-        </View>
-      ) : allloans.length > 0 ? (
-        <View style={styles.tableContainer}>
-          <View style={styles.table}>
-            <View style={styles.head}>
-            <Text style={[styles.headText, { flex: flexArr[0] }]}>{t('id')}</Text>
-              
-              <Text style={[styles.headText, { flex: flexArr[1] }]}>{t('amount')}</Text>
-              <Text style={[styles.headText, { flex: flexArr[2] }]}>{t('sanctinedamount')}</Text>
-              <Text style={[styles.headText, { flex: flexArr[3] }]}>{t('status')}</Text>
-            </View>
-            {allloans.map((rowData, index) => (
-              <View key={index} style={styles.row}>
-                <Text style={[styles.text, { flex: flexArr[0] }]}>{rowData.id}</Text>
-                
-                <Text style={[styles.text, { flex: flexArr[1] }]}>{rowData.amount}</Text>
-                <Text style={[styles.text, { flex: flexArr[2] }]}> {rowData['sanctionedamount'] ? rowData['sanctionedamount'] : "0" }</Text>
-                <Text style={[styles.text, { flex: flexArr[3] }, 
-                rowData.status === 'expired' ? styles.blueText : 
-                rowData.status === 'rejected' ? styles.redText : 
-                styles.orangeText]}>
-                  {t(`statusLabels.${rowData.status}`)}
+      {showAllLoans &&
+        (loading ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#3c82f6" />
+            <Text style={styles.loadingText}>{t('loading')}</Text>
+          </View>
+        ) : allloans.length > 0 ? (
+          <View style={styles.tableContainer}>
+            <View style={styles.table}>
+              <View style={styles.head}>
+                <Text style={[styles.headText, {flex: flexArr[0]}]}>
+                  {t('id')}
+                </Text>
+
+                <Text style={[styles.headText, {flex: flexArr[1]}]}>
+                  {t('amount')}
+                </Text>
+                <Text style={[styles.headText, {flex: flexArr[2]}]}>
+                  {t('sanctinedamount')}
+                </Text>
+                <Text style={[styles.headText, {flex: flexArr[3]}]}>
+                  {t('status')}
                 </Text>
               </View>
-            ))}
+              {allloans.map((rowData, index) => (
+                <View key={index} style={styles.row}>
+                  <Text style={[styles.text, {flex: flexArr[0]}]}>
+                    {rowData.id}
+                  </Text>
+
+                  <Text style={[styles.text, {flex: flexArr[1]}]}>
+                    {rowData.amount}
+                  </Text>
+                  <Text style={[styles.text, {flex: flexArr[2]}]}>
+                    {' '}
+                    {rowData.sanctionedamount ? rowData.sanctionedamount : '0'}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.text,
+                      {flex: flexArr[3]},
+                      rowData.status === 'expired'
+                        ? styles.blueText
+                        : rowData.status === 'rejected'
+                        ? styles.redText
+                        : styles.orangeText,
+                    ]}>
+                    {t(`statusLabels.${rowData.status}`)}
+                  </Text>
+                </View>
+              ))}
+            </View>
           </View>
-        </View>
-      ) : (
-        <Text style={styles.noDataText}>{t('noloanapplications')}</Text>
-      )
-      )}
+        ) : (
+          <Text style={styles.noDataText}>{t('noloanapplications')}</Text>
+        ))}
     </View>
   );
 };
@@ -209,27 +271,24 @@ const styles = StyleSheet.create({
   orangeText: {
     color: 'orange',
   },
-  redText:{
-    color:'red',
+  redText: {
+    color: 'red',
   },
-  yellowText:{
-     color:'gold'
+  yellowText: {
+    color: 'gold',
   },
-  blueText:{
-    color:'blue'
+  blueText: {
+    color: 'blue',
   },
-  purpleText:{
-    color:'purple'
+  purpleText: {
+    color: 'purple',
   },
   noDataText: {
     textAlign: 'center',
     fontSize: 18,
     color: 'black',
     marginTop: 8,
-    marginBottom:10,
-  },
-  purpleText: {
-    color: 'purple',
+    marginBottom: 10,
   },
 });
 

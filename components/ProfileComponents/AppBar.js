@@ -1,5 +1,3 @@
-
-
 // import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native';
 // import Icon from 'react-native-vector-icons/FontAwesome5';
 // import React from 'react';
@@ -29,7 +27,6 @@
 //       console.error('Error during logout:', error);
 //     }
 //   };
-  
 //   return (
 //     <SafeAreaView>
 //       <View style={styles.container}>
@@ -67,27 +64,36 @@
 // });
 
 // export default AppBar;
-import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity,Dimensions } from 'react-native';
+import {
+  View,
+  Text,
+  SafeAreaView,
+  StyleSheet,
+  TouchableOpacity,
+  Dimensions,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import React from 'react';
-import { useNavigation } from '@react-navigation/native';
-import { useDispatch, useSelector } from 'react-redux';
+import {useNavigation} from '@react-navigation/native';
+import {useDispatch, useSelector} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { selectMobileNumber, setMobileNumber } from '../../redux/slices/authSlice';
+import {
+  selectMobileNumber,
+  setMobileNumber,
+} from '../../redux/slices/authSlice';
 import firestore from '@react-native-firebase/firestore';
-import { useTranslation } from 'react-i18next';
-import { Picker } from '@react-native-picker/picker';
-const { width, height } = Dimensions.get('window');
+import {useTranslation} from 'react-i18next';
+import {Picker} from '@react-native-picker/picker';
+const {width, height} = Dimensions.get('window');
 
-
-const CustomPicker = ({ selectedValue, onValueChange }) => (
+const CustomPicker = ({selectedValue, onValueChange}) => (
   <View style={styles.customPicker}>
     <Text style={styles.customPickerText}>{selectedValue}</Text>
     <Icon name="caret-down" size={16} color="#0072B1" />
   </View>
 );
 const AppBar = () => {
-  const { t, i18n } = useTranslation();
+  const {t, i18n} = useTranslation();
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const userMobileNumber = useSelector(selectMobileNumber);
@@ -122,7 +128,7 @@ const AppBar = () => {
         <View style={styles.titleContainer}>
           <Text style={styles.appBarTitle}>{t('profile')}</Text>
         </View>
-        
+
         {/* <View style={styles.pickerContainer}>
           <Picker
             selectedValue={currentLanguage}
@@ -161,18 +167,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   pickerContainer: {
-    backgroundColor: "#E1F3FD",
+    backgroundColor: '#E1F3FD',
     borderRadius: width * 0.1,
-    flexDirection: 'row', 
-    alignItems: 'center', 
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingRight: 10,
-    marginLeft:'auto' ,
-    marginRight:10,
+    marginLeft: 'auto',
+    marginRight: 10,
   },
   picker: {
     color: '#0072B1',
     width: width * 0.32,
-     // Adjust width of the Picker
+    // Adjust width of the Picker
   },
 });
 

@@ -7,32 +7,30 @@ import hi from '../languages/hi';
 import mr from '../languages/mr';
 
 const getStoredLanguage = async () => {
-    try {
-      const storedLanguage = await AsyncStorage.getItem('selectedLanguage');
-      return storedLanguage || 'en';
-    } catch (error) {
-      console.error('Error loading language from AsyncStorage:', error);
-      return 'en';
-    }
-  };
+  try {
+    const storedLanguage = await AsyncStorage.getItem('selectedLanguage');
+    return storedLanguage || 'en';
+  } catch (error) {
+    console.error('Error loading language from AsyncStorage:', error);
+    return 'en';
+  }
+};
 
 const initializeLanguage = async () => {
-    const storedLanguage = await getStoredLanguage();
-        i18n
-            .use(initReactI18next)
-            .init({
-            compatibilityJSON: 'v3',
-            resources: {
-                en: { translation: en },
-                hi: { translation: hi },
-                mr: { translation: mr },
-            },
-            lng: storedLanguage,
-            interpolation: {
-                escapeValue: false,
-            },
-        });
-    };
+  const storedLanguage = await getStoredLanguage();
+  i18n.use(initReactI18next).init({
+    compatibilityJSON: 'v3',
+    resources: {
+      en: {translation: en},
+      hi: {translation: hi},
+      mr: {translation: mr},
+    },
+    lng: storedLanguage,
+    interpolation: {
+      escapeValue: false,
+    },
+  });
+};
 
 initializeLanguage();
 

@@ -68,7 +68,7 @@ export default {
     trucknum: 'ट्रक नंबर',
     trucknumplace: 'ट्रक संख्या निवडा',
     submitapplication: 'अर्ज सबमिट करा',
-    footer: 'मदत लागली का? संपर्क करा support@example.com या समर्थन टीम',
+    footer: 'मदतीची गरज आहे? 9529790320 वर संपर्क साधा',
     pleasefilltyrefeilds: 'कृपया सर्व आवश्यक फील्ड भरा',
     pleasefillinsurancefeilds: 'कृपया सर्व आवश्यक फील्ड भरा',
     profile: 'प्रोफाइल',
@@ -230,7 +230,15 @@ export default {
   "uploadButton": "अपलोड करा",
   "UpdateHouseLocation": "घरची स्थान अपडेट करा",
   "Vehicle images": "वाहनाची छायांची",
+  "Brand Products":"ब्रँड उत्पादने",
+  "Select the Product":"उत्पाद निवडा",
+  "trucknumlengtherror": "ट्रक नंबर केवळ 10 अक्षर असणे आवश्यक आहे",
+  "rcnumlengtherror":"आरसी नंबर केवळ 10 अक्षर असणे आवश्यक आहे",
+  "invalidMobileOrOTP": "अवैध मोबाइल नंबर किंवा ओटीपी",
+  "invalidMobileFormat": "अवैध मोबाइल नंबर स्वरुप"
   
+
+
 
 
 };

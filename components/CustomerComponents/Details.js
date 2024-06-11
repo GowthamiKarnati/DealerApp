@@ -1,6 +1,5 @@
 // import React, { useEffect, useState } from 'react';
 
-
 //   useEffect(() => {
 //     const fetchData = async () => {
 //       try {
@@ -15,18 +14,21 @@
 //     fetchData();
 //   }, []);
 
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {View, Text, StyleSheet, TouchableOpacity, Alert} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Icons from 'react-native-vector-icons/Entypo';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
-import { useSelector } from 'react-redux'; 
-import { selectCustomerData,selectCustomerKYCData } from '../../redux/slices/authSlice';
-import { useTranslation } from 'react-i18next';
+import {useSelector} from 'react-redux';
+import {
+  selectCustomerData,
+  selectCustomerKYCData,
+} from '../../redux/slices/authSlice';
+import {useTranslation} from 'react-i18next';
 
 const Details = () => {
-  const { t } = useTranslation();
+  const {t} = useTranslation();
   const navigation = useNavigation();
   const customerData = useSelector(selectCustomerData);
   const customerKYCData = useSelector(selectCustomerKYCData);
@@ -35,26 +37,26 @@ const Details = () => {
   const [loanType, setLoanType] = useState('');
   const [customers, setCustomers] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-
+  console.log('in Details Component', customerKYCData);
   // useEffect(() => {
   // }, [customerKYCData]);
 
   const handleApplyforTyre = () => {
     if (customerKYCData && customerKYCData['KYC Status'] === 'Active') {
       setLoanType('tyre');
-      navigation.navigate('Apply', {  loanType: 'tyre' });
+      navigation.navigate('Apply', {loanType: 'tyre'});
     } else {
       setErrorMessage(t('kycstatuschecking'));
       setTimeout(() => {
         setErrorMessage('');
       }, 2000);
     }
-  }
+  };
 
   const handleApplyforInsurance = () => {
     if (customerKYCData && customerKYCData['KYC Status'] === 'Active') {
       setLoanType('insurance');
-      navigation.navigate('Apply', {  loanType: 'insurance' });
+      navigation.navigate('Apply', {loanType: 'insurance'});
     } else {
       setErrorMessage(t('kycstatuschecking'));
       setTimeout(() => {
@@ -66,20 +68,31 @@ const Details = () => {
   return (
     <View style={styles.container}>
       <View style={styles.card}>
-        <Text numberOfLines={2} style={styles.cardName}>{customerName ? customerName.toUpperCase() : 'N/A'}</Text>
+        <Text numberOfLines={2} style={styles.cardName}>
+          {customerName ? customerName.toUpperCase() : 'N/A'}
+        </Text>
         <View style={styles.phoneContainer}>
           <Text style={styles.cardPhone}>{customerPhoneNumber}</Text>
-          <Icons style={{ marginLeft: 5 }} name="phone" size={23} color="#12b981" />
+          <Icons
+            style={{marginLeft: 5}}
+            name="phone"
+            size={23}
+            color="#12b981"
+          />
         </View>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.buttonTyre} onPress={handleApplyforTyre}>
+          <TouchableOpacity
+            style={styles.buttonTyre}
+            onPress={handleApplyforTyre}>
             <Icon name="truck" size={24} color="gold" style={styles.icon} />
             <View style={styles.buttonTextContainer}>
               <Text style={styles.buttonTextTop}>{t('applytyre')}</Text>
               <Text style={styles.buttonTextBottom}>{t('loan')} </Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={handleApplyforInsurance}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={handleApplyforInsurance}>
             <Icon name="shield" size={24} color="gold" style={styles.icon} />
             <View style={styles.buttonTextContainer}>
               <Text style={styles.buttonTextTop}>{t('applyinsurance')}</Text>
@@ -89,7 +102,9 @@ const Details = () => {
         </View>
       </View>
       <View style={styles.errorMessageContainer}>
-        {errorMessage ? <Text style={styles.errorMessage}>{errorMessage}</Text> : null}
+        {errorMessage ? (
+          <Text style={styles.errorMessage}>{errorMessage}</Text>
+        ) : null}
       </View>
     </View>
   );
@@ -100,7 +115,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f3f4f6',
     padding: 10,
-    marginTop:20,
+    marginTop: 20,
   },
   card: {
     backgroundColor: 'white',
@@ -128,7 +143,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     padding: 5,
     alignItems: 'stretch',
-    width:'100%'
+    width: '100%',
   },
   button: {
     marginRight: 20,

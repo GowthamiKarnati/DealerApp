@@ -109,6 +109,7 @@ import UpdateScreen from './screens/UpdateScreen';
 import StartScreen from './screens/StartScreen';
 import ApplicationsScreen from './screens/ApplicationsScreen';
 import NewCustomerApplyScreen from './screens/NewCustomerApplyScreen';
+import EmiTrackerScreen from './screens/EmiTrackerScreen';
 const Stack = createStackNavigator();
 
 function App() {
@@ -162,7 +163,7 @@ function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName={mobileNumber ? 'Start' : 'Login'}>
-      <Stack.Screen name="Start" component={StartScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Start" component={StartScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Apply" component={ApplyScreen} options={{ headerShown: false }} />
@@ -173,6 +174,7 @@ function App() {
         <Stack.Screen name="Update" component={UpdateScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Applications" component={ApplicationsScreen} options={{ headerShown: false }} />
         <Stack.Screen name="NewCustomerApply" component={NewCustomerApplyScreen} options={{ headerShown: false }} />
+        <Stack.Screen name ="EmiTracker" component = {EmiTrackerScreen} options = {{headerShown:false}} />
       </Stack.Navigator>
       <Toast />
     </NavigationContainer>

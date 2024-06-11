@@ -1,4 +1,3 @@
-
 // import React from 'react'
 // import AppBar from '../components/HomeComponents/AppBar';
 // import MainContent from '../components/HomeComponents/MainContent';
@@ -35,7 +34,7 @@
 //     const checkUserLoggedIn = async () => {
 //       const userLoggedIn = await AsyncStorage.getItem('userLoggedIn');
 //       if (userLoggedIn !== 'true') {
-//         navigation.navigate('Login'); 
+//         navigation.navigate('Login');
 //       }
 //     };
 //     checkUserLoggedIn();
@@ -53,8 +52,7 @@
 //   return (
 //         <SafeAreaView style={styles.container}>
 //           <AppBar />
-          
-            
+
 //             <MainContent/>
 //         </SafeAreaView>
 //       )
@@ -66,13 +64,12 @@
 //         }
 //       });
 
-
 // export default HomeScreen
-import React, { useEffect, useState } from 'react';
-import { SafeAreaView, StyleSheet } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {SafeAreaView, StyleSheet} from 'react-native';
 import AppBar from '../components/HomeComponents/AppBar';
 import MainContent from '../components/HomeComponents/MainContent';
-import { useNavigation, useIsFocused } from '@react-navigation/native';
+import {useNavigation, useIsFocused} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const HomeScreen = () => {

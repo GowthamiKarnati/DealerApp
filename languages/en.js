@@ -69,7 +69,7 @@ export default {
     trucknum:' Truck Number',
     trucknumplace:'Select truck number',
     submitapplication:'Submit Application',
-    footer:'Need help? Contact our support team at support@example.com',
+    footer:'Need help? Contact us on 9529790320',
     pleasefilltyrefeilds:'Please fill in all required fields ',
     pleasefillinsurancefeilds:'Please fill in all required fields ',
     profile:'Profile',
@@ -228,8 +228,14 @@ export default {
   "chooseImages": "Choose Images",
   "uploadButton": "Upload",
   "UpdateHouseLocation": "Update House Location",
-  "Vehicle images":'Vehicle images',
-  
+  "Vehicle images":'Vehicle Images',
+  "Brand Products":"Brand Products",
+  "Select the Product":"Select the Product",
+  "trucknumlengtherror":"Truck number must be 10 characters",
+  "rcnumlengtherror":"RC number must be 10 characters",
+  "invalidMobileOrOTP":"Invalid Mobile Number or OTP ",
+  "invalidMobileFormat":"Invalid mobile number format",
+
   
 
 
