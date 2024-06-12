@@ -122,8 +122,6 @@ const NewApplication = ({loanType, showPersonalInfo, setShowPersonalInfo}) => {
       console.log('Validation passed');
       setErrorMessage('');
     }
-
-    // Proceed to the next step
     setShowPersonalInfo(true);
   };
 
