@@ -21,7 +21,6 @@ import {
 } from '../../redux/slices/authSlice';
 import Toast from 'react-native-toast-message';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
-import ImagePicker from '';
 import {setUpdatingValue} from '../../redux/slices/authSlice';
 import {selectCustomerData} from '../../redux/slices/authSlice';
 

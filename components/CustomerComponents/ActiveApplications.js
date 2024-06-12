@@ -109,7 +109,6 @@ const ActiveApplications = () => {
                   <Text style={[styles.text, {flex: flexArr[0]}]}>
                     {rowData.id}
                   </Text>
-
                   <Text style={[styles.text, {flex: flexArr[1]}]}>
                     {rowData.amount}
                   </Text>
@@ -152,7 +151,6 @@ const ActiveApplications = () => {
                 <Text style={[styles.headText, {flex: flexArr[0]}]}>
                   {t('id')}
                 </Text>
-
                 <Text style={[styles.headText, {flex: flexArr[1]}]}>
                   {t('amount')}
                 </Text>

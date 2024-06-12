@@ -116,19 +116,19 @@ const Applications = () => {
                 <Row
                   key={index}
                   data={[
-                    <Text style={{paddingHorizontal: 18, paddingVertical: 20}}>
+                    <Text style={{paddingHorizontal: 10, paddingVertical: 20, color:'black'}}>
                       {rowData.id}
                     </Text>,
-                    <Text style={{paddingHorizontal: 10, paddingVertical: 0}}>
+                    <Text style={{paddingHorizontal: 10, paddingVertical: 0,color:'black'}}>
                       {rowData.date.split(' ')[0]}
                     </Text>,
-                    <Text style={{fontSize: 13, paddingHorizontal: 5}}>
+                    <Text style={{fontSize: 13, paddingHorizontal: 5,color:'black'}}>
                       {rowData.fullName}
                     </Text>,
-                    <Text style={{paddingHorizontal: 10, paddingVertical: 22}}>
+                    <Text style={{paddingHorizontal: 10, paddingVertical: 22,color:'black'}}>
                       {'₹' + rowData.amount.toString()}
                     </Text>,
-                    <Text style={{paddingHorizontal: 10, paddingVertical: 22}}>
+                    <Text style={{paddingHorizontal: 10, paddingVertical: 22,color:'black'}}>
                       {'₹' + rowData.sanctionedAmount.toString()}
                     </Text>,
                     <Text
@@ -170,6 +170,7 @@ const styles = StyleSheet.create({
   headerText: {
     textAlign: 'center',
     fontWeight: 'bold',
+    color:'black'
   },
   cell: {
     height: 70,

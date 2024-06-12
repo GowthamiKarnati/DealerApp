@@ -521,7 +521,6 @@ const EmiComponent = () => {
             sortedClosedLoanTables[loanID] = groupedClosedTables[loanID];
           }
         });
-
         setActiveLoanTables(sortedActiveLoanTables);
         setClosedLoanTables(sortedClosedLoanTables);
       } catch (error) {

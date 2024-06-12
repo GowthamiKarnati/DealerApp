@@ -35,12 +35,9 @@ const AppBar = () => {
           <Icon name="arrow-left" size={23} color="white" />
         </TouchableOpacity>
         <View style={styles.titleContainer}>
-          <Text
-            style={styles.appBarTitle}
-            numberOfLines={1}
-            ellipsizeMode="tail">
-            {customerName || ' Customer'}
-          </Text>
+        <Text style={styles.appBarTitle} numberOfLines={1} ellipsizeMode="tail">
+          {customerName ? customerName : 'Customer'}
+        </Text>
         </View>
       </View>
     </SafeAreaView>

@@ -235,7 +235,9 @@ export default {
   "rcnumlengtherror":"RC number must be 10 characters",
   "invalidMobileOrOTP":"Invalid Mobile Number or OTP ",
   "invalidMobileFormat":"Invalid mobile number format",
-
+ "emis": "Emi's",
+  "upcomingEmis": "Upcoming Emi's",
+  "pastEmis": "Past Emi's"
   
 
 

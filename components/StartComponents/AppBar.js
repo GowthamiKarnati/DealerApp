@@ -55,7 +55,7 @@
 
 // });
 
-// export default AppBar;
+//export default AppBar;
 import React, {useState} from 'react';
 import {
   View,
@@ -63,7 +63,6 @@ import {
   SafeAreaView,
   StyleSheet,
   TouchableOpacity,
-  TextInput,
 } from 'react-native';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import {useNavigation} from '@react-navigation/native';
@@ -80,17 +79,20 @@ const AppBar = () => {
     <SafeAreaView>
       <View style={styles.container}>
         <TouchableOpacity onPress={handleProfile}>
+        
           <FontAwesomeIcon
             name="user-circle"
             style={styles.icon}
             size={24}
             color="white"
           />
+        
+
         </TouchableOpacity>
         <View style={styles.titleContainer}>
           <Text style={styles.appBarTitle}>Pratibha Finance</Text>
         </View>
-        <View style={{width: 24}} />{' '}
+        <View style={{width: 24}} /><Text>{' '}</Text>
         {/* Empty View to align the title in the center */}
       </View>
     </SafeAreaView>
@@ -122,3 +124,15 @@ const styles = StyleSheet.create({
 });
 
 export default AppBar;
+// import { View, Text } from 'react-native'
+// import React from 'react'
+
+// const AppBar = () => {
+//   return (
+//     <View>
+//       <Text>AppBar</Text>
+//     </View>
+//   )
+// }
+
+// export default AppBar

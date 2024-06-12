@@ -265,23 +265,21 @@ const CustomerKYC = () => {
               </View>
               <View style={styles.infoContainer}>
                 <Text style={styles.cardName}>{t('customerkyc')}</Text>
-                <Text
-                  style={[
-                    styles.kycStatus,
-                    !customerKYCData?.['KYC Status'] ||
-                    customerKYCData?.['KYC Status'] === 'Inactive'
-                      ? styles.incompleteStatus
-                      : customerKYCData?.['KYC Status'] === 'Updated'
-                      ? styles.updatedStatus
-                      : styles.completedStatus,
-                  ]}>
-                  {customerKYCData?.['KYC Status'] === 'Updated'
-                    ? t('updated')
-                    : !customerKYCData?.['KYC Status'] ||
-                      customerKYCData?.['KYC Status'] === 'Inactive'
-                    ? t('incomplete')
-                    : t('completed')}
-                </Text>
+                <Text style={[styles.kycStatus, 
+              !customerKYCData?.['KYC Status'] || customerKYCData?.['KYC Status'] === 'Inactive'
+                ? styles.incompleteStatus
+                : customerKYCData?.['KYC Status'] === 'Updated'
+                ? styles.updatedStatus
+                : styles.completedStatus,
+            ]}>
+              {customerKYCData?.['KYC Status'] === 'Updated'
+                ? t('updated')
+                : !customerKYCData?.['KYC Status'] || customerKYCData?.['KYC Status'] === 'Inactive'
+                ? t('incomplete')
+                : t('completed')}
+            </Text>
+
+
               </View>
             </View>
             <Icon

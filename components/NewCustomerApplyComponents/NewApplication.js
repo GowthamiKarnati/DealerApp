@@ -84,7 +84,7 @@ const NewApplication = ({loanType, showPersonalInfo, setShowPersonalInfo}) => {
   const [rcImageFiles, setRcImageFiles] = useState([]);
   const [isLoadingBrandProducts, setIsLoadingBrandProducts] = useState(false);
   const [rcNumber, setRCNumber] = useState('');
-  console.log('rc Image', rcImageFiles);
+  //console.log('rc Image', rcImageFiles);
 
   useEffect(() => {
     const fetchData = async () => {

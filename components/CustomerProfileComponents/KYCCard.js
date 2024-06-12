@@ -92,16 +92,6 @@ const KYCCard = ({customerKYCData, handlePress, t}) => {
     setAddressText(customerKYCData['House Address'] || '');
     setAltPhoneText(customerKYCData['Alternate Phone Number'] || '');
   }, [customerKYCData]);
-
-  // const togglePersonalDetails = () => {
-  //     setPersonalDetailsCollapsed(!personalDetailsCollapsed);
-  // };
-  // const toggleTruckDetails= ()=>{
-  //     setTruckDetails(!truckDetails)
-  // }
-  // const toggleKycDocuments = () =>{
-  //     setKycDocuments(!kycDocuments)
-  // }
   const togglePersonalDetails = useCallback(() => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setPersonalDetailsCollapsed(!personalDetailsCollapsed);
@@ -117,11 +107,6 @@ const KYCCard = ({customerKYCData, handlePress, t}) => {
     setKycDocuments(!kycDocuments);
   }, [kycDocuments]);
 
-  const toggleHouseDetails = useCallback(() => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    setHousedetails(!housedetails);
-  }, [housedetails]);
-
   return (
     <View>
       <TouchableOpacity onPress={togglePersonalDetails}>
@@ -136,26 +121,31 @@ const KYCCard = ({customerKYCData, handlePress, t}) => {
         </View>
       </TouchableOpacity>
       <Collapsible collapsed={personalDetailsCollapsed}>
-        <TouchableOpacity onPress={() => handlePress('dob')}>
-          <View style={styles.kycItem}>
-            <Text style={styles.keyText}>{t('dob')}</Text>
-            <View style={styles.valueContainer}>
-              <Text style={styles.valueText}>
-                {customerKYCData['Date of Birth']?.split(' ')[0]}
-              </Text>
+      <TouchableOpacity>
+<Text style={{fontSize: 18, color: 'black'}}>Your Text Here</Text>
+      </TouchableOpacity>
+      
+      <TouchableOpacity onPress={() => handlePress('dob')}>
+      <View style={styles.kycItem}>
+        <Text style={{ color: 'black' }}>{t('dob')}</Text>
+        <View style={styles.valueContainer}>
+          <Text style={styles.valueText}>
+            {customerKYCData['Date of Birth']?.split(' ')[0]}
+          </Text>
 
-              <Icon
-                name="chevron-right"
-                size={20}
-                color="#9ca3af"
-                style={styles.icon}
-              />
-            </View>
-          </View>
-        </TouchableOpacity>
+          <Icon
+            name="chevron-right"
+            size={20}
+            color="#9ca3af"
+            style={styles.icon}
+          />
+        </View>
+      </View>
+    </TouchableOpacity>
+
         <TouchableOpacity onPress={() => handlePress('pan')}>
           <View style={styles.kycItem}>
-            <Text style={styles.keyText}>{t('pan')}</Text>
+            <Text style={{color:"red"}}>{t('pan')}</Text>
             <View style={styles.valueContainer}>
               <Text style={styles.valueText}>
                 {customerKYCData['PAN Number']}
@@ -365,62 +355,6 @@ const KYCCard = ({customerKYCData, handlePress, t}) => {
           </View>
         </TouchableOpacity>
       </Collapsible>
-
-      {/* <TouchableOpacity onPress={toggleHouseDetails}>
-                <View style={styles.header}>
-                    <Text style={styles.headerText}>{t('HouseDetails')}</Text>
-                    <Icon
-                        name={housedetails ? 'chevron-right' : 'chevron-down'}
-                        size={20}
-                        color="#9ca3af"
-                        style={styles.icon}
-                    />
-                </View>
-            </TouchableOpacity>
-            <Collapsible collapsed={housedetails}>
-            <TouchableOpacity onPress={() => handlePress('housetype')}>
-                <View style={styles.kycItem}>
-                    <Text style={styles.keyText}>{t('housetype')}</Text>
-                    <View style={styles.valueContainer}>
-                    <Text style={styles.valueText}>{customerKYCData['House Owned or Rented']}</Text>
-                    
-                        <Icon name="chevron-right" size={20} color="#9ca3af" style={styles.icon} />
-                    
-                    </View>
-                </View>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => handlePress('houseaddress')}>
-                <View style={styles.kycItem}>
-                    <Text style={styles.keyText}>{t('houseadress')}</Text>
-                    <View style={styles.valueContainer} onLayout={handleAddressLayout}>
-                    <Text style={styles.valueText}>{truncatedAddress()}</Text>
-                    
-                        <Icon name="chevron-right" size={20} color="#9ca3af" style={styles.icon} />
-                    
-                    </View>
-                </View>
-        </TouchableOpacity>  
-                <TouchableOpacity onPress={() => handlePress('houselocation')}>
-                <View style={styles.kycItem}>
-                    <Text style={styles.keyText}>{t('HouseLocation')}</Text>
-                    <View style={styles.valueContainer}>
-                    
-                    
-                        <Icon name="chevron-right" size={20} color="#9ca3af" style={styles.icon} />
-                    
-                    </View>
-                </View>
-                </TouchableOpacity>
-            <TouchableOpacity   >
-                    <View style={styles.kycItem}>
-                        <Text style={styles.keyText}>{t('HouseImages')}</Text>
-                        <View style={styles.valueContainer}>
-                            
-                            <Icon name="chevron-right" size={20} color="#9ca3af" style={styles.icon} />
-                        </View>
-                    </View>
-                </TouchableOpacity>
-            </Collapsible> */}
       <TouchableOpacity onPress={toggleKycDocuments}>
         <View style={styles.header}>
           <Text style={styles.headerText}>{t('kycdocuments')}</Text>
@@ -433,33 +367,36 @@ const KYCCard = ({customerKYCData, handlePress, t}) => {
         </View>
       </TouchableOpacity>
       <Collapsible collapsed={kycDocuments}>
-        <TouchableOpacity onPress={() => handlePress('pancard')}>
-          <View style={styles.kycItem}>
-            <Text style={styles.keyText}>{t('pancard')}</Text>
-            <View style={styles.valueContainer}>
-              <Icon
-                name="chevron-right"
-                size={20}
-                color="#9ca3af"
-                style={styles.icon}
-              />
-            </View>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => handlePress('aadharcard')}>
-          <View style={styles.kycItem}>
-            <Text style={styles.keyText}>{t('aadharcard')}</Text>
-            <View style={styles.valueContainer}>
-              <Icon
-                name="chevron-right"
-                size={20}
-                color="#9ca3af"
-                style={styles.icon}
-              />
-            </View>
-          </View>
-        </TouchableOpacity>
-      </Collapsible>
+  <View style={styles.collapsibleContent}>
+    <TouchableOpacity onPress={() => handlePress('pancard')}>
+      <View style={styles.kycItem}>
+        <Text style={styles.keyText}>{t('pancard')}</Text>
+        <View style={styles.valueContainer}>
+          <Icon
+            name="chevron-right"
+            size={20}
+            color="#9ca3af"
+            style={styles.icon}
+          />
+        </View>
+      </View>
+    </TouchableOpacity>
+    <TouchableOpacity onPress={() => handlePress('aadharcard')}>
+      <View style={styles.kycItem}>
+        <Text style={styles.keyText}>{t('aadharcard')}</Text>
+        <View style={styles.valueContainer}>
+          <Icon
+            name="chevron-right"
+            size={20}
+            color="#9ca3af"
+            style={styles.icon}
+          />
+        </View>
+      </View>
+    </TouchableOpacity>
+  </View>
+</Collapsible>
+
     </View>
   );
 };
@@ -469,7 +406,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#f0f0f0',
+    backgroundColor: 'red',
     padding: 15,
   },
   headerText: {
@@ -489,6 +426,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ccc',
     height: 70,
     alignItems: 'center',
+    
   },
   keyText: {
     fontSize: 18,
@@ -497,12 +435,13 @@ const styles = StyleSheet.create({
   },
   valueText: {
     fontSize: 18,
-    color: '#4b5563',
+    color: 'black',
   },
   valueContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
+  
 });
 
 export default KYCCard;

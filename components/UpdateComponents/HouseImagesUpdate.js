@@ -315,7 +315,6 @@ import {
 } from '../../redux/slices/authSlice';
 import Toast from 'react-native-toast-message';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
-import ImagePicker from 'react-native-image-crop-picker';
 import {selectCustomerData} from '../../redux/slices/authSlice';
 const HouseImagesUpdate = () => {
   const {t} = useTranslation();

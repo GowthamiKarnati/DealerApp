@@ -528,7 +528,7 @@ const styles = {
   arrowContainer: {
     position: 'absolute',
     top: 10,
-    left: 10,
+    left: 0,
   },
   title: {
     fontSize: 24,

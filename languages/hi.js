@@ -235,7 +235,10 @@ export default {
   "trucknumlengtherror": "ट्रक नंबर केवल 10 अक्षर होने चाहिए",
   "rcnumlengtherror":"आरसी नंबर केवल 10 अक्षर होने चाहिए",
   "invalidMobileOrOTP": "अमान्य मोबाइल नंबर या ओटीपी",
-  "invalidMobileFormat": "अमान्य मोबाइल नंबर प्रारूप"
+  "invalidMobileFormat": "अमान्य मोबाइल नंबर प्रारूप",
+  "emis": "ईएमआई का",
+  "upcomingEmis": "आगामी ईमी का",
+  "pastEmis": "अतीत ईमी का"
 
   
 
