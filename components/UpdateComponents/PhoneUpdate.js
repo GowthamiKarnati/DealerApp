@@ -373,17 +373,20 @@ const styles = StyleSheet.create({
     marginTop: 20,
     alignItems: 'center',
     paddingHorizontal: 20,
+    width:'100%'
   },
   arrowContainer: {
     position: 'absolute',
-    top: 10,
-    left: 10,
+    top: 7,
+    left: 20,
+
   },
   title: {
     fontSize: 24,
     fontWeight: '700',
     marginBottom: 18,
     color: 'black',
+    marginLeft:30
   },
   formContainer: {
     backgroundColor: '#ffffff',

@@ -234,12 +234,12 @@ const TruckNumber = () => {
   };
 
   return (
-    <ScrollView contentContainerStyle={{flexGrow: 1}}>
+    <ScrollView contentContainerStyle={{flexGrow: 1, width:380}}>
       <View style={styles.container}>
         <TouchableOpacity style={styles.arrowContainer} onPress={handleBack}>
-          {!loaderfortrucks && (
+         
             <Icon name="arrow-left" size={24} color="black" />
-          )}
+          
         </TouchableOpacity>
         <Text style={styles.title}>{t('TrucksInformation')}</Text>
         <TouchableOpacity
@@ -439,10 +439,12 @@ const styles = StyleSheet.create({
     marginTop: 20,
     alignItems: 'center',
     paddingHorizontal: 20,
+    width:'100%',
+    
   },
   arrowContainer: {
     position: 'absolute',
-    top: 9,
+    top: 7,
     left: 10,
     zIndex: 1,
   },
