@@ -1,76 +1,57 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import axios from 'axios';
+import { View, Text,TouchableOpacity, StyleSheet } from 'react-native'
+import React from 'react'
 import { useTranslation } from 'react-i18next';
-import {selectMobileNumber} from '../../redux/slices/authSlice';
-import { useSelector } from 'react-redux';
-const UpcomingEmi = () => {
-  const { t } = useTranslation();
-  const [emiData, setEmiData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const userMobileNumber = useSelector(selectMobileNumber);
-  console.log(emiData);
-  useEffect(() => {
-    const modifiedMobileNumber =
-      userMobileNumber.length > 10
-        ? userMobileNumber.slice(-10)
-        : userMobileNumber;
-    
-    axios.get(`https://backendforpnf.vercel.app/emi?criteria=sheet_26521917.column_35.column_242.column_238%20LIKE%20%22%25${modifiedMobileNumber}%22`)
-      .then(response => {
-        //console.log(response.data.data)
-        if (Array.isArray(response.data.data)) {
-          setEmiData(response.data.data.filter(emi => emi.status === 'unpaid'));
-        } else {
-          console.error('Data is not an array:', response.data.data);
-        }
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
-  
 
+const UpcomingEmi = ({emiData}) => {
+  const { t } = useTranslation();
+  const capitalizeFirstLetter = (string) => {
+    if (!string) return '';
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'bounced':
+        return 'red';
+      case 'clearing':
+        return '#f08080';
+      case 'CHQ STOP':
+        return 'black';
+      case 'unpaid':
+        return '#ffa500';
+      default:
+        return 'gray';
+    }
+  };
   const renderEmiCards = () => {
     return emiData.map((emi, index) => (
       <TouchableOpacity key={index} style={styles.card}>
-        <Text style={styles.cardText}>{t('id')}: {emi.record_id}</Text>
+        <View style={{flexDirection:'row',justifyContent:'space-between' }}>
+            <Text style={styles.cardText}>{t('id')}: {emi.record_id}</Text>
+            <Text style={[styles.statusText, { color: getStatusColor(emi.status) }]}>{capitalizeFirstLetter(emi.status)}</Text>
+        </View>
         <Text style={styles.cardText}>{t('emiduedate')}: {emi['emi date'].split(' ')[0]}</Text>
         <Text style={styles.cardText}>{t('name')}: {emi.customer}</Text>
         <Text style={styles.cardText}>{t('amount')}: ₹{emi.amount}</Text>
       </TouchableOpacity>
     ));
   };
-
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      {loading ? (
-        <View style={styles.loadingContainer}>
-          <Text style={styles.loadingText}>{t('loading')}</Text>
-        </View>
-      ) : (
-        <>
-          {emiData.length > 0 ? renderEmiCards() : <Text style={styles.noDataText}>No Upcoming Emi's</Text>}
-        </>
-      )}
-    </ScrollView>
-  );
-};
+    <View style={styles.container}>
+      {emiData.length > 0 ? renderEmiCards() : <Text style={styles.noDataText}>No Upcoming EMIs</Text>}
+    </View>
+  )
+}
 const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    alignItems: 'center',
-    paddingVertical: 20,
+  container:{
+    paddingHorizontal:20,
+    paddingVertical:20
   },
   card: {
-    backgroundColor: '#f1f8ff',
+    backgroundColor: 'white',
     borderRadius: 8,
     padding: 16,
     marginBottom: 16,
-    width: '90%',
+    width: '100%',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -87,17 +68,11 @@ const styles = StyleSheet.create({
   },
   noDataText: {
     fontSize: 18,
-    color: 'gray',
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loadingText: {
-    fontSize: 18,
     color: 'black',
   },
-});
-
-export default UpcomingEmi;
+  statusText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+})
+export default UpcomingEmi

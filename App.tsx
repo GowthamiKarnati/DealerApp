@@ -247,8 +247,8 @@ function App() {
           source={require('./images/Logo.png')}
           style={{ width: '60%', resizeMode: 'contain', margin: 30 }}
         />
-        <ActivityIndicator size="large" color="#0000ff" />
-        <Text>Loading...</Text>
+        {/* <ActivityIndicator size="large" color="#0000ff" />
+        <Text>Loading...</Text> */}
       </View>
     );
   }

@@ -391,7 +391,7 @@ const TruckNumber = () => {
                     backgroundColor: 'lightgrey',
                     padding: 5,
                     borderRadius: 5,
-                    width: '60',
+                    alignItems:'center'
                   }}
                   onPress={handleGallery}>
                   <Text>{t('Attach')}</Text>

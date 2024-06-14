@@ -449,9 +449,19 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Collapsible from 'react-native-collapsible';
+import {
+      selectCustomerData,
+      selectAddingTruck,
+    } from '../../redux/slices/authSlice';
+import {useSelector} from 'react-redux';
+import axios from 'axios';
+
 
 const KYCCard = ({ customerKYCData, handlePress, t }) => {
     //console.log("inKyccard", customerKYCData);
+    const customerData = useSelector(selectCustomerData);
+  const addingtruck = useSelector(selectAddingTruck);
+  const customerPhoneNumber = customerData?.['mobile number'] || 'N/A';
     const [addressWidth, setAddressWidth] = useState(null); 
     const [addressText, setAddressText] = useState('');
     const [altPhoneWidth, setAltPhoneWidth] = useState(null);
@@ -459,6 +469,33 @@ const KYCCard = ({ customerKYCData, handlePress, t }) => {
     const [personalDetailsCollapsed, setPersonalDetailsCollapsed] = useState(true);
     const [truckDetails, setTruckDetails]= useState(true);
     const [kycDocuments, setKycDocuments] = useState(true);
+    const [vehicleData, setVehicleData] = useState(null);
+    useEffect(() => {
+            const fetchData = async () => {
+              try {
+                const modifiedMobileNumber =
+                  customerPhoneNumber.length > 10
+                    ? customerPhoneNumber.slice(-10)
+                    : customerPhoneNumber;
+                console.log('number', modifiedMobileNumber);
+                const vehicleResponse = await axios.get(
+                  `https://backendforpnf.vercel.app/vehicles?criteria=sheet_32026511.column_609.column_87%20LIKE%20%22%25${encodeURIComponent(
+                    modifiedMobileNumber,
+                  )}%22`,
+                );
+                setVehicleData(vehicleResponse.data.data);
+                console.log("vehicle",vehicleResponse.data.data);
+              } catch (error) {
+                console.error('Error fetching data:', error.message);
+              }
+            };
+            fetchData();
+          }, [customerPhoneNumber, addingtruck]);
+
+    const numberOfTrucks = vehicleData ? vehicleData.length : 0;
+    console.log('Number of Trucks', numberOfTrucks);
+
+
     const handleAltPhoneLayout = (event) => {
         if (!altPhoneWidth) {
           setAltPhoneWidth(event.nativeEvent.layout.width);
@@ -661,12 +698,12 @@ const KYCCard = ({ customerKYCData, handlePress, t }) => {
                 </View>
             </TouchableOpacity>
             <Collapsible collapsed={truckDetails}>
-                <TouchableOpacity onPress={() => handlePress('numberoftrucks')}>
+                <TouchableOpacity>
                     <View style={styles.kycItem}>
                         <Text style={styles.keyText}>{t('nooftrucks')}</Text>
-                        <View style={styles.valueContainer}>
-                            <Text style={styles.valueText}>{customerKYCData['Number of Trucks']}</Text>
-                            <Icon name="chevron-right" size={20} color="#9ca3af" style={styles.icon} />
+                    <View style={styles.valueContainer}>
+                        <Text style={styles.valueText}>{numberOfTrucks}</Text>
+                        {/* <Icon name="chevron-right" size={20} color="#9ca3af" style={styles.icon} /> */}
                         </View>
                     </View>
                 </TouchableOpacity>
