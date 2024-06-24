@@ -608,7 +608,6 @@ const NewApplication = ({loanType, showPersonalInfo, setShowPersonalInfo}) => {
             </View>
           </TouchableOpacity>
           <Collapsible collapsed={  kycDocumentsCollapsed}>
-          <Text style={{color:'black'}}>hbdyuwed</Text>
             <View style={styles.formGroup}>
               <Text style={styles.label}>
                 {t('pancard')}
@@ -622,24 +621,22 @@ const NewApplication = ({loanType, showPersonalInfo, setShowPersonalInfo}) => {
                   />
                 </View>
               )}
-              {!upload && (
-                <TouchableOpacity
-                  style={styles.uploadButton}
-                  onPress={handleUpload}>
-                  <Text style={styles.uploadText}>{t('Attach')}</Text>
-                </TouchableOpacity>
-              )}
+              {!upload &&
+              <TouchableOpacity style={[styles.uploadButton,{width:70}]} onPress={handleUpload}>
+              <Text style={styles.uploadText}>{t('attach')}</Text>
+              </TouchableOpacity>
+              }
               {upload && (
                 <View style={{flexDirection: 'row', gap: 10}}>
                   <TouchableOpacity
-                    style={[styles.uploadButton, {width: '', padding: '10'}]}
+                    style={[styles.uploadButton]}
                     onPress={() => handleCameraLaunch('pan')}>
                     <Text style={styles.uploadButtonText}>
                       {t('takeaphoto')}
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
-                    style={[styles.uploadButton, {width: '', padding: '10'}]}
+                    style={[styles.uploadButton]}
                     onPress={() => handleGalleryLaunch('pan')}>
                     <Text style={styles.uploadButtonText}>
                       {t('choosefromgallery')}
@@ -676,14 +673,14 @@ const NewApplication = ({loanType, showPersonalInfo, setShowPersonalInfo}) => {
                 {fupload && (
                   <View style={{flexDirection: 'column', gap: 10}}>
                     <TouchableOpacity
-                      style={[styles.uploadButton, {width: '', padding: '10'}]}
+                      style={[styles.uploadButton]}
                       onPress={() => handleCameraLaunch('front')}>
                       <Text style={styles.uploadButtonText}>
                         {t('takeaphoto')}
                       </Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                      style={[styles.uploadButton, {width: '', padding: '10'}]}
+                      style={[styles.uploadButton]}
                       onPress={() => handleGalleryLaunch('front')}>
                       <Text style={styles.uploadButtonText}>
                         {t('choosefromgallery')}
@@ -719,14 +716,14 @@ const NewApplication = ({loanType, showPersonalInfo, setShowPersonalInfo}) => {
                 {bupload && (
                   <View style={{flexDirection: 'column', gap: 10}}>
                     <TouchableOpacity
-                      style={[styles.uploadButton, {width: '', padding: '10'}]}
+                      style={[styles.uploadButton]}
                       onPress={() => handleCameraLaunch('back')}>
                       <Text style={styles.uploadButtonText}>
                         {t('takeaphoto')}
                       </Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                      style={[styles.uploadButton, {width: '', padding: '10'}]}
+                      style={[styles.uploadButton]}
                       onPress={() => handleGalleryLaunch('back')}>
                       <Text style={styles.uploadButtonText}>
                         {t('choosefromgallery')}
@@ -1088,7 +1085,7 @@ const NewApplication = ({loanType, showPersonalInfo, setShowPersonalInfo}) => {
               </Text>
               <View style={styles.pickerContainer}>
                 <Picker
-                  selectedValue={selectedBrand}
+                  selectedValue={maritalStatus}
                   onValueChange={itemValue => {
                     setMaritalStatus(itemValue);
                     setErrorforpersonal('');
@@ -1129,7 +1126,7 @@ const NewApplication = ({loanType, showPersonalInfo, setShowPersonalInfo}) => {
               </Text>
               <View style={styles.pickerContainer}>
                 <Picker
-                  selectedValue={selectedBrand}
+                  selectedValue={houseType}
                   onValueChange={itemValue => {
                     setHouseType(itemValue);
                     setErrorforpersonal('');
@@ -1257,25 +1254,26 @@ const NewApplication = ({loanType, showPersonalInfo, setShowPersonalInfo}) => {
               )}
               {!rupload && (
                 <TouchableOpacity
-                  style={styles.uploadButton}
+                  style={[styles.uploadButton,,{width:70}]}
                   onPress={() => {
                     setRupload(true);
                     setErrorforpersonal('');
                   }}>
-                  <Text style={styles.uploadText}>{t('Attach')}</Text>
+                  <Text style={[styles.uploadText]}>{t('Attach')}</Text>
                 </TouchableOpacity>
               )}
               {rupload && (
                 <View style={{flexDirection: 'row', gap: 10}}>
                   <TouchableOpacity
-                    style={[styles.uploadButton, {width: '', padding: '10'}]}
-                    onPress={() => handleCameraLaunch('rcimage')}>
+                    style={[styles.uploadButton]}
+                    onPress={() => {handleCameraLaunch('rcimage')
+                    }}>
                     <Text style={styles.uploadButtonText}>
                       {t('takeaphoto')}
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
-                    style={[styles.uploadButton, {width: '', padding: '10'}]}
+                    style={[styles.uploadButton]}
                     onPress={() => handleGalleryLaunch('rcimage')}>
                     <Text style={styles.uploadButtonText}>
                       {t('choosefromgallery')}
@@ -1397,7 +1395,7 @@ const styles = StyleSheet.create({
   },
   uploadButton: {
     backgroundColor: 'lightgrey',
-    padding: 5,
+    padding: 8,
     borderRadius: 5,
     width: '50',
   },

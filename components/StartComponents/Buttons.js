@@ -213,7 +213,6 @@ const Buttons = () => {
   const onRefresh = () => {
     setRefreshing(true);
     fetchData();
-    fetchEmiData();
     setRefreshing(false);
   };
 
