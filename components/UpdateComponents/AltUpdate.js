@@ -38,7 +38,7 @@ const AltUpdate = () => {
   const [errorMessage, setErrorMessage] = useState('');
   //console.log(dob);
   const houseUrl = customerKYCData['House Location URL'];
-  console.log('House Url:', houseUrl);
+  //console.log('House Url:', houseUrl);
   const handleUpdateChildren = async () => {
     try {
       setLoading(true);

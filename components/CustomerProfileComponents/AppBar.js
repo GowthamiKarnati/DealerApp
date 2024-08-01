@@ -15,7 +15,7 @@ const AppBar = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const customerKYCData = useSelector(selectCustomerKYCData);
-  console.log('Customer Name', customerKYCData);
+  //console.log('Customer Name', customerKYCData);
   const [customerName, setCustomerName] = useState('');
   const handleBack = () => {
     navigation.navigate('Customer');

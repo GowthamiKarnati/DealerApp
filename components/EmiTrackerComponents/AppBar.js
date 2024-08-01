@@ -156,7 +156,7 @@ const AppBar = () => {
         <TouchableOpacity onPress={handleSubmit}>
           <Icon name="arrow-left" size={23} color="white" />
         </TouchableOpacity>
-        <Text style={styles.appBarTitle}>Pending EMIs</Text>
+        <Text style={styles.appBarTitle}>{t('Pending EMIs')}</Text>
       </View>
     </SafeAreaView>
   );

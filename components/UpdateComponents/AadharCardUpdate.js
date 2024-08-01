@@ -22,6 +22,13 @@ import {
 import Toast from 'react-native-toast-message';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import {selectCustomerData} from '../../redux/slices/authSlice';
+import { Buffer } from 'buffer';
+import { Image as CompressorImage } from 'react-native-compressor';
+import RNFS from 'react-native-fs';
+
+
+
+
 const AadharCardUpdate = () => {
   const {t} = useTranslation();
   const dispatch = useDispatch();
@@ -51,11 +58,20 @@ const AadharCardUpdate = () => {
       includeBase64: true,
       freeStyleCropEnabled: true,
       useFrontCamera: true,
+      maxWidth: 1080,
+      maxHeight: 1080,
     };
     try {
       const result = await launchCamera(options);
       const base64Data = result.assets[0].base64;
-      const imageUri = result.assets[0];
+      const imageUri = result.assets[0].uri;
+      // const compressedImageUri = await CompressorImage.compress(imageUri, {
+      //   compressionMethod: 'auto',
+      //   quality: 0.8, // Adjust the quality as needed (0.0 to 1.0)
+      //   });
+
+      //const base64Data = await RNFS.readFile(compressedImageUri, 'base64');
+      
       if (isFront) {
         setAadharFrontImage(imageUri);
         await uploadBase64ToBackend(base64Data, 'front');
@@ -76,12 +92,20 @@ const AadharCardUpdate = () => {
       mediaType: 'photo',
       selectionLimit: 1,
       includeBase64: true,
+      maxWidth: 1080,
+      maxHeight: 1080,
     };
 
     try {
       const result = await launchImageLibrary(options);
       const base64Data = result.assets[0].base64;
-      const imageUri = result.assets[0];
+      const imageUri = result.assets[0].uri;
+      const compressedImageUri = await CompressorImage.compress(imageUri, {
+        compressionMethod: 'auto',
+        quality: 0.8, // Adjust the quality as needed (0.0 to 1.0)
+        });
+
+      //const base64Data = await RNFS.readFile(compressedImageUri, 'base64');
       if (isFront) {
         setAadharFrontImage(imageUri);
         await uploadBase64ToBackend(base64Data, 'front');
@@ -98,15 +122,12 @@ const AadharCardUpdate = () => {
 
   const uploadBase64ToBackend = async (base64Data, imageType) => {
     try {
-      const response = await axios.post(
-        'https://backendforpnf.vercel.app/fileUpload',
-        {base64Data},
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
+      const buffer = Buffer.from(base64Data, 'base64');
+      const response = await axios.post('https://backendforpnf.vercel.app/fileUploadb', buffer, {
+        headers: {
+            'Content-Type': 'application/octet-stream',
         },
-      );
+    });
 
       console.log('Server response:', response.data);
       const {
@@ -123,6 +144,7 @@ const AadharCardUpdate = () => {
   };
 
   const handleUpload = async () => {
+    setLoading(true);
     try {
       let data = {record_id, files: frontImageFiles};
 
@@ -159,9 +181,12 @@ const AadharCardUpdate = () => {
       dispatch(setCustomerKYCData(apiData));
     } catch (error) {
       console.log('Error in handleUpload:', error);
+    }finally{
+      setLoading(false);
     }
   };
   const handleUploadBack = async () => {
+    setLoading(true);
     try {
       let data = {record_id, files: backImageFiles};
       const updateResponse = await axios.post(
@@ -197,6 +222,8 @@ const AadharCardUpdate = () => {
       dispatch(setCustomerKYCData(apiData));
     } catch (error) {
       console.log('Error in handleUpload:', error);
+    }finally{
+      setLoading(false);
     }
   };
 
@@ -204,12 +231,7 @@ const AadharCardUpdate = () => {
     navigation.navigate('CustomerProfile');
   };
 
-  const handleshowEditOptions = () => {
-    setEditOptions(!editOptions);
-  };
-  const handleBackEditOptions = () => {
-    setEditOptionforBack(!editOptionsforback);
-  };
+  
   return (
     <View style={styles.container}>
       {loading && (
@@ -262,7 +284,7 @@ const AadharCardUpdate = () => {
           ) : null}
           <TouchableOpacity
             style={styles.editIconContainer}
-            onPress={handleshowEditOptions}>
+            onPress={()=> setEditOptions(true)}>
             <FontAwesomeIcon
               name="edit"
               style={styles.editIcon}
@@ -346,7 +368,7 @@ const AadharCardUpdate = () => {
           )}
           <TouchableOpacity
             style={styles.editIconContainer}
-            onPress={handleBackEditOptions}>
+            onPress={() => setEditOptionforBack(!editOptionsforback)}>
             <FontAwesomeIcon
               name="edit"
               style={styles.editIcon}
@@ -449,7 +471,7 @@ const styles = StyleSheet.create({
   uploadButtonsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    gap: '10',
+    gap:10
   },
   editIconContainer: {
     position: 'absolute',

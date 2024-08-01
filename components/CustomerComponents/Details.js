@@ -37,7 +37,7 @@ const Details = () => {
   const [loanType, setLoanType] = useState('');
   const [customers, setCustomers] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  console.log('in Details Component', customerKYCData);
+  //console.log('in Details Component', customerKYCData);
   // useEffect(() => {
   // }, [customerKYCData]);
 

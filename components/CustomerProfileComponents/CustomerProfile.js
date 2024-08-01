@@ -28,6 +28,10 @@ import {useDispatch} from 'react-redux';
 import {setFieldToUpdate} from '../../redux/slices/authSlice';
 import {useTranslation} from 'react-i18next';
 import KYCCard from './KYCCard';
+import { Buffer } from 'buffer';
+import { Image as CompressorImage } from 'react-native-compressor';
+import RNFS from 'react-native-fs';
+
 
 const CustomerProfile = () => {
   const {t} = useTranslation();
@@ -57,64 +61,175 @@ const CustomerProfile = () => {
     }
   };
 
+  // const handleTakePhoto = async () => {
+  //   setLoading(true);
+  //   console.log('Take a photo clicked');
+  //   const options = {
+  //     mediaType: 'photo',
+  //     selectionLimit: 1,
+  //     includeBase64: true,
+  //   };
+  //   try {
+  //     const result = await launchCamera(options);
+  //     //console.log('ImagePicker response:', result); // Log the response for debugging
+  //     //const base64Data = result.assets[0].base64;
+  //     //console.log('response', result.assets[0].base64);
+  //     const imageUri = result.assets[0];
+  //     setImage(imageUri);
+  //     const compressedImageUri = await CompressorImage.compress(imageUri, {
+  //       compressionMethod: 'auto',
+  //       quality: 0.8, // Adjust the quality as needed (0.0 to 1.0)
+  //   });
+  //   const base64Data = await RNFS.readFile(compressedImageUri, 'base64');
+  //     actionSheetRef.current?.hide();
+  //     await uploadBase64ToBackend(base64Data);
+  //   } catch (error) {
+  //     console.log('Error in handleChooseFromGallery:', error);
+  //   } finally {
+  //     // Set loading to false when finished
+  //     setLoading(false);
+  //   }
+  // };
   const handleTakePhoto = async () => {
     setLoading(true);
     console.log('Take a photo clicked');
     const options = {
-      mediaType: 'photo',
-      selectionLimit: 1,
-      includeBase64: true,
+        mediaType: 'photo',
+        selectionLimit: 1,
+        includeBase64: true,
+        maxWidth: 1080,
+        maxHeight: 1080,
     };
+
     try {
-      const result = await launchCamera(options);
-      //console.log('ImagePicker response:', result); // Log the response for debugging
-      const base64Data = result.assets[0].base64;
-      console.log('response', result.assets[0].base64);
-      const imageUri = result.assets[0];
-      setImage(imageUri);
-      actionSheetRef.current?.hide();
-      await uploadBase64ToBackend(base64Data);
+        const result = await launchCamera(options);
+        console.log('ImagePicker response:', result); // Log the response for debugging
+
+        if (result.didCancel) {
+            console.log('User cancelled image picker');
+            setLoading(false);
+            return;
+        }
+
+        if (result.errorMessage) {
+            console.error('ImagePicker Error: ', result.errorMessage);
+            setLoading(false);
+            return;
+        }
+
+        if (!result.assets || result.assets.length === 0) {
+            console.error('No assets found in ImagePicker response');
+            setLoading(false);
+            return;
+        }
+
+        const imageUri = result.assets[0].uri;
+        setImage(imageUri);
+
+        const compressedImageUri = await CompressorImage.compress(imageUri, {
+            compressionMethod: 'auto',
+            quality: 0.8, // Adjust the quality as needed (0.0 to 1.0)
+        });
+
+        //const base64Data = await RNFS.readFile(compressedImageUri, 'base64');
+        const base64Data = result.assets[0].base64;
+        actionSheetRef.current?.hide();
+        await uploadBase64ToBackend(base64Data);
+
     } catch (error) {
-      console.log('Error in handleChooseFromGallery:', error);
+        console.log('Error in handleChooseFromGallery:', error);
     } finally {
-      // Set loading to false when finished
-      setLoading(false);
+        // Set loading to false when finished
+        setLoading(false);
     }
-  };
+};
+  // const handleChooseFromGallery = async () => {
+  //   setLoading(true);
+  //   const options = {
+  //     mediaType: 'photo',
+  //     selectionLimit: 1,
+  //     includeBase64: true,
+  //   };
+
+  //   try {
+  //     const result = await launchImageLibrary(options);
+  //     //const base64Data = result.assets[0].base64;
+  //     //console.log("response", result.assets[0].base64);
+  //     const imageUri = result.assets[0];
+  //     setImage(imageUri);
+  //     const compressedImageUri = await CompressorImage.compress(imageUri, {
+  //       compressionMethod: 'auto',
+  //       quality: 0.8, // Adjust the quality as needed (0.0 to 1.0)
+  //   });
+  //   const base64Data = await RNFS.readFile(compressedImageUri, 'base64');
+  //     actionSheetRef.current?.hide();
+  //     await uploadBase64ToBackend(base64Data);
+  //   } catch (error) {
+  //     console.log('Error in handleChooseFromGallery:', error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
   const handleChooseFromGallery = async () => {
     setLoading(true);
     const options = {
-      mediaType: 'photo',
-      selectionLimit: 1,
-      includeBase64: true,
+        mediaType: 'photo',
+        selectionLimit: 1,
+        includeBase64: true,
+        maxWidth: 1080,
+        maxHeight: 1080,
     };
 
     try {
-      const result = await launchImageLibrary(options);
-      const base64Data = result.assets[0].base64;
-      //console.log("response", result.assets[0].base64);
-      const imageUri = result.assets[0];
-      setImage(imageUri);
-      actionSheetRef.current?.hide();
-      await uploadBase64ToBackend(base64Data);
+        const result = await launchImageLibrary(options);
+        console.log('ImagePicker response:', result); // Log the response for debugging
+
+        if (result.didCancel) {
+            console.log('User cancelled image picker');
+            setLoading(false);
+            return;
+        }
+
+        if (result.errorMessage) {
+            console.error('ImagePicker Error: ', result.errorMessage);
+            setLoading(false);
+            return;
+        }
+
+        if (!result.assets || result.assets.length === 0) {
+            console.error('No assets found in ImagePicker response');
+            setLoading(false);
+            return;
+        }
+
+        const imageUri = result.assets[0].uri;
+        setImage(imageUri);
+
+        const compressedImageUri = await CompressorImage.compress(imageUri, {
+            compressionMethod: 'auto',
+            quality: 0.8, // Adjust the quality as needed (0.0 to 1.0)
+        });
+
+        //const base64Data = await RNFS.readFile(compressedImageUri, 'base64');
+        const base64Data = result.assets[0].base64;
+        actionSheetRef.current?.hide();
+        await uploadBase64ToBackend(base64Data);
     } catch (error) {
-      console.log('Error in handleChooseFromGallery:', error);
+        console.log('Error in handleChooseFromGallery:', error);
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
+};
 
   const uploadBase64ToBackend = async base64Data => {
     try {
-      const response = await axios.post(
-        'https://backendforpnf.vercel.app/fileUpload',
-        {base64Data},
+      const buffer = Buffer.from(base64Data, 'base64');
+      const response = await axios.post('https://backendforpnf.vercel.app/fileUploadb', buffer,
         {
           headers: {
-            'Content-Type': 'application/json',
-          },
-        },
-      );
+            'Content-Type': 'application/octet-stream',
+                   },
+        });
 
       console.log('Server response:', response.data);
       const {

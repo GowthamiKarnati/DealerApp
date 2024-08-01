@@ -22,6 +22,11 @@ import {selectCustomerData} from '../../redux/slices/authSlice';
 import Toast from 'react-native-toast-message';
 import axios from 'axios';
 import {setAddingTruck} from '../../redux/slices/authSlice';
+import { Buffer } from 'buffer';
+import { Image as CompressorImage } from 'react-native-compressor';
+import RNFS from 'react-native-fs';
+
+
 
 const TruckNumber = () => {
   const {t} = useTranslation();
@@ -72,63 +77,138 @@ const TruckNumber = () => {
       setLoaderfortrucks(false);
     }
   };
+  // const handleCameraLaunch = async () => {
+  //   setLoading(true);
+  //   const options = {
+  //     mediaType: 'photo',
+  //     selectionLimit: 1,
+  //     includeBase64: true,
+  //   };
+  //   try {
+  //     const result = await launchCamera(options);
+  //     const base64Data = result.assets[0].base64;
+  //     const imageUri = result.assets[0];
+  //     setRCPicture(imageUri);
+  //     await uploadBase64ToBackend(base64Data);
+  //   } catch (error) {
+  //     console.log('Error in handleCameraLaunch:', error);
+  //   } finally {
+  //     setLoading(false); // Set loading to false after completion or error
+  //   }
+  // };
   const handleCameraLaunch = async () => {
     setLoading(true);
+    console.log('Take a photo clicked');
     const options = {
-      mediaType: 'photo',
-      selectionLimit: 1,
-      includeBase64: true,
+        mediaType: 'photo',
+        selectionLimit: 1,
+        includeBase64: true,
+        maxWidth: 1080,
+        maxHeight: 1080,
     };
-    try {
-      const result = await launchCamera(options);
-      const base64Data = result.assets[0].base64;
-      const imageUri = result.assets[0];
-      setRCPicture(imageUri);
-      await uploadBase64ToBackend(base64Data);
-    } catch (error) {
-      console.log('Error in handleCameraLaunch:', error);
-    } finally {
-      setLoading(false); // Set loading to false after completion or error
-    }
-  };
 
-  const handleGalleryLaunch = async () => {
+    try {
+        const result = await launchCamera(options);
+        //console.log('ImagePicker response:', result); // Log the response for debugging
+
+        if (result.didCancel) {
+            console.log('User cancelled image picker');
+            setLoading(false);
+            return;
+        }
+
+        if (result.errorMessage) {
+            console.error('ImagePicker Error: ', result.errorMessage);
+            setLoading(false);
+            return;
+        }
+
+        if (!result.assets || result.assets.length === 0) {
+            console.error('No assets found in ImagePicker response');
+            setLoading(false);
+            return;
+        }
+
+        const imageUri = result.assets[0].uri;
+        setRCPicture(imageUri);
+        const compressedImageUri = await CompressorImage.compress(imageUri, {
+            compressionMethod: 'auto',
+            quality: 0.8, // Adjust the quality as needed (0.0 to 1.0)
+        });
+        const base64Data = result.assets[0].base64;
+        //const base64Data = await RNFS.readFile(compressedImageUri, 'base64');
+        await uploadBase64ToBackend(base64Data);
+
+    } catch (error) {
+        console.log('Error in handleChooseFromGallery:', error);
+    } finally {
+        // Set loading to false when finished
+        setLoading(false);
+    }
+};
+  const handleGalleryLaunch  = async () => {
     setLoading(true);
     const options = {
-      mediaType: 'photo',
-      selectionLimit: 1,
-      includeBase64: true,
+        mediaType: 'photo',
+        selectionLimit: 1,
+        includeBase64: true,
+        maxWidth: 1080,
+        maxHeight: 1080,
     };
 
     try {
-      const result = await launchImageLibrary(options);
-      const base64Data = result.assets[0].base64;
-      const imageUri = result.assets[0];
-      setRCPicture(imageUri);
-      await uploadBase64ToBackend(base64Data);
+        const result = await launchImageLibrary(options);
+        //console.log('ImagePicker response:', result); // Log the response for debugging
+
+        if (result.didCancel) {
+            console.log('User cancelled image picker');
+            setLoading(false);
+            return;
+        }
+
+        if (result.errorMessage) {
+            console.error('ImagePicker Error: ', result.errorMessage);
+            setLoading(false);
+            return;
+        }
+
+        if (!result.assets || result.assets.length === 0) {
+            console.error('No assets found in ImagePicker response');
+            setLoading(false);
+            return;
+        }
+
+        const imageUri = result.assets[0].uri;
+        setRCPicture(imageUri);
+
+        const compressedImageUri = await CompressorImage.compress(imageUri, {
+            compressionMethod: 'auto',
+            quality: 0.8, // Adjust the quality as needed (0.0 to 1.0)
+        });
+        const base64Data = result.assets[0].base64;
+        //const base64Data = await RNFS.readFile(compressedImageUri, 'base64');
+        await uploadBase64ToBackend(base64Data);
+
     } catch (error) {
-      console.log('Error in handleGalleryLaunch:', error);
+        console.log('Error in handleChooseFromGallery:', error);
     } finally {
-      setLoading(false); // Set loading to false after completion or error
+        setLoading(false);
     }
-  };
+};
 
   const uploadBase64ToBackend = async base64Data => {
     try {
       setLoading(true);
-      const response = await axios.post(
-        'https://backendforpnf.vercel.app/fileUpload',
-        {base64Data},
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
+      const buffer = Buffer.from(base64Data, 'base64');
+      const response = await axios.post('https://backendforpnf.vercel.app/fileUploadb', buffer, {
+        headers: {
+            'Content-Type': 'application/octet-stream',
         },
-      );
+    });
       const {
         msg: {files, success},
       } = response.data;
-      //console.log(response.data);
+      console.log(response.data);
       setFiles(files);
       //console.log(files);
     } catch (error) {
@@ -142,21 +222,28 @@ const TruckNumber = () => {
       mediaType: 'photo',
       selectionLimit: 5, // Adjust the selection limit as needed
       includeBase64: true,
+      maxWidth: 1080,
+      maxHeight: 1080,
     };
 
     try {
       const result = await launchImageLibrary(options);
       const selectedImages = result.assets.map(asset => asset.uri);
       setHouseImages(selectedImages);
-
+      setLoading(true);
       const uploadedFiles = [];
       for (const asset of result.assets) {
+        //console.log(asset.uri)
+        const compressedImageUri = await CompressorImage.compress(asset.uri, {
+            compressionMethod: 'auto',
+            quality: 0.8, // Adjust the quality as needed (0.0 to 1.0)
+        });
+        //const base64Data = await RNFS.readFile(compressedImageUri, 'base64');
         const base64Data = asset.base64;
         const uploadedFile = await base64ToBackend(base64Data);
         uploadedFiles.push(uploadedFile);
-      }
-
-      // Set all uploaded files
+    }
+      setLoading(false);
       setVehicleFiles(uploadedFiles.flat()); // Flatten the array and update files state
     } catch (error) {
       console.log('Error in handleGalleryLaunch:', error);
@@ -165,22 +252,16 @@ const TruckNumber = () => {
 
   const base64ToBackend = async base64Data => {
     try {
-      setLoading(true);
-      const response = await axios.post(
-        'https://backendforpnf.vercel.app/fileUpload',
-        {base64Data},
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
+      const buffer = Buffer.from(base64Data, 'base64');
+      const response = await axios.post('https://backendforpnf.vercel.app/fileUploadb', buffer, {
+        headers: {
+            'Content-Type': 'application/octet-stream',
         },
-      );
-
+    });
       console.log('Server response:', response.data);
       const {
         msg: {files: uploadedFiles, success},
       } = response.data;
-      setLoading(false);
       return uploadedFiles; // Update files state
     } catch (error) {
       console.log('Error in uploadBase64ToBackend:', error);

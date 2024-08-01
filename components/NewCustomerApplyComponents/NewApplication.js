@@ -23,6 +23,9 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import Collapsible from 'react-native-collapsible';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {setSubmitting} from '../../redux/slices/authSlice';
+import { Buffer } from 'buffer';
+import { Image as CompressorImage } from 'react-native-compressor';
+import RNFS from 'react-native-fs';
 
 const NewApplication = ({loanType, showPersonalInfo, setShowPersonalInfo}) => {
   const {t} = useTranslation();
@@ -84,6 +87,7 @@ const NewApplication = ({loanType, showPersonalInfo, setShowPersonalInfo}) => {
   const [rcImageFiles, setRcImageFiles] = useState([]);
   const [isLoadingBrandProducts, setIsLoadingBrandProducts] = useState(false);
   const [rcNumber, setRCNumber] = useState('');
+  
   //console.log('rc Image', rcImageFiles);
 
   useEffect(() => {
@@ -276,12 +280,19 @@ const NewApplication = ({loanType, showPersonalInfo, setShowPersonalInfo}) => {
       mediaType: 'photo',
       selectionLimit: 1,
       includeBase64: true,
+      maxWidth: 1080,
+      maxHeight: 1080,
     };
     try {
       const result = await launchCamera(options);
+      const imageUri = result.assets[0].uri; // Ensure to use .uri
+        const compressedImageUri = await CompressorImage.compress(imageUri, {
+            compressionMethod: 'auto',
+            quality: 0.8, // Adjust the quality as needed (0.0 to 1.0)
+        });
+
+      //const base64Data = await RNFS.readFile(compressedImageUri, 'base64');
       const base64Data = result.assets[0].base64;
-      //console.log("response", result.assets[0]);
-      const imageUri = result.assets[0];
       setImageForUpload(imageUri, uploadType);
       await uploadBase64ToBackend(base64Data, uploadType);
     } catch (error) {
@@ -297,12 +308,19 @@ const NewApplication = ({loanType, showPersonalInfo, setShowPersonalInfo}) => {
       mediaType: 'photo',
       selectionLimit: 1,
       includeBase64: true,
+      maxWidth: 1080,
+      maxHeight: 1080,
     };
 
     try {
       const result = await launchImageLibrary(options);
+      const imageUri = result.assets[0].uri; // Ensure to use .uri
+      const compressedImageUri = await CompressorImage.compress(imageUri, {
+          compressionMethod: 'auto',
+          quality: 0.8, // Adjust the quality as needed (0.0 to 1.0)
+      });
       const base64Data = result.assets[0].base64;
-      const imageUri = result.assets[0];
+      //const base64Data = await RNFS.readFile(compressedImageUri, 'base64');
       setImageForUpload(imageUri, uploadType);
       await uploadBase64ToBackend(base64Data, uploadType);
     } catch (error) {
@@ -314,16 +332,16 @@ const NewApplication = ({loanType, showPersonalInfo, setShowPersonalInfo}) => {
   const setImageForUpload = (imageUri, uploadType) => {
     switch (uploadType) {
       case 'pan':
-        setPanCardImage(imageUri);
+        setPanCardImage({ uri: imageUri });
         break;
       case 'front':
-        setAadharFrontImage(imageUri);
+        setAadharFrontImage({uri :imageUri});
         break;
       case 'back':
-        setAadharBackImage(imageUri);
+        setAadharBackImage({ uri: imageUri });
         break;
       case 'rcimage':
-        setRcImage(imageUri);
+        setRcImage({ uri: imageUri });
         break;
       default:
         // Handle other cases or throw an error if necessary
@@ -331,18 +349,14 @@ const NewApplication = ({loanType, showPersonalInfo, setShowPersonalInfo}) => {
     }
   };
   const uploadBase64ToBackend = async (base64Data, uploadType) => {
+    setUploadingImage(true);
     try {
-      setUploadingImage(true);
-      const response = await axios.post(
-        'https://backendforpnf.vercel.app/fileUpload',
-        {base64Data},
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
+      const buffer = Buffer.from(base64Data, 'base64');
+      const response = await axios.post('https://backendforpnf.vercel.app/fileUploadb', buffer, {
+        headers: {
+            'Content-Type': 'application/octet-stream',
         },
-      );
-
+      });
       console.log(`Server response (${uploadType}):`, response.data);
       const {
         msg: {files: uploadedFiles, success},
@@ -369,52 +383,6 @@ const NewApplication = ({loanType, showPersonalInfo, setShowPersonalInfo}) => {
       console.log('Error in uploadBase64ToBackend:', error);
     }
   };
-
-  // const handleGallery = async () => {
-
-  //     const options = {
-  //       mediaType: 'photo',
-  //       selectionLimit: 5, // Adjust the selection limit as needed
-  //       includeBase64: true,
-  //     };
-
-  //     try {
-  //       const result = await launchImageLibrary(options);
-  //       const selectedImages = result.assets.map((asset) => asset.uri);
-  //       setHouseImages(selectedImages);
-
-  //       const uploadedFiles = [];
-  //       for (const asset of result.assets) {
-  //         const base64Data = asset.base64;
-  //         const uploadedFile = await base64ToBackend(base64Data);
-  //         uploadedFiles.push(uploadedFile);
-  //       }
-
-  //       // Set all uploaded files
-  //       setFiles(uploadedFiles.flat()); // Flatten the array and update files state
-  //     } catch (error) {
-  //       console.log('Error in handleGalleryLaunch:', error);
-  //     }
-  //   };
-
-  //   const base64ToBackend = async (base64Data) => {
-  //     try {
-  //       setUploadingImage(true);
-  //       const response = await axios.post('https://backendforpnf.vercel.app/fileUpload', { base64Data }, {
-  //         headers: {
-  //           'Content-Type': 'application/json'
-  //         }
-  //       });
-
-  //       console.log('Server response:', response.data);
-  //       const { msg: { files: uploadedFiles, success } } = response.data;
-  //       setUploadingImage(false);
-  //       return uploadedFiles;// Update files state
-
-  //     } catch (error) {
-  //       console.log('Error in uploadBase64ToBackend:', error);
-  //     }
-  //   };
 
   const togglePersonalInfoCollapse = () => {
     setPersonalInfoCollapsed(!personalInfoCollapsed);

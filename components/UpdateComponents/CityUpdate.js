@@ -140,7 +140,7 @@ const CityUpdate = ({house}) => {
           <TextInput
             editable
             multiline
-            numberOfLines={2}
+            //numberOfLines={2}
             style={styles.inputField}
             placeholder={!house ? t('entercity') : t('Enterhouseaddress')}
             placeholderTextColor="black"

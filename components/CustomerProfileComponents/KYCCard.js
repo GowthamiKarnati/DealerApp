@@ -477,14 +477,14 @@ const KYCCard = ({ customerKYCData, handlePress, t }) => {
                   customerPhoneNumber.length > 10
                     ? customerPhoneNumber.slice(-10)
                     : customerPhoneNumber;
-                console.log('number', modifiedMobileNumber);
+                //console.log('number', modifiedMobileNumber);
                 const vehicleResponse = await axios.get(
                   `https://backendforpnf.vercel.app/vehicles?criteria=sheet_32026511.column_609.column_87%20LIKE%20%22%25${encodeURIComponent(
                     modifiedMobileNumber,
                   )}%22`,
                 );
                 setVehicleData(vehicleResponse.data.data);
-                console.log("vehicle",vehicleResponse.data.data);
+                //console.log("vehicle",vehicleResponse.data.data);
               } catch (error) {
                 console.error('Error fetching data:', error.message);
               }
@@ -493,7 +493,7 @@ const KYCCard = ({ customerKYCData, handlePress, t }) => {
           }, [customerPhoneNumber, addingtruck]);
 
     const numberOfTrucks = vehicleData ? vehicleData.length : 0;
-    console.log('Number of Trucks', numberOfTrucks);
+    //console.log('Number of Trucks', numberOfTrucks);
 
 
     const handleAltPhoneLayout = (event) => {

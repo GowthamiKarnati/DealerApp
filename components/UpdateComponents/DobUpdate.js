@@ -311,7 +311,7 @@ const DobUpdate = () => {
   const [selectedYear, setSelectedYear] = useState(dayjs().year());
   const [customDate, setCustomDate] = useState(dayjs());
   //console.log("date of birth", dob);
-  console.log('CustomDate', customDate);
+  //console.log('CustomDate', customDate);
   useEffect(() => {
     if (dob === '0000-00-00') {
       setCustomDate(dayjs()); // Set customDate to present day

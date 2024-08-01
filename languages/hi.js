@@ -238,7 +238,18 @@ export default {
   "invalidMobileFormat": "अमान्य मोबाइल नंबर प्रारूप",
   "emis": "ईएमआई का",
   "upcomingEmis": "आगामी ईमी का",
-  "pastEmis": "अतीत ईमी का"
+  "pastEmis": "अतीत ईमी का",
+  'Pending EMIs' : 'बकाया ईएमआई',
+  "Emistatus": {
+    "bounced": "बाउंस",
+    "clearing": "क्लियरिंग",
+    "chq_stop": "चेक स्टॉप",
+    "unpaid": "बकाया",
+    "unknown": "अज्ञात"
+  },
+  "no_pending_emis": "कोई बकाया ईएमआई नहीं",
+  "view_all": "सभी देखें",
+  "Pending EMIs": "बकाया ईएमआई"
 
   
 

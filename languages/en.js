@@ -237,7 +237,17 @@ export default {
   "invalidMobileFormat":"Invalid mobile number format",
  "emis": "Emi's",
   "upcomingEmis": "Upcoming Emi's",
-  "pastEmis": "Past Emi's"
+  "pastEmis": "Past Emi's",
+  "Emistatus": {
+    "bounced": "Bounced",
+    "clearing": "Clearing",
+    "chq_stop": "Cheque Stop",
+    "unpaid": "Unpaid",
+    "unknown": "Unknown"
+  },
+  "no_pending_emis": "No Pending EMIs",
+  "view_all": "View All",
+  "Pending EMIs": "Pending EMIs"
   
 
 

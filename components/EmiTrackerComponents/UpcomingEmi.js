@@ -22,12 +22,26 @@ const UpcomingEmi = ({emiData}) => {
         return 'gray';
     }
   };
+  const getStatusTranslation = (status) => {
+    switch (status) {
+      case 'bounced':
+        return t('Emistatus.bounced');
+      case 'clearing':
+        return t('Emistatus.clearing');
+      case 'CHQ STOP':
+        return t('Emistatus.chq_stop');
+      case 'unpaid':
+        return t('Emistatus.unpaid');
+      default:
+        return t('Emistatus.unknown');
+    }
+  };
   const renderEmiCards = () => {
     return emiData.map((emi, index) => (
       <TouchableOpacity key={index} style={styles.card}>
         <View style={{flexDirection:'row',justifyContent:'space-between' }}>
             <Text style={styles.cardText}>{t('id')}: {emi.record_id}</Text>
-            <Text style={[styles.statusText, { color: getStatusColor(emi.status) }]}>{capitalizeFirstLetter(emi.status)}</Text>
+            <Text style={[styles.statusText, { color: getStatusColor(emi.status) }]}>{capitalizeFirstLetter(getStatusTranslation(emi.status))}</Text>
         </View>
         <Text style={styles.cardText}>{t('emiduedate')}: {emi['emi date'].split(' ')[0]}</Text>
         <Text style={styles.cardText}>{t('name')}: {emi.customer}</Text>
@@ -37,7 +51,7 @@ const UpcomingEmi = ({emiData}) => {
   };
   return (
     <View style={styles.container}>
-      {emiData.length > 0 ? renderEmiCards() : <Text style={styles.noDataText}>No Upcoming EMIs</Text>}
+      {emiData.length > 0 ? renderEmiCards() : <Text style={styles.noDataText}>{t('no_pending_emis')}</Text>}
     </View>
   )
 }

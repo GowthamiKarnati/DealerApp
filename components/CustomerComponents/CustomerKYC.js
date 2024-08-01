@@ -181,7 +181,7 @@ const CustomerKYC = () => {
   const navigation = useNavigation();
   const customerData = useSelector(selectCustomerData);
   const customerKYCData = useSelector(selectCustomerKYCData);
-  console.log('inCustomerKyc', customerKYCData);
+ // console.log('inCustomerKyc', customerKYCData);
   const [dataFetched, setDataFetched] = useState(false);
   const [kycStatus, setKycStatus] = useState('');
   const customerPhoneNumber = customerData?.['mobile number'] || 'N/A';

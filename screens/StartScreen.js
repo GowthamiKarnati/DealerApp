@@ -1,8 +1,21 @@
 import { View, SafeAreaView, StyleSheet, BackHandler, Text } from 'react-native';
-import React from 'react'
+import React, {useEffect} from 'react'
 import AppBar from '../components/StartComponents/AppBar';
 import Buttons from '../components/StartComponents/Buttons';
 const StartScreen = () => {
+  useEffect(() => {
+        const backAction = () => {
+          BackHandler.exitApp();
+          return true;
+        };
+    
+        const backHandler = BackHandler.addEventListener(
+          'hardwareBackPress',
+          backAction
+        );
+    
+        return () => backHandler.remove();
+      }, []);
   return (
     <SafeAreaView style={styles.container}>
         <AppBar />

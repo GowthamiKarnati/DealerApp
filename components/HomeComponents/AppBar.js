@@ -128,7 +128,10 @@ const AppBar = () => {
       setSearchText('');
     }, [])
   );
-
+  const clearSearch = () => {
+    setSearchText('');
+    dispatch(setSearchValue(''));
+  };
   return (
     <SafeAreaView>
       <View style={styles.container}>
@@ -138,6 +141,7 @@ const AppBar = () => {
         <View style={styles.titleContainer}>
           <Text style={styles.appBarTitle}>{t('mycustomers')}</Text>
         </View>
+        <View style={styles.searchContainer}>
         <TextInput
           style={styles.searchInput}
           placeholder={t('search')}
@@ -145,6 +149,12 @@ const AppBar = () => {
           value={searchText}
           onChangeText={handleSearch}
         />
+        {searchText.length > 0 && (
+              <TouchableOpacity onPress={clearSearch} style={styles.clearButton}>
+                <Icon name="times" size={15} color="black" />
+              </TouchableOpacity>
+            )}
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -174,17 +184,34 @@ const styles = StyleSheet.create({
     fontSize: 25,
     marginRight: 15,
   },
-  searchInput: {
-    height: 40,
+  // searchInput: {
+  //   height: 40,
+  //   backgroundColor: 'white',
+  //   marginLeft: 30,
+  //   paddingLeft: 10,
+  //   borderRadius: 8,
+  //   flex: 1,
+  //   color: 'black',
+  // },
+  logout: {
+    marginLeft: 'auto',
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: 'white',
-    marginLeft: 30,
-    paddingLeft: 10,
     borderRadius: 8,
+    flex: 1,
+    height: 40,
+    paddingLeft: 10,
+  },
+  searchInput: {
     flex: 1,
     color: 'black',
   },
-  logout: {
-    marginLeft: 'auto',
+  clearButton: {
+    padding: 5,
+    marginRight:10
   },
 });
 
